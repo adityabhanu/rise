@@ -19,6 +19,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import { useTheme } from "@mui/material/styles";
 import RegisterDialog from "./RegisterDialog";
 import LoginDialog from "./LoginDialog";
+import riseLogo from '../assets/images/rise_logo.png';
 
 export default function Header() {
   const theme = useTheme();
@@ -81,7 +82,7 @@ export default function Header() {
           <Box>
             <RouterLink to="/">
               <img
-                src="/assets/images/rise_logo.png"
+                src={riseLogo}
                 width="150"
                 height="32"
                 alt="RISE"

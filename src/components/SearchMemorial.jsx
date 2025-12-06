@@ -16,6 +16,7 @@ import { styled } from "@mui/material/styles";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import InfoIcon from "@mui/icons-material/Info";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import bannerImage from "../assets/images/fg-bg-winterA.jpeg";
 
 const ActionsRow = styled(Box)`
   display: flex;
@@ -37,19 +38,18 @@ const SearchTips = styled(Box)`
   }
 `;
 
-const Banner = styled(Box)`
-  width: 100%;
-  padding: 100px 0 80px 0;
-  background-image: linear-gradient(
-      rgba(226, 233, 200, 0.2),
-      rgba(226, 233, 200, 0.2)
-    ),
-    url("/assets/images/fg-bg-winterA.jpeg");
-  background-size: cover;
-  background-position: center;
-  text-align: center;
-  color: white;
-`;
+const Banner = styled(Box, {
+  shouldForwardProp: (prop) => prop !== "bgImage",
+})(({ bgImage }) => ({
+  width: "100%",
+  padding: "100px 0 80px 0",
+  backgroundImage: `linear-gradient(rgba(226, 233, 200, 0.2), rgba(226, 233, 200, 0.2)), url(${bgImage})`,
+  backgroundSize: "cover",
+  backgroundPosition: "center",
+  textAlign: "center",
+  color: "white",
+}));
+
 
 const SearchBox = styled(Box)`
   padding: 32px;
@@ -195,7 +195,7 @@ export default function SearchSection() {
   return (
     <>
       {/* Banner Section */}
-      <Banner>
+      <Banner bgImage={bannerImage}>
         <Typography
           variant="h3"
           fontWeight="bold"

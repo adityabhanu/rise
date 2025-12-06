@@ -7,6 +7,5 @@ export default defineConfig({
   base: '/rise/',
   build: {
     outDir: "docs",
-    assetsDir: 'assets',
   }
 })
