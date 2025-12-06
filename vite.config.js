@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [react()],
   base: '/rise/',
   build: {
-    outDir: "docs"
+    outDir: "docs",
+    assetsDir: 'assets',
   }
 })
