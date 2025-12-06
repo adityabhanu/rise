@@ -1,0 +1,20 @@
+:root {
+  --bg-default: #e2e9c8;
+  --bg-paper: #F5F7F2;
+
+  --text-primary: #2F402C;
+  --text-secondary: #4F5E45;
+
+  --button-primary: #4D6C3A;
+  --button-text: #FFFFFF;
+
+  --icon-color: #5E714E;
+}
+
+
+body {
+  padding: 0;
+  margin: 0;
+  background-color: var(--bg-default);
+  color: var(--text-primary);
+}
