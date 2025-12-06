@@ -9,7 +9,7 @@ import "./index.css";
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ThemeProvider theme={theme}>
-      <BrowserRouter>
+      <BrowserRouter basename='/rise'>
         <App />
       </BrowserRouter>
     </ThemeProvider>
