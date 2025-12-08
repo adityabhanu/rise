@@ -17,6 +17,7 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import InfoIcon from "@mui/icons-material/Info";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import bannerImage from "../assets/images/fg-bg-winterA.jpeg";
+import BaseDialog from "./BaseDialog";
 
 const ActionsRow = styled(Box)`
   display: flex;
@@ -334,18 +335,81 @@ export default function SearchSection() {
       </Banner>
 
       {/* POPUP: Search Tips */}
-      <Dialog open={tipsOpen} onClose={() => setTipsOpen(false)}>
-        <DialogTitle>Search Tips</DialogTitle>
-        <DialogContent>
-          <Typography>
-            Add your search tips content here. You can place guidelines,
-            examples, etc.
+      <BaseDialog
+        open={tipsOpen}
+        onClose={() => setTipsOpen(false)}
+        title="Search Tips"
+        maxWidth="sm"
+        actions={
+          <>
+            <Button variant="contained" onClick={() => setTipsOpen(false)}>
+              Close
+            </Button>
+          </>
+        }
+      >
+        <Box sx={{ p: 1 }}>
+          <ul style={{ paddingLeft: "20px", lineHeight: 1.6 }}>
+            <li>
+              When searching in a cemetery, use the{" "}
+              <b>
+                <code>?</code>
+              </b>{" "}
+              or{" "}
+              <b>
+                <code>*</code>
+              </b>{" "}
+              wildcards in name fields.{" "}
+              <b>
+                <code>?</code>
+              </b>{" "}
+              replaces one letter.{" "}
+              <b>
+                <code>*</code>
+              </b>{" "}
+              represents zero to many letters. <em>E.g. Sorens?n or Wil*</em>
+            </li>
+
+            <li>
+              Search for an exact birth/death year or select a range, before or
+              after.
+            </li>
+
+            <li>
+              Select “More search options” to:
+              <ul style={{ paddingLeft: "20px", marginTop: "8px" }}>
+                <li>
+                  Search for a memorial or contributor by <b>ID</b>.
+                </li>
+                <li>
+                  Include the name of a <b>spouse, parent, child or sibling</b>{" "}
+                  in your search.
+                </li>
+                <li>
+                  Use partial name search or similar name spellings to catch
+                  alternate spellings or broaden your search.
+                </li>
+                <li>
+                  Narrow your results to famous, Non-Cemetery Burials, memorials
+                  with or without grave photos and more.
+                </li>
+              </ul>
+            </li>
+          </ul>
+
+          <Typography sx={{ mt: 2 }}>
+            Get more help from our{" "}
+            <a
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Help Center
+            </a>
+            .
           </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setTipsOpen(false)}>Close</Button>
-        </DialogActions>
-      </Dialog>
+        </Box>
+      </BaseDialog>
     </>
   );
 }
