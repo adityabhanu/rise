@@ -192,7 +192,7 @@ export default function Footer() {
                 textAlign: { xs: "center", md: "inherit" },
               }}
             >
-              Copyright © {new Date().getFullYear()} Find a Grave®
+              Copyright © {new Date().getFullYear()} RISE®
             </Typography>
 
             <StyledLink href="#" underline="hover">

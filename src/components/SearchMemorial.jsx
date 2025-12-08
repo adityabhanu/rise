@@ -50,7 +50,6 @@ const Banner = styled(Box, {
   color: "white",
 }));
 
-
 const SearchBox = styled(Box)`
   padding: 32px;
   max-width: 1000px;
@@ -65,8 +64,6 @@ const Row = styled(Box)`
 
 const NameInput = styled(TextField)`
   flex: 1;
-  min-width: 200px;
-
   .MuiInputBase-root {
     background: #fff;
     border-radius: 0;
@@ -113,7 +110,6 @@ const YearContainer = styled(Box)`
   border-radius: 12px;
   overflow: hidden;
   background: white;
-  border: 1px solid #ccc;
 `;
 
 const YearInput = styled(TextField)`
@@ -141,7 +137,6 @@ const LocationContainer = styled(Box)`
   min-width: 300px;
   border-radius: 12px;
   overflow: hidden;
-  border: 1px solid #ccc;
 `;
 
 const LocationInput = styled(TextField)`
@@ -189,8 +184,22 @@ const SearchTipsLink = styled(Button)`
 export default function SearchSection() {
   const [anchorEl1, setAnchorEl1] = useState(null);
   const [anchorEl2, setAnchorEl2] = useState(null);
+  const [yearBornOption, setYearBornOption] = useState("Exact");
+  const [yearDiedOption, setYearDiedOption] = useState("Exact");
 
   const [tipsOpen, setTipsOpen] = useState(false);
+
+  const options = [
+    "Exact",
+    "Before",
+    "After",
+    "+/- 1 year",
+    "+/- 3 years",
+    "+/- 5 years",
+    "+/- 10 years",
+    "+/- 25 years",
+    "Unknown",
+  ];
 
   return (
     <>
@@ -226,7 +235,7 @@ export default function SearchSection() {
         {/* Search Card */}
         <SearchBox>
           {/* First Row */}
-          <Row sx={{ gap: 0, mb: 2 }}>
+          <Row sx={{ gap: 0, mb: 2, flexWrap: "nowrap" }}>
             <NameInput
               label="First Name"
               className="firstName"
@@ -253,7 +262,7 @@ export default function SearchSection() {
                 onClick={(e) => setAnchorEl1(e.currentTarget)}
                 endIcon={<ArrowDropDownIcon />}
               >
-                Exact
+                {yearBornOption}
               </DropdownButton>
 
               <Menu
@@ -261,18 +270,16 @@ export default function SearchSection() {
                 open={Boolean(anchorEl1)}
                 onClose={() => setAnchorEl1(null)}
               >
-                {[
-                  "Exact",
-                  "Before",
-                  "After",
-                  "+/- 1 year",
-                  "+/- 3 years",
-                  "+/- 5 years",
-                  "+/- 10 years",
-                  "+/- 25 years",
-                  "Unknown",
-                ].map((i) => (
-                  <MenuItem key={i}>{i}</MenuItem>
+                {options.map((i) => (
+                  <MenuItem
+                    key={i}
+                    onClick={() => {
+                      setYearBornOption(i);
+                      setAnchorEl1(null);
+                    }}
+                  >
+                    {i}
+                  </MenuItem>
                 ))}
               </Menu>
             </YearContainer>
@@ -284,7 +291,7 @@ export default function SearchSection() {
                 onClick={(e) => setAnchorEl2(e.currentTarget)}
                 endIcon={<ArrowDropDownIcon />}
               >
-                Exact
+                {yearDiedOption}
               </DropdownButton>
 
               <Menu
@@ -292,18 +299,16 @@ export default function SearchSection() {
                 open={Boolean(anchorEl2)}
                 onClose={() => setAnchorEl2(null)}
               >
-                {[
-                  "Exact",
-                  "Before",
-                  "After",
-                  "+/- 1 year",
-                  "+/- 3 years",
-                  "+/- 5 years",
-                  "+/- 10 years",
-                  "+/- 25 years",
-                  "Unknown",
-                ].map((i) => (
-                  <MenuItem key={i}>{i}</MenuItem>
+                {options.map((i) => (
+                  <MenuItem
+                    key={i}
+                    onClick={() => {
+                      setYearDiedOption(i);
+                      setAnchorEl2(null);
+                    }}
+                  >
+                    {i}
+                  </MenuItem>
                 ))}
               </Menu>
             </YearContainer>
