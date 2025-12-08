@@ -58,7 +58,7 @@ export default function BaseDialog({
 
       <DialogContent>{children}</DialogContent>
 
-      {actions && <DialogActions sx={{ p: 2 }}>{actions}</DialogActions>}
+      {actions && <DialogActions sx={{ p: 2, background: "#eceee9" }}>{actions}</DialogActions>}
     </Dialog>
   );
 }

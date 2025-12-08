@@ -19,7 +19,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import { useTheme } from "@mui/material/styles";
 import RegisterDialog from "./RegisterDialog";
 import LoginDialog from "./LoginDialog";
-import riseLogo from '../assets/images/rise_logo.png';
+import riseLogo from "../assets/images/rise_logo.png";
 
 export default function Header() {
   const theme = useTheme();
@@ -234,7 +234,14 @@ export default function Header() {
         open={openRegister}
         onClose={() => setOpenRegister(false)}
       />
-      <LoginDialog open={openLogin} onClose={() => setOpenLogin(false)} />
+      <LoginDialog
+        open={openLogin}
+        onClose={() => setOpenLogin(false)}
+        onSignUp={() => {
+          setOpenLogin(false);
+          setOpenRegister(true);
+        }}
+      />
     </>
   );
 }
