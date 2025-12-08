@@ -136,7 +136,7 @@ export default function LoginDialog({ open, onClose, onSignUp }) {
         </Box>
       </BaseDialog>
 
-      <ForgotPassword open={openForgot} onClose={() => setOpenForgot(false)} />
+      <ForgotPassword open={openForgot} onClose={() => setOpenForgot(false)} onSignUp={onSignUp} />
     </>
   );
 }

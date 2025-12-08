@@ -208,9 +208,10 @@ export default function Header() {
               {/* Mobile Only Items */}
               <ListItem disablePadding>
                 <ListItemButton
-                  component={RouterLink}
-                  to="/register"
-                  onClick={() => setOpen(false)}
+                  onClick={() => {
+                    setOpen(false); // close drawer
+                    setOpenRegister(true); // open popup
+                  }}
                 >
                   <ListItemText primary="Register" />
                 </ListItemButton>
@@ -218,9 +219,10 @@ export default function Header() {
 
               <ListItem disablePadding>
                 <ListItemButton
-                  component={RouterLink}
-                  to="/login"
-                  onClick={() => setOpen(false)}
+                  onClick={() => {
+                    setOpen(false);
+                    setOpenLogin(true);
+                  }}
                 >
                   <ListItemText primary="Sign In" />
                 </ListItemButton>
