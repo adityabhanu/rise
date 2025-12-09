@@ -29,7 +29,7 @@ export default function Header() {
   const [openRegister, setOpenRegister] = useState(false);
   const [openLogin, setOpenLogin] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const menuTextColor = scrolled ? theme.palette.text.primary : "#FFFFFF";
+  const menuTextColor = scrolled ? theme.palette.text.white : "#FFFFFF";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -52,10 +52,12 @@ export default function Header() {
         sx={{
           transition: "all 0.3s ease",
           backgroundColor: scrolled
-            ? theme.palette.background.default // after scroll
+            ? theme.palette.background.secondary
             : "transparent", // initial transparent over banner
           boxShadow: scrolled ? "0 2px 4px rgba(0,0,0,0.1)" : "none",
-          borderBottom: scrolled ? "1px solid #ddd" : "none",
+          borderBottom: scrolled
+            ? `1px solid ${theme.palette.background.secondary}`
+            : "none",
           backgroundImage: scrolled
             ? "none"
             : "linear-gradient(to bottom, #36322D 6px, rgba(54, 50, 45, 0) 95%)",
@@ -69,9 +71,7 @@ export default function Header() {
               onClick={() => setOpen(true)}
               sx={{
                 mr: 2,
-                color: scrolled
-                  ? theme.palette.background.primary
-                  : theme.palette.background.white,
+                color: theme.palette.background.white,
               }}
             >
               <MenuIcon />
@@ -108,7 +108,7 @@ export default function Header() {
                       content: '""',
                       position: "absolute",
                       left: 0,
-                      bottom: -4,
+                      bottom: scrolled ? -15 : -4,
                       width: "100%",
                       height: "3px", // underline thickness
                       backgroundColor: menuTextColor, // dark green
@@ -141,10 +141,10 @@ export default function Header() {
                     content: '""',
                     position: "absolute",
                     left: 0,
-                    bottom: -4,
+                    bottom: scrolled ? -16 : -4,
                     width: "100%",
-                    height: "3px", // underline thickness
-                    backgroundColor: menuTextColor, // dark green
+                    height: "3px",
+                    backgroundColor: menuTextColor,
                   },
                 }}
               >
@@ -160,7 +160,7 @@ export default function Header() {
                     content: '""',
                     position: "absolute",
                     left: 0,
-                    bottom: -4,
+                    bottom: scrolled ? -16 : -4,
                     width: "100%",
                     height: "3px", // underline thickness
                     backgroundColor: menuTextColor, // dark green

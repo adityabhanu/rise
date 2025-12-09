@@ -2,24 +2,19 @@ import React, { useState } from "react";
 import {
   Box,
   Button,
-  Container,
   TextField,
   Menu,
   MenuItem,
   Typography,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import InfoIcon from "@mui/icons-material/Info";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import bannerImage from "../assets/images/fg-bg-winterA.jpeg";
 import BaseDialog from "./BaseDialog";
 
 const ActionsRow = styled(Box)`
+  padding-top: 24px;
   display: flex;
   align-items: center;
   gap: 32px;
@@ -38,18 +33,6 @@ const SearchTips = styled(Box)`
     opacity: 0.85;
   }
 `;
-
-const Banner = styled(Box, {
-  shouldForwardProp: (prop) => prop !== "bgImage",
-})(({ bgImage }) => ({
-  width: "100%",
-  padding: "100px 0 80px 0",
-  backgroundImage: `linear-gradient(rgba(226, 233, 200, 0.2), rgba(226, 233, 200, 0.2)), url(${bgImage})`,
-  backgroundSize: "cover",
-  backgroundPosition: "center",
-  textAlign: "center",
-  color: "white",
-}));
 
 const SearchBox = styled(Box)`
   padding: 32px;
@@ -204,135 +187,108 @@ export default function SearchSection() {
 
   return (
     <>
-      {/* Banner Section */}
-      <Banner bgImage={bannerImage}>
-        <Typography
-          variant="h3"
-          fontWeight="bold"
-          sx={{
-            fontSize: "2rem",
-            textShadow: `0 0 6px rgba(0,0,0,0.6),
-  0 0 12px rgba(0,0,0,0.4),
-  0 0 20px rgba(0,0,0,0.3)`,
-          }}
-        >
-          World’s largest gravesite collection.
-        </Typography>
-        <Typography
-          variant="h5"
-          sx={{
-            mt: 1,
-            fontSize: "1.2rem",
-            color: "#e2d264",
-            fontWeight: "600",
-            textShadow: `0 0 6px rgba(0,0,0,0.6),
-  0 0 12px rgba(0,0,0,0.4),
-  0 0 20px rgba(0,0,0,0.3)`,
-          }}
-        >
-          Over 250 million memorials created by the community since 1995.
-        </Typography>
+      {/* Search Card */}
+      <SearchBox className="search-container">
+        {/* First Row */}
+        <Row sx={{ gap: 0, mb: 2, flexWrap: "nowrap" }}>
+          <NameInput
+            label="First Name"
+            className="firstName"
+            variant="filled"
+          />
+          <NameInput
+            label="Middle Name"
+            className="middleName"
+            variant="filled"
+          />
+          <NameInput
+            label="Last Name(s)"
+            className="lastName"
+            variant="filled"
+          />
+        </Row>
 
-        {/* Search Card */}
-        <SearchBox>
-          {/* First Row */}
-          <Row sx={{ gap: 0, mb: 2, flexWrap: "nowrap" }}>
-            <NameInput
-              label="First Name"
-              className="firstName"
-              variant="filled"
-            />
-            <NameInput
-              label="Middle Name"
-              className="middleName"
-              variant="filled"
-            />
-            <NameInput
-              label="Last Name(s)"
-              className="lastName"
-              variant="filled"
-            />
-          </Row>
+        {/* Year Row */}
+        <Row sx={{ mb: 2 }}>
+          {/* Year Born */}
+          <YearContainer>
+            <YearInput label="Year Born" variant="filled" type="number" />
+            <DropdownButton
+              onClick={(e) => setAnchorEl1(e.currentTarget)}
+              endIcon={<ArrowDropDownIcon />}
+            >
+              {yearBornOption}
+            </DropdownButton>
 
-          {/* Year Row */}
-          <Row sx={{ mb: 2 }}>
-            {/* Year Born */}
-            <YearContainer>
-              <YearInput label="Year Born" variant="filled" type="number" />
-              <DropdownButton
-                onClick={(e) => setAnchorEl1(e.currentTarget)}
-                endIcon={<ArrowDropDownIcon />}
-              >
-                {yearBornOption}
-              </DropdownButton>
+            <Menu
+              anchorEl={anchorEl1}
+              open={Boolean(anchorEl1)}
+              onClose={() => setAnchorEl1(null)}
+            >
+              {options.map((i) => (
+                <MenuItem
+                  key={i}
+                  onClick={() => {
+                    setYearBornOption(i);
+                    setAnchorEl1(null);
+                  }}
+                >
+                  {i}
+                </MenuItem>
+              ))}
+            </Menu>
+          </YearContainer>
 
-              <Menu
-                anchorEl={anchorEl1}
-                open={Boolean(anchorEl1)}
-                onClose={() => setAnchorEl1(null)}
-              >
-                {options.map((i) => (
-                  <MenuItem
-                    key={i}
-                    onClick={() => {
-                      setYearBornOption(i);
-                      setAnchorEl1(null);
-                    }}
-                  >
-                    {i}
-                  </MenuItem>
-                ))}
-              </Menu>
-            </YearContainer>
+          {/* Year Died */}
+          <YearContainer>
+            <YearInput label="Year Died" variant="filled" type="number" />
+            <DropdownButton
+              onClick={(e) => setAnchorEl2(e.currentTarget)}
+              endIcon={<ArrowDropDownIcon />}
+            >
+              {yearDiedOption}
+            </DropdownButton>
 
-            {/* Year Died */}
-            <YearContainer>
-              <YearInput label="Year Died" variant="filled" type="number" />
-              <DropdownButton
-                onClick={(e) => setAnchorEl2(e.currentTarget)}
-                endIcon={<ArrowDropDownIcon />}
-              >
-                {yearDiedOption}
-              </DropdownButton>
+            <Menu
+              anchorEl={anchorEl2}
+              open={Boolean(anchorEl2)}
+              onClose={() => setAnchorEl2(null)}
+            >
+              {options.map((i) => (
+                <MenuItem
+                  key={i}
+                  onClick={() => {
+                    setYearDiedOption(i);
+                    setAnchorEl2(null);
+                  }}
+                >
+                  {i}
+                </MenuItem>
+              ))}
+            </Menu>
+          </YearContainer>
 
-              <Menu
-                anchorEl={anchorEl2}
-                open={Boolean(anchorEl2)}
-                onClose={() => setAnchorEl2(null)}
-              >
-                {options.map((i) => (
-                  <MenuItem
-                    key={i}
-                    onClick={() => {
-                      setYearDiedOption(i);
-                      setAnchorEl2(null);
-                    }}
-                  >
-                    {i}
-                  </MenuItem>
-                ))}
-              </Menu>
-            </YearContainer>
+          {/* Location */}
+          <LocationContainer>
+            <LocationInput label="Cemetery Location" variant="filled" />
+            <BrowseButton>Browse</BrowseButton>
+          </LocationContainer>
+        </Row>
 
-            {/* Location */}
-            <LocationContainer>
-              <LocationInput label="Cemetery Location" variant="filled" />
-              <BrowseButton>Browse</BrowseButton>
-            </LocationContainer>
-          </Row>
+        {/* Search Button Row */}
+        <ActionsRow>
+          <SearchButton className="search-button">SEARCH</SearchButton>
 
-          {/* Search Button Row */}
-          <ActionsRow>
-            <SearchButton>SEARCH</SearchButton>
-
-            <SearchTips onClick={() => setTipsOpen(true)}>
-              <InfoIcon fontSize="small" />
-              Search tips
-              <KeyboardArrowRightIcon fontSize="small" />
-            </SearchTips>
-          </ActionsRow>
-        </SearchBox>
-      </Banner>
+          <SearchTips
+            className="search-tips-button"
+            onClick={() => setTipsOpen(true)}
+          >
+            <InfoIcon fontSize="small" />
+            Search tips
+            <KeyboardArrowRightIcon fontSize="small" />
+          </SearchTips>
+        </ActionsRow>
+      </SearchBox>
 
       {/* POPUP: Search Tips */}
       <BaseDialog
@@ -399,11 +355,7 @@ export default function SearchSection() {
 
           <Typography sx={{ mt: 2 }}>
             Get more help from our{" "}
-            <a
-              href="#"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a href="#" target="_blank" rel="noopener noreferrer">
               Help Center
             </a>
             .

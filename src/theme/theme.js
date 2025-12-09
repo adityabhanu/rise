@@ -12,6 +12,7 @@ const theme = createTheme({
     text: {
       primary: "#2F402C",
       secondary: "#4F5E45",
+      white: "#fff",
     },
     primary: {
       main: "#4D6C3A",
@@ -61,7 +62,15 @@ const theme = createTheme({
             color: "#626262",
           },
         },
-      ]
+        {
+          props: { variant: "subTitle" },
+          style: {
+            fontSize: "22px",
+            fontWeight: "400",
+            color: "#4F5E45",
+          },
+        },
+      ],
     },
     MuiCssBaseline: {
       styleOverrides: {
