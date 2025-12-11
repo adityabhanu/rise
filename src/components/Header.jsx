@@ -16,7 +16,7 @@ import {
   MenuItem,
   useMediaQuery,
 } from "@mui/material";
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useTheme } from "@mui/material/styles";
 import RegisterDialog from "./RegisterDialog";
@@ -33,7 +33,6 @@ import {
 export default function Header() {
   const theme = useTheme();
   const dispatch = useDispatch();
-  const [open, setOpen] = useState(false);
   const isDesktop = useMediaQuery("(min-width:768px)");
   const { openLogin, openRegister, user } = useSelector((state) => state.app);
 
@@ -241,7 +240,36 @@ export default function Header() {
                 justifyContent: "flex-end",
                 flex: 1,
               }}
-            ></Box>
+            >
+              {user && (
+                <>
+                  <IconButton
+                    onClick={handleMenuClick}
+                    sx={{
+                      color: scrolled ? theme.palette.text.white : "#FFFFFF",
+                    }}
+                  >
+                    <AccountCircleIcon fontSize="large" />
+                  </IconButton>
+
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={menuOpen}
+                    onClose={handleMenuClose}
+                    disableScrollLock
+                  >
+                    <MenuItem
+                      onClick={() => {
+                        dispatch(logoutUser());
+                        handleMenuClose();
+                      }}
+                    >
+                      Logout
+                    </MenuItem>
+                  </Menu>
+                </>
+              )}
+            </Box>
           )}
         </Toolbar>
 
@@ -270,27 +298,30 @@ export default function Header() {
               ))}
 
               {/* Mobile Only Items */}
-              <ListItem disablePadding>
-                <ListItemButton
-                  onClick={() => {
-                    setDrawerOpen(false);
-                    dispatch(openRegisterDialog());
-                  }}
-                >
-                  <ListItemText primary="Register" />
-                </ListItemButton>
-              </ListItem>
-
-              <ListItem disablePadding>
-                <ListItemButton
-                  onClick={() => {
-                    setDrawerOpen(false);
-                    dispatch(openLoginDialog());
-                  }}
-                >
-                  <ListItemText primary="Sign In" />
-                </ListItemButton>
-              </ListItem>
+              {!user && (
+                <>
+                  <ListItem disablePadding>
+                    <ListItemButton
+                      onClick={() => {
+                        setDrawerOpen(false);
+                        dispatch(openRegisterDialog());
+                      }}
+                    >
+                      <ListItemText primary="Register" />
+                    </ListItemButton>
+                  </ListItem>
+                  <ListItem disablePadding>
+                    <ListItemButton
+                      onClick={() => {
+                        setDrawerOpen(false);
+                        dispatch(openLoginDialog());
+                      }}
+                    >
+                      <ListItemText primary="Sign In" />
+                    </ListItemButton>
+                  </ListItem>
+                </>
+              )}
             </List>
           </Box>
         </Drawer>
