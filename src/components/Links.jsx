@@ -55,6 +55,7 @@ const pageLinks = [
 
 const Links = () => {
   const navigate = useNavigate();
+
   return (
     <>
       <BoxContainer>

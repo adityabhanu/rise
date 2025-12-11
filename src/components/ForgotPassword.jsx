@@ -2,10 +2,12 @@ import { useState } from "react";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import BaseDialog from "./BaseDialog";
 import { useTheme } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { openRegisterDialog } from "../store/slices/appSlice";
 
 export default function ForgotPassword({ open, onClose, onSignUp }) {
   const [email, setEmail] = useState("");
-
+  const dispatch = useDispatch();
   const theme = useTheme();
 
   return (
@@ -34,7 +36,7 @@ export default function ForgotPassword({ open, onClose, onSignUp }) {
             size="small"
             onClick={() => {
               onClose();
-              onSignUp();
+              dispatch(openRegisterDialog());
             }}
             sx={{ p: 0, textTransform: "none" }}
           >

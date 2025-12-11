@@ -10,18 +10,21 @@ import {
 } from "@mui/material";
 import BaseDialog from "./BaseDialog";
 import ForgotPassword from "./ForgotPassword";
+import { useDispatch } from "react-redux";
+import { closeLoginDialog, openRegisterDialog } from "../store/slices/appSlice";
 
 export default function LoginDialog({ open, onClose, onSignUp }) {
   const [showPass, setShowPass] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [openForgot, setOpenForgot] = useState(false);
+  const dispatch = useDispatch();
 
   return (
     <>
       <BaseDialog
         open={open}
-        onClose={onClose}
+        onClose={() => dispatch(closeLoginDialog())}
         title="Sign in to RISE"
         maxWidth="sm"
         actions={
@@ -43,8 +46,8 @@ export default function LoginDialog({ open, onClose, onSignUp }) {
               variant="text"
               size="small"
               onClick={() => {
-                onClose();
-                onSignUp();
+                dispatch(closeLoginDialog());
+                dispatch(openRegisterDialog());
               }}
               sx={{ p: 0, textTransform: "none" }}
             >
@@ -100,7 +103,7 @@ export default function LoginDialog({ open, onClose, onSignUp }) {
             <Button
               variant="text"
               onClick={() => {
-                onClose();
+                dispatch(closeLoginDialog());
                 setOpenForgot(true);
               }}
               sx={{
@@ -136,7 +139,11 @@ export default function LoginDialog({ open, onClose, onSignUp }) {
         </Box>
       </BaseDialog>
 
-      <ForgotPassword open={openForgot} onClose={() => setOpenForgot(false)} onSignUp={onSignUp} />
+      <ForgotPassword
+        open={openForgot}
+        onClose={() => setOpenForgot(false)}
+        onSignUp={onSignUp}
+      />
     </>
   );
 }

@@ -15,20 +15,22 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import PersonIcon from "@mui/icons-material/Person";
 import { useTheme } from "@mui/material/styles";
 import RegisterDialog from "./RegisterDialog";
 import LoginDialog from "./LoginDialog";
 import riseLogo from "../assets/images/rise_logo.png";
 import { useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { openLoginDialog, openRegisterDialog } from "../store/slices/appSlice";
 
 export default function Header() {
   const theme = useTheme();
+  const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const isDesktop = useMediaQuery("(min-width:768px)");
+  const { openLogin, openRegister } = useSelector((state) => state.app);
 
-  const [openRegister, setOpenRegister] = useState(false);
-  const [openLogin, setOpenLogin] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const menuTextColor = scrolled ? theme.palette.text.white : "#FFFFFF";
 
@@ -84,7 +86,7 @@ export default function Header() {
           {!isDesktop && (
             <IconButton
               edge="start"
-              onClick={() => setOpen(true)}
+              onClick={() => setDrawerOpen(true)}
               sx={{
                 mr: 2,
                 color: theme.palette.background.white,
@@ -148,7 +150,7 @@ export default function Header() {
               }}
             >
               <Button
-                onClick={() => setOpenRegister(true)}
+                onClick={() => dispatch(openRegisterDialog())}
                 sx={{
                   color: menuTextColor,
                   position: "relative",
@@ -167,7 +169,7 @@ export default function Header() {
                 REGISTER
               </Button>
               <Button
-                onClick={() => setOpenLogin(true)}
+                onClick={() => dispatch(openLoginDialog())}
                 sx={{
                   color: menuTextColor,
                   position: "relative",
@@ -202,7 +204,11 @@ export default function Header() {
         </Toolbar>
 
         {/* Drawer Menu (Mobile) */}
-        <Drawer anchor="left" open={open} onClose={() => setOpen(false)}>
+        <Drawer
+          anchor="left"
+          open={drawerOpen}
+          onClose={() => setDrawerOpen(false)}
+        >
           <Box sx={{ width: 260, p: 2 }}>
             <Typography variant="h6" sx={{ mb: 2 }}>
               Menu
@@ -214,7 +220,7 @@ export default function Header() {
                   <ListItemButton
                     component={RouterLink}
                     to={item.path}
-                    onClick={() => setOpen(false)}
+                    onClick={() => setDrawerOpen(false)}
                   >
                     <ListItemText primary={item.label} />
                   </ListItemButton>
@@ -225,8 +231,8 @@ export default function Header() {
               <ListItem disablePadding>
                 <ListItemButton
                   onClick={() => {
-                    setOpen(false); // close drawer
-                    setOpenRegister(true); // open popup
+                    setDrawerOpen(false);
+                    dispatch(openRegisterDialog());
                   }}
                 >
                   <ListItemText primary="Register" />
@@ -236,8 +242,8 @@ export default function Header() {
               <ListItem disablePadding>
                 <ListItemButton
                   onClick={() => {
-                    setOpen(false);
-                    setOpenLogin(true);
+                    setDrawerOpen(false);
+                    dispatch(openLoginDialog());
                   }}
                 >
                   <ListItemText primary="Sign In" />
@@ -248,18 +254,8 @@ export default function Header() {
         </Drawer>
       </AppBar>
 
-      <RegisterDialog
-        open={openRegister}
-        onClose={() => setOpenRegister(false)}
-      />
-      <LoginDialog
-        open={openLogin}
-        onClose={() => setOpenLogin(false)}
-        onSignUp={() => {
-          setOpenLogin(false);
-          setOpenRegister(true);
-        }}
-      />
+      <RegisterDialog open={openRegister} />
+      <LoginDialog open={openLogin} />
     </>
   );
 }

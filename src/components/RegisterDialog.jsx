@@ -9,25 +9,28 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import BaseDialog from "./BaseDialog";
+import { useDispatch } from "react-redux";
+import { closeRegisterDialog } from "../store/slices/appSlice";
 
 const Section = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(2),
 }));
 
 export default function RegisterDialog({ open, onClose }) {
+  const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
 
   return (
     <BaseDialog
       open={open}
-      onClose={onClose}
+      onClose={() => dispatch(closeRegisterDialog())}
       title="New Member Registration"
       actions={
         <Button
           variant="contained"
           color="primary"
           sx={{ py: 1.2, fontSize: "1rem" }}
-          onClick={onClose}
+          onClick={() => dispatch(closeRegisterDialog())}
         >
           Create Account
         </Button>
