@@ -1,9 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const persistedUser = localStorage.getItem("user")
+  ? JSON.parse(localStorage.getItem("user"))
+  : null;
+
 const initialState = {
   // 👤 User
-  user: null,
-  loggedInStatus: false,
+  user: persistedUser,
+  loggedInStatus: !!persistedUser,
 
   // 🪟 Dialogs
   openLogin: false,
@@ -30,11 +34,15 @@ const appSlice = createSlice({
     setUser: (state, action) => {
       state.user = action.payload;
       state.loggedInStatus = !!action.payload;
+      if (action.payload) {
+        localStorage.setItem("user", JSON.stringify(action.payload));
+      }
     },
 
     logoutUser: (state) => {
       state.user = null;
       state.loggedInStatus = false;
+      localStorage.removeItem("user");
     },
 
     // =====================================================

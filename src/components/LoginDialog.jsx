@@ -11,7 +11,7 @@ import {
 import BaseDialog from "./BaseDialog";
 import ForgotPassword from "./ForgotPassword";
 import { useDispatch } from "react-redux";
-import { closeLoginDialog, openRegisterDialog } from "../store/slices/appSlice";
+import { closeLoginDialog, openRegisterDialog, setUser } from "../store/slices/appSlice";
 
 export default function LoginDialog({ open, onClose, onSignUp }) {
   const [showPass, setShowPass] = useState(false);
@@ -19,6 +19,16 @@ export default function LoginDialog({ open, onClose, onSignUp }) {
   const [password, setPassword] = useState("");
   const [openForgot, setOpenForgot] = useState(false);
   const dispatch = useDispatch();
+
+    const handleLogin = () => {
+    if (email && password) {
+      const userData = { email };
+      dispatch(setUser(userData));
+      dispatch(closeLoginDialog());
+    } else {
+      alert("Please enter email and password");
+    }
+  };
 
   return (
     <>
@@ -127,6 +137,7 @@ export default function LoginDialog({ open, onClose, onSignUp }) {
               py: 1.2,
               mb: 2,
             }}
+            onClick={handleLogin}
           >
             Sign in with RISE
           </Button>
