@@ -3,6 +3,7 @@ import SearchSection from "../components/SearchMemorial";
 import bannerImage from "../assets/images/fg-bg-winterA.jpeg";
 import { Box, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import Links from "../components/Links";
 
 const Banner = styled(Box, {
   shouldForwardProp: (prop) => prop !== "bgImage",
@@ -50,6 +51,7 @@ export default function Home() {
         </Typography>
         <SearchSection />
       </Banner>
+      <Links />
     </>
   );
 }

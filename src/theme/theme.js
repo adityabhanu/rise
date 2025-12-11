@@ -8,6 +8,7 @@ const theme = createTheme({
       primary: "#2F402C",
       secondary: "#4F5E45",
       white: "#fff",
+      footer: "#f7f5f0",
     },
     text: {
       primary: "#2F402C",

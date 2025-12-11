@@ -10,7 +10,7 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <BrowserRouter basename='/rise'>
+      <BrowserRouter basename='/rise/'>
         <App />
       </BrowserRouter>
     </ThemeProvider>

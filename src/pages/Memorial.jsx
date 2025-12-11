@@ -2,6 +2,7 @@ import React from "react";
 import SearchSection from "../components/SearchMemorial";
 import { styled } from "@mui/material/styles";
 import { Typography, Container } from "@mui/material";
+import Links from "../components/Links";
 
 const MemorialContainer = styled("div")(({ theme }) => ({
   marginTop: "90px",
@@ -19,11 +20,14 @@ const MemorialContainer = styled("div")(({ theme }) => ({
 
 export default function Memorial() {
   return (
-    <MemorialContainer>
-      <Container maxWidth="md">
-        <Typography variant="subTitle">Memorial Search</Typography>
-        <SearchSection />
-      </Container>
-    </MemorialContainer>
+    <>
+      <MemorialContainer>
+        <Container maxWidth="md">
+          <Typography variant="subTitle">Memorial Search</Typography>
+          <SearchSection />
+        </Container>
+      </MemorialContainer>
+      <Links />
+    </>
   );
 }

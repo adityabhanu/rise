@@ -3,6 +3,8 @@ import Home from "./pages/Home";
 import Memorial from "./pages/Memorial";
 import Cemetery from "./pages/Cemetery";
 import PageLayout from "./layout/PageLayout";
+import CreateMemorialSearch from "./components/CreateMemorialSearch";
+import TranscribeSearch from "./components/TranscribeSearch";
 
 function App() {
   return (
@@ -11,6 +13,15 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/memorial" element={<Memorial />} />
         <Route path="/cemetery" element={<Cemetery />} />
+        <Route
+          path="/memorial/create/search-cemetery"
+          element={<CreateMemorialSearch />}
+        />
+
+        <Route
+          path="/transcribe/create/search-cemetery"
+          element={<TranscribeSearch />}
+        />
       </Route>
     </Routes>
   );

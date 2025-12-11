@@ -20,6 +20,7 @@ import { useTheme } from "@mui/material/styles";
 import RegisterDialog from "./RegisterDialog";
 import LoginDialog from "./LoginDialog";
 import riseLogo from "../assets/images/rise_logo.png";
+import { useLocation } from "react-router-dom";
 
 export default function Header() {
   const theme = useTheme();
@@ -30,6 +31,9 @@ export default function Header() {
   const [openLogin, setOpenLogin] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const menuTextColor = scrolled ? theme.palette.text.white : "#FFFFFF";
+
+  const location = useLocation();
+  const isHomePage = location.pathname === "/";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -51,16 +55,28 @@ export default function Header() {
         position="fixed"
         sx={{
           transition: "all 0.3s ease",
-          backgroundColor: scrolled
-            ? theme.palette.background.secondary
-            : "transparent", // initial transparent over banner
-          boxShadow: scrolled ? "0 2px 4px rgba(0,0,0,0.1)" : "none",
-          borderBottom: scrolled
-            ? `1px solid ${theme.palette.background.secondary}`
-            : "none",
-          backgroundImage: scrolled
-            ? "none"
-            : "linear-gradient(to bottom, #36322D 6px, rgba(54, 50, 45, 0) 95%)",
+          backgroundColor: isHomePage
+            ? scrolled
+              ? theme.palette.background.secondary
+              : "transparent"
+            : theme.palette.background.secondary,
+
+          boxShadow: isHomePage
+            ? scrolled
+              ? "0 2px 4px rgba(0,0,0,0.1)"
+              : "none"
+            : "0 2px 4px rgba(0,0,0,0.1)",
+
+          borderBottom: isHomePage
+            ? scrolled
+              ? `1px solid ${theme.palette.background.secondary}`
+              : "none"
+            : `1px solid ${theme.palette.background.secondary}`,
+
+          backgroundImage:
+            isHomePage && !scrolled
+              ? "linear-gradient(to bottom, #36322D 6px, rgba(54, 50, 45, 0) 95%)"
+              : "none",
         }}
       >
         <Toolbar sx={{ display: "flex", alignItems: "center", py: 0 }}>
