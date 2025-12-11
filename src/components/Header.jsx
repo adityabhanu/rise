@@ -12,8 +12,11 @@ import {
   ListItemButton,
   ListItemText,
   Button,
+  Menu,
+  MenuItem,
   useMediaQuery,
 } from "@mui/material";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import MenuIcon from "@mui/icons-material/Menu";
 import { useTheme } from "@mui/material/styles";
 import RegisterDialog from "./RegisterDialog";
@@ -21,14 +24,18 @@ import LoginDialog from "./LoginDialog";
 import riseLogo from "../assets/images/rise_logo.png";
 import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { openLoginDialog, openRegisterDialog } from "../store/slices/appSlice";
+import {
+  openLoginDialog,
+  openRegisterDialog,
+  logoutUser,
+} from "../store/slices/appSlice";
 
 export default function Header() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const isDesktop = useMediaQuery("(min-width:768px)");
-  const { openLogin, openRegister } = useSelector((state) => state.app);
+  const { openLogin, openRegister, user } = useSelector((state) => state.app);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -36,6 +43,11 @@ export default function Header() {
 
   const location = useLocation();
   const isHomePage = location.pathname === "/";
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const menuOpen = Boolean(anchorEl);
+  const handleMenuClick = (event) => setAnchorEl(event.currentTarget);
+  const handleMenuClose = () => setAnchorEl(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -149,44 +161,74 @@ export default function Header() {
                 flex: 1,
               }}
             >
-              <Button
-                onClick={() => dispatch(openRegisterDialog())}
-                sx={{
-                  color: menuTextColor,
-                  position: "relative",
-                  fontWeight: "600",
-                  "&:hover::after": {
-                    content: '""',
-                    position: "absolute",
-                    left: 0,
-                    bottom: scrolled ? -16 : -4,
-                    width: "100%",
-                    height: "3px",
-                    backgroundColor: menuTextColor,
-                  },
-                }}
-              >
-                REGISTER
-              </Button>
-              <Button
-                onClick={() => dispatch(openLoginDialog())}
-                sx={{
-                  color: menuTextColor,
-                  position: "relative",
-                  fontWeight: "600",
-                  "&:hover::after": {
-                    content: '""',
-                    position: "absolute",
-                    left: 0,
-                    bottom: scrolled ? -16 : -4,
-                    width: "100%",
-                    height: "3px", // underline thickness
-                    backgroundColor: menuTextColor, // dark green
-                  },
-                }}
-              >
-                SIGN IN
-              </Button>
+              {user ? (
+                <>
+                  <IconButton
+                    onClick={handleMenuClick}
+                    sx={{
+                      color: scrolled ? theme.palette.text.white : "#FFFFFF",
+                    }}
+                  >
+                    <AccountCircleIcon fontSize="large" />
+                  </IconButton>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={menuOpen}
+                    onClose={handleMenuClose}
+                    disableScrollLock
+                  >
+                    <MenuItem
+                      onClick={() => {
+                        dispatch(logoutUser());
+                        handleMenuClose();
+                      }}
+                    >
+                      Logout
+                    </MenuItem>
+                  </Menu>
+                </>
+              ) : (
+                <>
+                  <Button
+                    onClick={() => dispatch(openRegisterDialog())}
+                    sx={{
+                      color: menuTextColor,
+                      position: "relative",
+                      fontWeight: "600",
+                      "&:hover::after": {
+                        content: '""',
+                        position: "absolute",
+                        left: 0,
+                        bottom: scrolled ? -16 : -4,
+                        width: "100%",
+                        height: "3px",
+                        backgroundColor: menuTextColor,
+                      },
+                    }}
+                  >
+                    REGISTER
+                  </Button>
+                  <Button
+                    onClick={() => dispatch(openLoginDialog())}
+                    sx={{
+                      color: menuTextColor,
+                      position: "relative",
+                      fontWeight: "600",
+                      "&:hover::after": {
+                        content: '""',
+                        position: "absolute",
+                        left: 0,
+                        bottom: scrolled ? -16 : -4,
+                        width: "100%",
+                        height: "3px", // underline thickness
+                        backgroundColor: menuTextColor, // dark green
+                      },
+                    }}
+                  >
+                    SIGN IN
+                  </Button>
+                </>
+              )}
             </Box>
           )}
 
