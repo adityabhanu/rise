@@ -137,7 +137,7 @@ export default function Header() {
                       content: '""',
                       position: "absolute",
                       left: 0,
-                      bottom: scrolled ? -15 : -4,
+                      bottom: !scrolled && isHomePage ? -4 : -15,
                       width: "100%",
                       height: "3px", // underline thickness
                       backgroundColor: menuTextColor, // dark green
@@ -198,7 +198,7 @@ export default function Header() {
                         content: '""',
                         position: "absolute",
                         left: 0,
-                        bottom: scrolled ? -16 : -4,
+                        bottom: !scrolled && isHomePage ? -4 : -16,
                         width: "100%",
                         height: "3px",
                         backgroundColor: menuTextColor,
@@ -217,7 +217,7 @@ export default function Header() {
                         content: '""',
                         position: "absolute",
                         left: 0,
-                        bottom: scrolled ? -16 : -4,
+                        bottom: !scrolled && isHomePage ? -4 : -16,
                         width: "100%",
                         height: "3px", // underline thickness
                         backgroundColor: menuTextColor, // dark green

@@ -125,9 +125,9 @@ const LocationContainer = styled(Box)`
 
 const LocationInput = styled(TextField)`
   flex: 1;
-  background: white;
   .MuiInputBase-root {
     border-radius: 0;
+    background: white;
   }
 `;
 

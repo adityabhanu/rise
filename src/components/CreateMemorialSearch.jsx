@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import SignInSignUpPrompt from "./SignInSingUpPrompt";
+import AddMemorialStep1 from "./Memorial/AddMemorialStep1";
 
 const CreateMemorialSearch = () => {
   const [openPrompt, setOpenPrompt] = useState(true);
@@ -9,7 +10,7 @@ const CreateMemorialSearch = () => {
   return (
     <div style={{ marginTop: "64px" }}>
       {isLoggedIn ? (
-        <div>Create Memorial Search</div>
+        <AddMemorialStep1 />
       ) : (
         <SignInSignUpPrompt
           open={openPrompt}
