@@ -10,6 +10,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import BurialDetailsSection from "./BurialDetailsSection";
 
 const PageContainer = styled(Box)(({ theme }) => ({
   width: "100%",
@@ -17,15 +18,22 @@ const PageContainer = styled(Box)(({ theme }) => ({
   justifyContent: "center",
   padding: "40px 0",
   background: theme.palette.background.default,
+  [theme.breakpoints.down("sm")]: {
+    padding: "0",
+  },
 }));
 
 const FormCard = styled(Box)(({ theme }) => ({
   background: theme.palette.background.paper,
   width: "60%",
-  minWidth: 500,
   borderRadius: 8,
   padding: "40px 60px",
   border: "1px solid #ddd",
+
+  [theme.breakpoints.down("sm")]: {
+    width: "100%",
+    padding: "24px 16px",
+  },
 }));
 
 const RequiredDot = styled("span")(({ theme }) => ({
@@ -41,7 +49,7 @@ const BrowseLink = styled("span")(({ theme }) => ({
   display: "inline-block",
   "&:hover": {
     color: theme.palette.background.primary,
-  }
+  },
 }));
 
 // Dummy data for autocomplete
@@ -63,6 +71,11 @@ export default function AddMemorialStep1() {
   const [locationQuery, setLocationQuery] = useState("");
   const [locationOptions, setLocationOptions] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const [notBuried, setNotBuried] = useState(false);
+  const [burialType, setBurialType] = useState("");
+  const [otherBurialType, setOtherBurialType] = useState("");
+  const [burialDetails, setBurialDetails] = useState("");
 
   // Simulated API call on typing 3+ characters
   useEffect(() => {
@@ -118,75 +131,99 @@ export default function AddMemorialStep1() {
           1. Choose a Cemetery
         </Typography>
 
-        {/* Cemetery Name */}
-        <Box sx={{ mb: 3 }}>
-          <TextField
-            label="Cemetery Name"
-            fullWidth
-            size="medium"
-            value={cemeteryName}
-            onChange={(e) => setCemeteryName(e.target.value)}
-          />
-        </Box>
-
-        {/* Cemetery Location Autocomplete */}
-        <Box sx={{ mb: 1 }}>
-          <Typography sx={{ mb: 1 }}></Typography>
-
-          <Autocomplete
-            fullWidth
-            options={locationOptions}
-            loading={loading}
-            onInputChange={(e, value) => setLocationQuery(value)}
-            renderInput={(params) => (
+        {!notBuried && (
+          <>
+            {/* Cemetery Name */}
+            <Box sx={{ mb: 3 }}>
               <TextField
-                {...params}
-                placeholder="Cemetery Location (City, County, State, or Country)*"
-                InputProps={{
-                  ...params.InputProps,
-                  endAdornment: (
-                    <>
-                      {loading ? <CircularProgress size={20} /> : null}
-                      {params.InputProps.endAdornment}
-                    </>
-                  ),
-                }}
+                label="Cemetery Name"
+                fullWidth
+                size="medium"
+                value={cemeteryName}
+                onChange={(e) => setCemeteryName(e.target.value)}
               />
-            )}
-          />
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-          }}
-        >
-          <BrowseLink>Browse</BrowseLink>
-          <Typography sx={{ fontSize: 13, mt: 0.5, color: "#6f6f6f" }}>
-            *Only displays locations with cemeteries
-          </Typography>
-        </Box>
+            </Box>
 
-        {/* Continue Button */}
-        <Box sx={{ mt: 3 }}>
-          <Button
-            variant="contained"
-            sx={{
-              padding: "8px 26px",
-              fontWeight: 600,
-              boxShadow: "none",
-            }}
-          >
-            Continue
-          </Button>
-        </Box>
+            {/* Cemetery Location Autocomplete */}
+            <Box sx={{ mb: 1 }}>
+              <Typography sx={{ mb: 1 }}></Typography>
 
+              <Autocomplete
+                fullWidth
+                options={locationOptions}
+                loading={loading}
+                onInputChange={(e, value) => setLocationQuery(value)}
+                noOptionsText={
+                  locationQuery.length < 3
+                    ? "Please enter at least 3 characters"
+                    : "No options"
+                }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Cemetery Location (City, County, State, or Country)*"
+                    InputProps={{
+                      ...params.InputProps,
+                      endAdornment: (
+                        <>
+                          {loading ? <CircularProgress size={20} /> : null}
+                          {params.InputProps.endAdornment}
+                        </>
+                      ),
+                    }}
+                  />
+                )}
+              />
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              <BrowseLink>Browse</BrowseLink>
+              <Typography sx={{ fontSize: 13, mt: 0.5, color: "#6f6f6f" }}>
+                *Only displays locations with cemeteries
+              </Typography>
+            </Box>
+
+            {/* Continue Button */}
+            <Box sx={{ mt: 3 }}>
+              <Button
+                variant="contained"
+                sx={{
+                  padding: "8px 26px",
+                  fontWeight: 600,
+                  boxShadow: "none",
+                }}
+              >
+                Continue
+              </Button>
+            </Box>
+          </>
+        )}
         {/* Checkbox */}
         <FormControlLabel
           sx={{ mt: 2 }}
-          control={<Checkbox />}
+          control={
+            <Checkbox
+              checked={notBuried}
+              onChange={(e) => setNotBuried(e.target.checked)}
+            />
+          }
           label="Not buried in a cemetery?"
         />
+
+        {notBuried && (
+          <BurialDetailsSection
+            burialType={burialType}
+            setBurialType={setBurialType}
+            otherBurialType={otherBurialType}
+            setOtherBurialType={setOtherBurialType}
+            burialDetails={burialDetails}
+            setBurialDetails={setBurialDetails}
+          />
+        )}
       </FormCard>
     </PageContainer>
   );
