@@ -1,6 +1,7 @@
 // BurialDetailsSection.jsx
 import { Box, Button, TextField, MenuItem, Alert } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { useNavigate } from "react-router-dom";
 
 const SectionContainer = styled(Box)(({ theme }) => ({
   background: theme.palette.background.paper,
@@ -41,6 +42,7 @@ export default function BurialDetailsSection({
   burialDetails,
   setBurialDetails,
 }) {
+  const navigate = useNavigate();
   return (
     <SectionContainer>
       {/* Yellow alert */}
@@ -110,6 +112,9 @@ export default function BurialDetailsSection({
             fontWeight: 600,
             boxShadow: "none",
           }}
+          onClick={() =>
+            navigate(`/memorial/create?cemeteryId=20193&cemetryName=Roseland`)
+          }
         >
           Continue
         </Button>

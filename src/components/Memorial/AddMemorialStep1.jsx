@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import BurialDetailsSection from "./BurialDetailsSection";
+import { useNavigate } from "react-router-dom";
 
 const PageContainer = styled(Box)(({ theme }) => ({
   width: "100%",
@@ -77,6 +78,8 @@ export default function AddMemorialStep1() {
   const [otherBurialType, setOtherBurialType] = useState("");
   const [burialDetails, setBurialDetails] = useState("");
 
+  const navigate = useNavigate();
+
   // Simulated API call on typing 3+ characters
   useEffect(() => {
     if (locationQuery.length < 3) {
@@ -114,7 +117,7 @@ export default function AddMemorialStep1() {
           Add a Memorial
         </Typography>
 
-        <Typography align="center" sx={{ color: "#6f6f6f", mb: 2 }}>
+        <Typography align="center" sx={{ color: "text.gray", mb: 2 }}>
           Step 1 of 2 — Memorial Location
         </Typography>
 
@@ -196,6 +199,7 @@ export default function AddMemorialStep1() {
                   fontWeight: 600,
                   boxShadow: "none",
                 }}
+                onClick={() => navigate(`/memorial/create?cemeteryId=20193&cemetryName=Roseland`)}
               >
                 Continue
               </Button>
