@@ -27,14 +27,16 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   openLoginDialog,
   openRegisterDialog,
-  logoutUser,
 } from "../store/slices/appSlice";
+import { logoutUser } from "../store/slices/userSlice";
 
 export default function Header() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const isDesktop = useMediaQuery("(min-width:768px)");
-  const { openLogin, openRegister, user } = useSelector((state) => state.app);
+  const { openLogin, openRegister } = useSelector((state) => state.app);
+  const { user } = useSelector((state) => state.user);
+
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);

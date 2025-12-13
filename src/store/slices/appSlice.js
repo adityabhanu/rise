@@ -5,10 +5,6 @@ const persistedUser = localStorage.getItem("user")
   : null;
 
 const initialState = {
-  // 👤 User
-  user: persistedUser,
-  loggedInStatus: !!persistedUser,
-
   // 🪟 Dialogs
   openLogin: false,
   openRegister: false,
@@ -28,23 +24,6 @@ const appSlice = createSlice({
   name: "app",
   initialState,
   reducers: {
-    // =====================================================
-    // USER & AUTH
-    // =====================================================
-    setUser: (state, action) => {
-      state.user = action.payload;
-      state.loggedInStatus = !!action.payload;
-      if (action.payload) {
-        localStorage.setItem("user", JSON.stringify(action.payload));
-      }
-    },
-
-    logoutUser: (state) => {
-      state.user = null;
-      state.loggedInStatus = false;
-      localStorage.removeItem("user");
-    },
-
     // =====================================================
     // LOGIN / REGISTER DIALOGS
     // =====================================================
@@ -87,9 +66,6 @@ const appSlice = createSlice({
 });
 
 export const {
-  setUser,
-  logoutUser,
-
   openLoginDialog,
   closeLoginDialog,
   openRegisterDialog,

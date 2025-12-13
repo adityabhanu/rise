@@ -37,7 +37,10 @@ export default function AddMemorialPage() {
             Add a Memorial
           </Typography>
 
-          <Typography variant="body1" sx={{ mt: 1, color: "text.gray", fontSize: "12px" }}>
+          <Typography
+            variant="body1"
+            sx={{ mt: 1, color: "text.gray", fontSize: "12px" }}
+          >
             Enter memorial details below.
           </Typography>
         </Box>

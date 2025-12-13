@@ -6,27 +6,54 @@ import {
   FormControlLabel,
   Checkbox,
   Typography,
-  IconButton,
+  Alert,
 } from "@mui/material";
 import BaseDialog from "./BaseDialog";
 import ForgotPassword from "./ForgotPassword";
 import { useDispatch } from "react-redux";
-import { closeLoginDialog, openRegisterDialog, setUser } from "../store/slices/appSlice";
+import { closeLoginDialog, openRegisterDialog } from "../store/slices/appSlice";
+import { setUser } from "../store/slices/userSlice";
+import { loginUser } from "../api/authApi";
 
 export default function LoginDialog({ open, onClose, onSignUp }) {
   const [showPass, setShowPass] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [openForgot, setOpenForgot] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const dispatch = useDispatch();
 
-    const handleLogin = () => {
-    if (email && password) {
-      const userData = { email };
-      dispatch(setUser(userData));
+  const handleLogin = async () => {
+    if (!email || !password) {
+      setError("Please enter email and password");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError("");
+
+      const response = await loginUser({ email, password });
+
+      if (!response.success) {
+        setError(response.message || "Invalid email or password");
+        return;
+      }
+
+      // ✅ SUCCESS
+      dispatch(
+        setUser({
+          user: response.user,
+          token: response.token,
+        })
+      );
+
       dispatch(closeLoginDialog());
-    } else {
-      alert("Please enter email and password");
+    } catch (err) {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -138,9 +165,15 @@ export default function LoginDialog({ open, onClose, onSignUp }) {
               mb: 2,
             }}
             onClick={handleLogin}
+            disabled={loading}
           >
-            Sign in with RISE
+            {loading ? "Signing in..." : "Sign in with RISE"}
           </Button>
+          {error && (
+            <Alert severity="error" sx={{ my: 2, whiteSpace: "pre-line" }}>
+              {error}
+            </Alert>
+          )}
 
           {/* Keep me signed in */}
           <FormControlLabel

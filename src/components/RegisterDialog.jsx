@@ -6,11 +6,13 @@ import {
   FormControlLabel,
   Typography,
   Box,
+  Alert,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import BaseDialog from "./BaseDialog";
 import { useDispatch } from "react-redux";
-import { closeRegisterDialog } from "../store/slices/appSlice";
+import { closeRegisterDialog, openLoginDialog } from "../store/slices/appSlice";
+import { registerUser } from "../api/authApi";
 
 const Section = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(2),
@@ -18,7 +20,72 @@ const Section = styled(Box)(({ theme }) => ({
 
 export default function RegisterDialog({ open, onClose }) {
   const dispatch = useDispatch();
+  const [form, setForm] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    publicName: "",
+    termsAndCondition: false,
+  });
+
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  const handleChange = (field) => (e) => {
+    const value =
+      e.target.type === "checkbox" ? e.target.checked : e.target.value;
+
+    setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleRegister = async () => {
+    if (!form.email || !form.password || !form.firstName || !form.lastName) {
+      setError("Please fill all required fields");
+      return;
+    }
+
+    if (!form.termsAndCondition) {
+      setError("You must accept Terms and Conditions");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError("");
+      setSuccess("");
+
+      const response = await registerUser(form);
+
+      if (!response.success) {
+        if (response.errors?.length) {
+          const validationMessages = response.errors
+            .map((e) => `${e.field}: ${e.message}`)
+            .join("\n");
+
+          setError(`${response.message}\n${validationMessages}`);
+        } else {
+          setError(response.message || "Registration failed");
+        }
+
+        return;
+      }
+
+      // ✅ SUCCESS FLOW
+      setSuccess(response.message || "Registration successful");
+
+      setTimeout(() => {
+        dispatch(closeRegisterDialog());
+        dispatch(openLoginDialog());
+      }, 1200);
+    } catch (err) {
+      setError("Something went wrong. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <BaseDialog
@@ -30,9 +97,10 @@ export default function RegisterDialog({ open, onClose }) {
           variant="contained"
           color="primary"
           sx={{ py: 1.2, fontSize: "1rem" }}
-          onClick={() => dispatch(closeRegisterDialog())}
+          onClick={handleRegister}
+          disabled={loading}
         >
-          Create Account
+          {loading ? "Creating account..." : "Create Account"}
         </Button>
       }
     >
@@ -41,12 +109,31 @@ export default function RegisterDialog({ open, onClose }) {
       </Typography>
 
       <Section sx={{ display: "flex", gap: 2 }}>
-        <TextField label="First Name" fullWidth size="small" />
-        <TextField label="Last Name" fullWidth size="small" />
+        <TextField
+          label="First Name"
+          fullWidth
+          size="small"
+          value={form.firstName}
+          onChange={handleChange("firstName")}
+        />
+        <TextField
+          label="Last Name"
+          fullWidth
+          size="small"
+          value={form.lastName}
+          onChange={handleChange("lastName")}
+        />
       </Section>
 
       <Section>
-        <TextField label="Email Address" type="email" fullWidth size="small" />
+        <TextField
+          label="Email Address"
+          type="email"
+          fullWidth
+          size="small"
+          value={form.email}
+          onChange={handleChange("email")}
+        />
       </Section>
 
       <FormControlLabel
@@ -60,6 +147,8 @@ export default function RegisterDialog({ open, onClose }) {
           type={showPassword ? "text" : "password"}
           fullWidth
           size="small"
+          value={form.password}
+          onChange={handleChange("password")}
         />
         <FormControlLabel
           control={
@@ -73,7 +162,13 @@ export default function RegisterDialog({ open, onClose }) {
       </Section>
 
       <Section>
-        <TextField label="Public Name" fullWidth size="small" />
+        <TextField
+          label="Public Name"
+          fullWidth
+          size="small"
+          value={form.publicName}
+          onChange={handleChange("publicName")}
+        />
         <Typography variant="caption" sx={{ display: "block", mt: 0.5 }}>
           Must be 1–32 characters and contain only numbers, letters, spaces,
           hyphens, ampersands, or apostrophes.
@@ -120,7 +215,12 @@ export default function RegisterDialog({ open, onClose }) {
         />
 
         <FormControlLabel
-          control={<Checkbox />}
+          control={
+            <Checkbox
+              checked={form.termsAndCondition}
+              onChange={handleChange("termsAndCondition")}
+            />
+          }
           label={
             <span>
               I have read and agree to the{" "}
@@ -135,6 +235,11 @@ export default function RegisterDialog({ open, onClose }) {
           }
         />
       </Section>
+      {error && (
+        <Alert severity="error" sx={{ my: 2, whiteSpace: "pre-line" }}>
+          {error}
+        </Alert>
+      )}
     </BaseDialog>
   );
 }
