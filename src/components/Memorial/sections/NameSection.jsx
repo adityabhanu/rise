@@ -19,11 +19,9 @@ import {
   NameLabel,
   NameFields,
   NameRow,
+  StyledTextField,
 } from "./MemorialStyles";
 
-const StyledTextField = styled(TextField)(({theme}) => ({
-    flex: 1,
-}))
 const PREFIX_OPTIONS = [
   "Mrs",
   "Dr",
@@ -111,14 +109,15 @@ export default function NameSection() {
           </Box>
 
           {/* Prefix / Suffix Toggle */}
-          <ToggleButton sx={{marginTop: "10px"}}
+          <ToggleButton
+            sx={{ marginTop: "10px" }}
             label="Show prefix and suffix (Examples: Rev, Dr, Sr, Jr, III)"
             checked={showPrefixSuffix}
             onChange={(e) => setShowPrefixSuffix(e.target.checked)}
           />
 
           {showPrefixSuffix && (
-            <NameRow sx={{paddingLeft: "30px"}}>
+            <NameRow sx={{ paddingLeft: "30px" }}>
               <StyledTextField
                 select
                 label="Prefix (type or choose)"

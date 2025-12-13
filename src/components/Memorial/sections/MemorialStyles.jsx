@@ -38,3 +38,7 @@ export const NameFields = styled(Box)(({ theme }) => ({
   flexDirection: "column",
   gap: "12px",
 }));
+
+export const StyledTextField = styled(TextField)(({ theme }) => ({
+  flex: 1,
+}));
