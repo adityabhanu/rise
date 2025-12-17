@@ -51,7 +51,9 @@ export default function LoginDialog({ open, onClose, onSignUp }) {
 
       dispatch(closeLoginDialog());
     } catch (err) {
-      setError("Something went wrong. Please try again.");
+      const message =
+        err?.response?.data?.message || err.message || "Something went wrong";
+      setError(message);
     } finally {
       setLoading(false);
     }

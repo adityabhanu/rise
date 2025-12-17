@@ -5,6 +5,7 @@ import {
   MenuItem,
   FormControlLabel,
   Radio,
+  Button,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -41,4 +42,16 @@ export const NameFields = styled(Box)(({ theme }) => ({
 
 export const StyledTextField = styled(TextField)(({ theme }) => ({
   flex: 1,
+}));
+
+export const ActionButton = styled(Button)(({ theme }) => ({
+  background: theme.palette.primary.main,
+  color: theme.palette.background.white,
+  fontWeight: 600,
+  padding: theme.spacing(1.2, 3),
+  borderRadius: 6,
+  textTransform: "none",
+  "&:hover": {
+    background: theme.palette.background.primary,
+  },
 }));

@@ -46,6 +46,7 @@ export default function BaseDialog({
   children,
   actions,
   maxWidth = "sm",
+  contentSx,
 }) {
   return (
     <Dialog open={open} onClose={onClose} maxWidth={maxWidth} fullWidth disableScrollLock>
@@ -56,7 +57,7 @@ export default function BaseDialog({
         </CloseButton>
       </Header>
 
-      <DialogContent>{children}</DialogContent>
+      <DialogContent sx={contentSx}>{children}</DialogContent>
 
       {actions && <DialogActions sx={{ p: 2, background: "#eceee9" }}>{actions}</DialogActions>}
     </Dialog>
