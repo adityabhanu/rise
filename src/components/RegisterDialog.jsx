@@ -7,12 +7,13 @@ import {
   Typography,
   Box,
   Alert,
+  Avatar,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import BaseDialog from "./BaseDialog";
 import { useDispatch } from "react-redux";
 import { closeRegisterDialog, openLoginDialog } from "../store/slices/appSlice";
-import { registerUser } from "../api/authApi";
+import { registerUser, uploadProfileImage } from "../api/authApi";
 
 const Section = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(2),
@@ -29,6 +30,10 @@ export default function RegisterDialog({ open, onClose }) {
     termsAndCondition: false,
   });
 
+  const [profileImage, setProfileImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState("");
+  const [imageWarning, setImageWarning] = useState("");
+
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -39,6 +44,24 @@ export default function RegisterDialog({ open, onClose }) {
       e.target.type === "checkbox" ? e.target.checked : e.target.value;
 
     setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setError("Please upload a valid image file");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setError("Image size must be less than 5MB");
+      return;
+    }
+
+    setProfileImage(file);
+    setImagePreview(URL.createObjectURL(file));
   };
 
   const handleRegister = async () => {
@@ -56,6 +79,7 @@ export default function RegisterDialog({ open, onClose }) {
       setLoading(true);
       setError("");
       setSuccess("");
+      setImageWarning("");
 
       const response = await registerUser(form);
 
@@ -73,6 +97,17 @@ export default function RegisterDialog({ open, onClose }) {
         return;
       }
 
+      const userId = response?.user?.id;
+
+      if (profileImage && userId) {
+        try {
+          await uploadProfileImage(userId, profileImage);
+        } catch (err) {
+          setImageWarning(
+            "Account created, but profile image upload failed. You can upload it later."
+          );
+        }
+      }
       // ✅ SUCCESS FLOW
       setSuccess(response.message || "Registration successful");
 
@@ -180,6 +215,45 @@ export default function RegisterDialog({ open, onClose }) {
         >
           What is a Public Name?
         </Typography>
+      </Section>
+
+      {/* Profile Image */}
+      <Section>
+        <Typography variant="subtitle2" sx={{ mb: 1 }}>
+          Profile Image
+        </Typography>
+
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          <Avatar src={imagePreview} sx={{ width: 50, height: 50 }} />
+
+          <Button variant="outlined" component="label">
+            Upload Image
+            <input
+              hidden
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                handleImageChange(e);
+
+                e.target.value = null;
+              }}
+            />
+          </Button>
+
+          {/* Remove Image button */}
+          {imagePreview && (
+            <Button
+              variant="text"
+              color="error"
+              onClick={() => {
+                setProfileImage(null);
+                setImagePreview("");
+              }}
+            >
+              Remove Image
+            </Button>
+          )}
+        </Box>
       </Section>
 
       <Section>

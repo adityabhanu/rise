@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import {
+  Avatar,
   AppBar,
   Toolbar,
   IconButton,
@@ -24,10 +25,7 @@ import LoginDialog from "./LoginDialog";
 import riseLogo from "../assets/images/rise_logo.png";
 import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  openLoginDialog,
-  openRegisterDialog,
-} from "../store/slices/appSlice";
+import { openLoginDialog, openRegisterDialog } from "../store/slices/appSlice";
 import { logoutUser } from "../store/slices/userSlice";
 
 export default function Header() {
@@ -36,7 +34,6 @@ export default function Header() {
   const isDesktop = useMediaQuery("(min-width:768px)");
   const { openLogin, openRegister } = useSelector((state) => state.app);
   const { user } = useSelector((state) => state.user);
-
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -170,7 +167,15 @@ export default function Header() {
                       color: scrolled ? theme.palette.text.white : "#FFFFFF",
                     }}
                   >
-                    <AccountCircleIcon fontSize="large" />
+                    {user.profilePic ? (
+                      <Avatar
+                        src={user.profilePic}
+                        alt={user.publicName || user.firstName}
+                        size="large"
+                      />
+                    ) : (
+                      <AccountCircleIcon fontSize="large" />
+                    )}
                   </IconButton>
                   <Menu
                     anchorEl={anchorEl}
@@ -251,7 +256,15 @@ export default function Header() {
                       color: scrolled ? theme.palette.text.white : "#FFFFFF",
                     }}
                   >
-                    <AccountCircleIcon fontSize="large" />
+                    {user.profilePic ? (
+                      <Avatar
+                        src={user.profilePic}
+                        alt={user.publicName || user.firstName}
+                        size="large"
+                      />
+                    ) : (
+                      <AccountCircleIcon fontSize="large" />
+                    )}
                   </IconButton>
 
                   <Menu
