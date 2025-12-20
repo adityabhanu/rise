@@ -28,12 +28,11 @@ export default function Home() {
           fontWeight="bold"
           sx={{
             fontSize: "2rem",
-            textShadow: `0 0 6px rgba(0,0,0,0.6),
-  0 0 12px rgba(0,0,0,0.4),
-  0 0 20px rgba(0,0,0,0.3)`,
+            textShadow: `0 0 6px rgba(0,0,0,0.6), 0 0 12px rgba(0,0,0,0.4), 0 0 20px rgba(0,0,0,0.3)`,
+            letterSpacing: "1.5px",
           }}
         >
-          World’s largest gravesite collection.
+          Every Life. Every Story. Forever.
         </Typography>
         <Typography
           variant="h5"
@@ -42,9 +41,7 @@ export default function Home() {
             fontSize: "1.2rem",
             color: "#e2d264",
             fontWeight: "600",
-            textShadow: `0 0 6px rgba(0,0,0,0.6),
-  0 0 12px rgba(0,0,0,0.4),
-  0 0 20px rgba(0,0,0,0.3)`,
+            textShadow: `0 0 6px rgba(0,0,0,0.6), 0 0 12px rgba(0,0,0,0.4), 0 0 20px rgba(0,0,0,0.3)`,
           }}
         >
           Over 250 million memorials created by the community since 1995.
