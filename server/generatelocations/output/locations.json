@@ -1,0 +1,39 @@
+{
+  "regions": [
+    {
+      "code": "AF",
+      "name": "Africa",
+      "countries": []
+    },
+    {
+      "code": "AN",
+      "name": "Antarctica",
+      "countries": []
+    },
+    {
+      "code": "AS",
+      "name": "Asia",
+      "countries": []
+    },
+    {
+      "code": "EU",
+      "name": "Europe",
+      "countries": []
+    },
+    {
+      "code": "NA",
+      "name": "North America",
+      "countries": []
+    },
+    {
+      "code": "SA",
+      "name": "South America",
+      "countries": []
+    },
+    {
+      "code": "OC",
+      "name": "Oceania",
+      "countries": []
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "data": {
+    "browse": [
+      {
+        "id": "top",
+        "locations": [
+          {
+            "id": "continent_74",
+            "names": [
+              {
+                "name": "Africa",
+                "__typename": "LocationName"
+              }
+            ],
+            "locations": [
+              {
+                "id": "continent_74",
+                "names": [
+                  {
+                    "name": "Africa",
+                    "__typename": "LocationName"
+                  }
+                ],
+                "locations": [
+                  {
+                    "id": "continent_74",
+                    "names": [
+                      {
+                        "name": "Africa",
+                        "__typename": "LocationName"
+                      }
+                    ],
+                    "locations": [
+                      {
+                        "id": "continent_74",
+                        "names": [
+                          {
+                            "name": "Africa",
+                            "__typename": "LocationName"
+                          }
+                        ],
+                        "locations": [
+                          {
+                            "id": "continent_74",
+                            "names": [
+                              {
+                                "name": "Africa",
+                                "__typename": "LocationName"
+                              }
+                            ],
+                            "locations": [
+                              {
+                                "cemetery": null,
+                                "city": null,
+                                "county": null,
+                                "state": null,
+                                "country": null,
+                                "continent": "Africa",
+                                "__typename": "LocationHierarchy"
+                              }
+                            ],
+                            "coordinates": null,
+                            "__typename": "Location"
+                          }
+                        ],
+                        "coordinates": null,
+                        "__typename": "Location"
+                      }
+                    ],
+                    "coordinates": null,
+                    "__typename": "Location"
+                  }
+                ],
+                "coordinates": null,
+                "__typename": "Location"
+              }
+            ],
+            "coordinates": null,
+            "__typename": "Location"
+          }
+        ]
+      }
+    ]
+  }
+}
