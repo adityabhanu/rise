@@ -12,6 +12,7 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import InfoIcon from "@mui/icons-material/Info";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import BaseDialog from "./BaseDialog";
+import BrowseLocations from "./common/BrowseLocations";
 
 const ActionsRow = styled(Box)`
   padding-top: 24px;
@@ -172,6 +173,7 @@ export default function SearchSection() {
   const [yearDiedOption, setYearDiedOption] = useState("Exact");
 
   const [tipsOpen, setTipsOpen] = useState(false);
+  const [openBrowse, setOpenBrowse] = useState(false);
 
   const options = [
     "Exact",
@@ -271,7 +273,8 @@ export default function SearchSection() {
           {/* Location */}
           <LocationContainer>
             <LocationInput label="Cemetery Location" variant="filled" />
-            <BrowseButton>Browse</BrowseButton>
+            <BrowseButton onClick={() => setOpenBrowse(true)}>Browse</BrowseButton>
+            <BrowseLocations open={openBrowse} onClose={() => setOpenBrowse(false)}/>
           </LocationContainer>
         </Row>
 

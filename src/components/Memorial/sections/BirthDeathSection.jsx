@@ -15,6 +15,7 @@ import {
   NameFields,
   NameRow,
 } from "./MemorialStyles";
+import BrowseLocations from "../../common/BrowseLocations";
 
 const BrowseTypogrpahy = styled(Typography)(({ theme }) => ({
   color: theme.palette.text.secondary,
@@ -47,6 +48,9 @@ export default function BirthDeathSection() {
     days: "",
   });
 
+  const [birthBrowseOpen, setBirthBrowseOpen] = useState(false);
+  const [deathBrowseOpen, setDeathBrowseOpen] = useState(false);
+
   const MONTHS = [
     "January",
     "February",
@@ -61,6 +65,14 @@ export default function BirthDeathSection() {
     "November",
     "December",
   ];
+
+  const handleBirthLocationSelect = (location) => {
+    setBirth((prev) => ({ ...prev, location }));
+  };
+
+  const handleDeathLocationSelect = (location) => {
+    setDeath((prev) => ({ ...prev, location }));
+  };
 
   return (
     <SectionContainer>
@@ -111,7 +123,9 @@ export default function BirthDeathSection() {
               onChange={(e) => setBirth({ ...birth, location: e.target.value })}
             />
 
-            <BrowseTypogrpahy>Browse</BrowseTypogrpahy>
+            <BrowseTypogrpahy onClick={() => setBirthBrowseOpen(true)}>
+              Browse
+            </BrowseTypogrpahy>
           </DateRow>
         </NameFields>
       </DateRow>
@@ -163,7 +177,9 @@ export default function BirthDeathSection() {
               onChange={(e) => setDeath({ ...death, location: e.target.value })}
             />
 
-            <BrowseTypogrpahy>Browse</BrowseTypogrpahy>
+            <BrowseTypogrpahy onClick={() => setDeathBrowseOpen(true)}>
+              Browse
+            </BrowseTypogrpahy>
           </DateRow>
         </NameFields>
       </DateRow>
@@ -226,6 +242,17 @@ export default function BirthDeathSection() {
           </DateRow>
         </>
       )}
+      <BrowseLocations
+        open={birthBrowseOpen}
+        onClose={() => setBirthBrowseOpen(false)}
+        onSelect={handleBirthLocationSelect}
+      />
+
+      <BrowseLocations
+        open={deathBrowseOpen}
+        onClose={() => setDeathBrowseOpen(false)}
+        onSelect={handleDeathLocationSelect}
+      />
     </SectionContainer>
   );
 }
