@@ -1,4 +1,5 @@
 // sections/NameSection.jsx
+import { useState, forwardRef, useImperativeHandle } from "react";
 import {
   Box,
   TextField,
@@ -11,7 +12,6 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import ToggleButton from "../../common/ToggleButton";
-import { useState } from "react";
 import BirthDeathSection from "./BirthDeathSection";
 import {
   SectionContainer,
@@ -92,10 +92,30 @@ const PREFIX_OPTIONS = [
 
 const SUFFIX_OPTIONS = ["Jr", "Sr", "I", "II", "III", "IV", "V", "VI"];
 
-export default function NameSection() {
+const NameSection = forwardRef(({ birthDeathRef }, ref) => {
+  // UI Toggles
   const [showPrefixSuffix, setShowPrefixSuffix] = useState(false);
-  const [prefix, setPrefix] = useState("");
-  const [suffix, setSuffix] = useState("");
+  
+  // Local form state
+  const [localData, setLocalData] = useState({
+    firstName: "",
+    middleName: "",
+    lastName: "",
+    prefix: "",
+    suffix: "",
+    nickName: "",
+    maidenName: "",
+    gender: "",
+  });
+
+  const updateField = (key, value) => {
+    setLocalData((prev) => ({ ...prev, [key]: value }));
+  };
+
+  // Expose getData to parent via ref
+  useImperativeHandle(ref, () => ({
+    getData: () => localData,
+  }));
 
   return (
     <SectionContainer>
@@ -103,9 +123,24 @@ export default function NameSection() {
         <NameLabel>Name</NameLabel>
         <NameFields>
           <Box sx={{ display: "flex", gap: "10px" }}>
-            <StyledTextField label="First Name(s)" size="small" />
-            <StyledTextField label="Middle Name(s)" size="small" />
-            <StyledTextField label="Last Name(s)" size="small" />
+            <StyledTextField
+              label="First Name(s)"
+              size="small"
+              value={localData.firstName}
+              onChange={(e) => updateField("firstName", e.target.value)}
+            />
+            <StyledTextField
+              label="Middle Name(s)"
+              size="small"
+              value={localData.middleName}
+              onChange={(e) => updateField("middleName", e.target.value)}
+            />
+            <StyledTextField
+              label="Last Name(s)"
+              size="small"
+              value={localData.lastName}
+              onChange={(e) => updateField("lastName", e.target.value)}
+            />
           </Box>
 
           {/* Prefix / Suffix Toggle */}
@@ -121,14 +156,10 @@ export default function NameSection() {
               <StyledTextField
                 select
                 label="Prefix (type or choose)"
-                value={prefix}
-                onChange={(e) => setPrefix(e.target.value)}
+                value={localData.prefix}
+                onChange={(e) => updateField("prefix", e.target.value)}
                 size="small"
-                SelectProps={{
-                  MenuProps: {
-                    transitionDuration: 0,
-                  },
-                }}
+                SelectProps={{ MenuProps: { transitionDuration: 0 } }}
               >
                 {PREFIX_OPTIONS.map((p) => (
                   <MenuItem key={p} value={p}>
@@ -140,8 +171,8 @@ export default function NameSection() {
               <StyledTextField
                 select
                 label="Suffix (type or choose)"
-                value={suffix}
-                onChange={(e) => setSuffix(e.target.value)}
+                value={localData.suffix}
+                onChange={(e) => updateField("suffix", e.target.value)}
                 size="small"
               >
                 {SUFFIX_OPTIONS.map((s) => (
@@ -154,17 +185,32 @@ export default function NameSection() {
           )}
 
           <NameRow>
-            <TextField label="Nickname" size="small" />
-            <TextField label="Maiden Name" size="small" />
+            <TextField
+              label="Nickname"
+              size="small"
+              value={localData.nickname}
+              onChange={(e) => updateField("nickname", e.target.value)}
+            />
+            <TextField
+              label="Maiden Name"
+              size="small"
+              value={localData.maidenName}
+              onChange={(e) => updateField("maidenName", e.target.value)}
+            />
           </NameRow>
         </NameFields>
       </NameRow>
+
       {/* Gender */}
       <NameRow display="flex" alignItems="center" gap={2}>
         <NameLabel>Gender</NameLabel>
-
         <FormControl>
-          <RadioGroup row name="gender">
+          <RadioGroup
+            row
+            name="gender"
+            value={localData.gender}
+            onChange={(e) => updateField("gender", e.target.value)}
+          >
             <FormControlLabel
               value="male"
               control={<Radio size="small" />}
@@ -178,7 +224,16 @@ export default function NameSection() {
           </RadioGroup>
         </FormControl>
       </NameRow>
-      <BirthDeathSection />
+
+      <BirthDeathSection
+        birthDate={localData.birthDate}
+        deathDate={localData.deathDate}
+        onChange={(key, value) => updateField(key, value)}
+        ref={birthDeathRef}
+      />
     </SectionContainer>
   );
-}
+});
+
+export default NameSection;
+

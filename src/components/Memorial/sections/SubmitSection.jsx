@@ -7,10 +7,15 @@ const Container = styled(Box)(({ theme }) => ({
   textAlign: "center",
 }));
 
-export default function SubmitSection() {
+export default function SubmitSection({ onSubmit }) {
   return (
     <Container>
-      <Button size="large" variant="contained" color="success">
+      <Button
+        size="large"
+        variant="contained"
+        color="success"
+        onClick={onSubmit}
+      >
         Add Memorial
       </Button>
     </Container>

@@ -18,7 +18,7 @@ const StyledAlert = styled(Alert)(({ theme }) => ({
   fontSize: 14,
 }));
 
-const burialTypeOptions = [
+export const burialTypeOptions = [
   { id: 1, label: "Buried or Lost at Sea", value: "buried_or_lost_at_sea" },
   { id: 2, label: "Cremated", value: "cremated" },
   { id: 3, label: "Donated to Medical Science", value: "donated_to_science" },
@@ -28,7 +28,7 @@ const burialTypeOptions = [
   { id: 7, label: "Other…", value: "other" },
 ];
 
-const otherBurialTypeOptions = [
+export const otherBurialTypeOptions = [
   { id: 1, label: "Aquamation", value: "aquamation" },
   { id: 2, label: "Terramation", value: "terramation" },
   { id: 3, label: "Green burial", value: "green_burial" },
@@ -43,6 +43,19 @@ export default function BurialDetailsSection({
   setBurialDetails,
 }) {
   const navigate = useNavigate();
+
+  const getSelectedBurialLabel = () => {
+    if (burialType === "other") {
+      const other = otherBurialTypeOptions.find(
+        (opt) => opt.value === otherBurialType
+      );
+      return other?.label || "";
+    }
+
+    const burial = burialTypeOptions.find((opt) => opt.value === burialType);
+    return burial?.label || "";
+  };
+
   return (
     <SectionContainer>
       {/* Yellow alert */}
@@ -112,9 +125,16 @@ export default function BurialDetailsSection({
             fontWeight: 600,
             boxShadow: "none",
           }}
-          onClick={() =>
-            navigate(`/memorial/create?cemeteryId=20193&cemetryName=Roseland`)
-          }
+          onClick={() => {
+            const burialLabel = getSelectedBurialLabel();
+
+            const params = new URLSearchParams({
+              burialType: burialLabel,
+              ...(burialDetails && { dispositionDetails : burialDetails }),
+            });
+
+            navigate(`/memorial/create?${params.toString()}`);
+          }}
         >
           Continue
         </Button>

@@ -62,7 +62,7 @@ const EmptyText = styled(Typography)(({ theme }) => ({
 
 const getName = (item) => item?.names?.[0]?.name ?? "";
 
-const BrowseLocations = ({ open, onClose }) => {
+const BrowseLocations = ({ open, onClose, onSelect }) => {
   const [selectedRegionIndex, setSelectedRegionIndex] = useState(0);
   const [selectedCountryIndex, setSelectedCountryIndex] = useState(0);
   const [selectedStateIndex, setSelectedStateIndex] = useState(0);
@@ -89,6 +89,15 @@ const BrowseLocations = ({ open, onClose }) => {
   };
 
   const handleUseSelectedLocation = () => {
+    const locationLabel = [
+      getName(regions[selectedRegionIndex]),
+      getName(countries[selectedCountryIndex]),
+      getName(states[selectedStateIndex]),
+    ]
+      .filter(Boolean)
+      .join(", ");
+
+    onSelect?.(locationLabel);
     onClose();
   };
 

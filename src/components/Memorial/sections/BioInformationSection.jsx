@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef, useImperativeHandle } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
@@ -17,7 +17,7 @@ import {
   NameRow,
 } from "./MemorialStyles";
 
-export default function BioInformationSection() {
+const BioInformationSection = forwardRef((props, ref) => {
   const editor = useEditor({
     extensions: [StarterKit, Underline],
     content: "<p></p>",
@@ -26,6 +26,10 @@ export default function BioInformationSection() {
   if (!editor) return null;
 
   const toggleMark = (type) => editor.chain().focus()[`toggle${type}`]().run();
+
+   useImperativeHandle(ref, () => ({
+    getData: () => editor.getHTML(),
+  }));
 
   return (
     <NameRow>
@@ -112,4 +116,6 @@ export default function BioInformationSection() {
       </NameFields>
     </NameRow>
   );
-}
+});
+
+export default BioInformationSection;

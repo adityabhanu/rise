@@ -1,6 +1,6 @@
 import { Box, Typography, Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { useState } from "react";
+import React, { useState, forwardRef, useImperativeHandle } from "react";
 import {
   SectionContainer,
   DateRow,
@@ -42,17 +42,41 @@ const PinButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-export default function BurialSection() {
+const BurialSection = forwardRef((props, ref) => {
   const [searchParams] = useSearchParams();
   const cemeteryId = searchParams.get("cemeteryId");
   const cemetryName = searchParams.get("cemetryName");
+  const burialType = searchParams.get("burialType");
 
+  const [plotNumber, setPlotNumber] = useState("");
+  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState("");
   const [inscription, setInscription] = useState("");
   const [gravesiteDetails, setGravesiteDetails] = useState("");
 
   const [labelType, setLabelType] = useState(null);
 
   const [openMapLocator, setOpenMapLocator] = useState(false);
+
+  const handleLocationSave = ({ latitude, longitude }) => {
+    setLatitude(latitude);
+    setLongitude(longitude);
+  };
+
+  useImperativeHandle(ref, () => ({
+    getData: () => ({
+      burialInformation: {
+        burialType: cemetryName || decodeURIComponent(burialType),
+        plotNumber,
+        latitude,
+        longitude,
+        inscription,
+        gravesite: gravesiteDetails,
+        cenotaph: labelType === "cenotaph",
+        monument: labelType === "monument",
+      },
+    }),
+  }));
 
   return (
     <>
@@ -61,14 +85,19 @@ export default function BurialSection() {
           <NameLabel>Burial information</NameLabel>
           <Typography
             sx={{ fontWeight: "600", alignItems: "center" }}
-            id={cemeteryId}
+            id={cemeteryId || burialType}
           >
-            {cemetryName}
+            {cemetryName || decodeURIComponent(burialType)}
           </Typography>
         </DateRow>
         <DateRow>
           <NameLabel>Cemetery Plot #</NameLabel>
-          <StyledTextField label="Plot Number" size="small" />
+          <StyledTextField
+            label="Plot Number"
+            size="small"
+            value={plotNumber}
+            onChange={(e) => setPlotNumber(e.target.value)}
+          />
         </DateRow>
         <DateRow>
           <NameLabel>Burial Coordinates</NameLabel>
@@ -82,8 +111,18 @@ export default function BurialSection() {
             Pin on map
           </PinButton>
 
-          <StyledTextField label="Latitude" size="small" />
-          <StyledTextField label="Longitude" size="small" />
+          <StyledTextField
+            label="Latitude"
+            size="small"
+            value={latitude}
+            onChange={(e) => setLatitude(e.target.value)}
+          />
+          <StyledTextField
+            label="Longitude"
+            size="small"
+            value={longitude}
+            onChange={(e) => setLongitude(e.target.value)}
+          />
         </DateRow>
         <NameRow>
           <NameLabel>Inscription</NameLabel>
@@ -139,7 +178,10 @@ export default function BurialSection() {
       <MapLocator
         open={openMapLocator}
         onClose={() => setOpenMapLocator(false)}
+        onSave={handleLocationSave}
       />
     </>
   );
-}
+});
+
+export default BurialSection;

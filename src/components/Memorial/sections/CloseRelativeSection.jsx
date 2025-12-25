@@ -6,7 +6,12 @@ import {
   Checkbox,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { useState, useEffect } from "react";
+import React, {
+  useState,
+  useEffect,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
 import {
   SectionContainer,
   DateRow,
@@ -62,7 +67,7 @@ const RELATIONSHIP_OPTIONS = [
   "Grandparent",
 ];
 
-export default function CloseRelativeSection() {
+const CloseRelativeSection = forwardRef((props, ref) => {
   const [isCloseRelative, setIsCloseRelative] = useState(false);
   const [selected, setSelected] = useState("");
   const [showInSource, setShowInSource] = useState(true);
@@ -78,6 +83,15 @@ export default function CloseRelativeSection() {
   const selectRelation = (value) => {
     setSelected(value);
   };
+
+  useImperativeHandle(ref, () => ({
+    getData: () => ({
+      closeRelative: isCloseRelative,
+      relation: selected || null,
+      showRelationship: showRelationship,
+    }),
+  }));
+
   const primaryRelation = selected?.toUpperCase();
   return (
     <SectionContainer>
@@ -152,4 +166,6 @@ export default function CloseRelativeSection() {
       </NameRow>
     </SectionContainer>
   );
-}
+});
+
+export default CloseRelativeSection;

@@ -21,7 +21,7 @@ const COORD_REGEX = /^-?\d{0,3}(\.\d{0,6})?$/;
 const isValidLat = (lat) => lat >= -90 && lat <= 90;
 const isValidLng = (lng) => lng >= -180 && lng <= 180;
 
-export default function MapLocator({ open, onClose }) {
+export default function MapLocator({ open, onClose, onSave }) {
   // numeric state (source of truth for map)
   const [location, setLocation] = useState(defaultCenter);
 
@@ -117,7 +117,10 @@ export default function MapLocator({ open, onClose }) {
   };
 
   const handleSave = () => {
-    console.log("Selected location:", location);
+    onSave?.({
+      latitude: location.lat.toFixed(6),
+      longitude: location.lng.toFixed(6),
+    });
     onClose();
   };
 

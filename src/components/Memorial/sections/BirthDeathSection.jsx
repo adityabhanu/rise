@@ -7,7 +7,7 @@ import {
   Checkbox,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { useState } from "react";
+import { useState, forwardRef, useImperativeHandle } from "react";
 import {
   SectionContainer,
   DateRow,
@@ -27,7 +27,7 @@ const BrowseTypogrpahy = styled(Typography)(({ theme }) => ({
   },
 }));
 
-export default function BirthDeathSection() {
+const BirthDeathSection = forwardRef((props, ref) => {
   const [birth, setBirth] = useState({
     day: "",
     month: "",
@@ -40,16 +40,19 @@ export default function BirthDeathSection() {
     year: "",
     location: "",
   });
-
   const [showAgeAtDeath, setShowAgeAtDeath] = useState(false);
   const [ageAtDeath, setAgeAtDeath] = useState({
     years: "",
     months: "",
     days: "",
   });
-
   const [birthBrowseOpen, setBirthBrowseOpen] = useState(false);
   const [deathBrowseOpen, setDeathBrowseOpen] = useState(false);
+
+  const handleBirthLocationSelect = (location) =>
+    setBirth((prev) => ({ ...prev, location }));
+  const handleDeathLocationSelect = (location) =>
+    setDeath((prev) => ({ ...prev, location }));
 
   const MONTHS = [
     "January",
@@ -66,20 +69,44 @@ export default function BirthDeathSection() {
     "December",
   ];
 
-  const handleBirthLocationSelect = (location) => {
-    setBirth((prev) => ({ ...prev, location }));
+  // Convert day/month/year to "YYYY-MM-DD"
+  const formatDate = ({ year, month, day }) => {
+    if (!year) return "";
+    const monthIndex = MONTHS.indexOf(month) + 1;
+    const mm = monthIndex ? String(monthIndex).padStart(2, "0") : "01";
+    const dd = day ? String(day).padStart(2, "0") : "01";
+    return `${year}-${mm}-${dd}`;
   };
 
-  const handleDeathLocationSelect = (location) => {
-    setDeath((prev) => ({ ...prev, location }));
-  };
+  function calculateDateOfDeath(dateOfBirth, age) {
+    const dob = new Date(dateOfBirth);
+    dob.setFullYear(dob.getFullYear() + Number(age.years || 0));
+    dob.setMonth(dob.getMonth() + Number(age.months || 0));
+    dob.setDate(dob.getDate() + Number(age.days || 0));
+
+    const yyyy = dob.getFullYear();
+    const mm = String(dob.getMonth() + 1).padStart(2, "0");
+    const dd = String(dob.getDate()).padStart(2, "0");
+
+    return `${yyyy}-${mm}-${dd}`;
+  }
+  useImperativeHandle(ref, () => ({
+    getData: () => ({
+      dateOfBirth: formatDate(birth),
+      dateOfDeath: showAgeAtDeath
+        ? calculateDateOfDeath(formatDate(birth), ageAtDeath)
+        : formatDate(death),
+      dateOfBirthLocation: birth.location || "",
+      dateOfDeathLocation: death.location || "",
+      graveMarkerIncludeAge: showAgeAtDeath,
+    }),
+  }));
 
   return (
     <SectionContainer>
       {/* Birth Section */}
       <DateRow>
         <NameLabel>Birth</NameLabel>
-
         <NameFields>
           <DateRow>
             <TextField
@@ -89,7 +116,6 @@ export default function BirthDeathSection() {
               value={birth.day}
               onChange={(e) => setBirth({ ...birth, day: e.target.value })}
             />
-
             <TextField
               select
               label="Month"
@@ -107,7 +133,6 @@ export default function BirthDeathSection() {
                 </MenuItem>
               ))}
             </TextField>
-
             <TextField
               label="Year"
               size="small"
@@ -115,14 +140,12 @@ export default function BirthDeathSection() {
               value={birth.year}
               onChange={(e) => setBirth({ ...birth, year: e.target.value })}
             />
-
             <TextField
               label="Location"
               size="small"
               value={birth.location}
               onChange={(e) => setBirth({ ...birth, location: e.target.value })}
             />
-
             <BrowseTypogrpahy onClick={() => setBirthBrowseOpen(true)}>
               Browse
             </BrowseTypogrpahy>
@@ -133,7 +156,6 @@ export default function BirthDeathSection() {
       {/* Death Section */}
       <DateRow>
         <NameLabel>Death</NameLabel>
-
         <NameFields>
           <DateRow>
             <TextField
@@ -143,7 +165,6 @@ export default function BirthDeathSection() {
               value={death.day}
               onChange={(e) => setDeath({ ...death, day: e.target.value })}
             />
-
             <TextField
               select
               label="Month"
@@ -161,7 +182,6 @@ export default function BirthDeathSection() {
                 </MenuItem>
               ))}
             </TextField>
-
             <TextField
               label="Year"
               size="small"
@@ -169,20 +189,19 @@ export default function BirthDeathSection() {
               value={death.year}
               onChange={(e) => setDeath({ ...death, year: e.target.value })}
             />
-
             <TextField
               label="Location"
               size="small"
               value={death.location}
               onChange={(e) => setDeath({ ...death, location: e.target.value })}
             />
-
             <BrowseTypogrpahy onClick={() => setDeathBrowseOpen(true)}>
               Browse
             </BrowseTypogrpahy>
           </DateRow>
         </NameFields>
       </DateRow>
+
       {/* Age at Death */}
       <DateRow>
         <NameLabel></NameLabel>
@@ -197,57 +216,55 @@ export default function BirthDeathSection() {
           label="Grave marker includes age at death"
         />
       </DateRow>
+
       {showAgeAtDeath && (
-        <>
-          <DateRow>
-            <NameLabel></NameLabel>
-            <Box sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-              <DateRow>
-                <TextField
-                  label="Years"
-                  size="small"
-                  sx={{ width: "100px" }}
-                  value={ageAtDeath.years}
-                  onChange={(e) =>
-                    setAgeAtDeath({ ...ageAtDeath, years: e.target.value })
-                  }
-                />
-
-                <TextField
-                  label="Months"
-                  size="small"
-                  sx={{ width: "100px" }}
-                  value={ageAtDeath.months}
-                  onChange={(e) =>
-                    setAgeAtDeath({ ...ageAtDeath, months: e.target.value })
-                  }
-                />
-
-                <TextField
-                  label="Days"
-                  size="small"
-                  sx={{ width: "100px" }}
-                  value={ageAtDeath.days}
-                  onChange={(e) =>
-                    setAgeAtDeath({ ...ageAtDeath, days: e.target.value })
-                  }
-                />
-              </DateRow>
-              <Typography
-                sx={{ fontSize: "12px", color: "text.secondary", mt: "-5px" }}
-              >
-                Add only if noted on grave marker.
-              </Typography>
-            </Box>
-          </DateRow>
-        </>
+        <DateRow>
+          <NameLabel></NameLabel>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+            <DateRow>
+              <TextField
+                label="Years"
+                size="small"
+                sx={{ width: "100px" }}
+                value={ageAtDeath.years}
+                onChange={(e) =>
+                  setAgeAtDeath({ ...ageAtDeath, years: e.target.value })
+                }
+              />
+              <TextField
+                label="Months"
+                size="small"
+                sx={{ width: "100px" }}
+                value={ageAtDeath.months}
+                onChange={(e) =>
+                  setAgeAtDeath({ ...ageAtDeath, months: e.target.value })
+                }
+              />
+              <TextField
+                label="Days"
+                size="small"
+                sx={{ width: "100px" }}
+                value={ageAtDeath.days}
+                onChange={(e) =>
+                  setAgeAtDeath({ ...ageAtDeath, days: e.target.value })
+                }
+              />
+            </DateRow>
+            <Typography
+              sx={{ fontSize: "12px", color: "text.secondary", mt: "-5px" }}
+            >
+              Add only if noted on grave marker.
+            </Typography>
+          </Box>
+        </DateRow>
       )}
+
+      {/* Browse modals */}
       <BrowseLocations
         open={birthBrowseOpen}
         onClose={() => setBirthBrowseOpen(false)}
         onSelect={handleBirthLocationSelect}
       />
-
       <BrowseLocations
         open={deathBrowseOpen}
         onClose={() => setDeathBrowseOpen(false)}
@@ -255,4 +272,6 @@ export default function BirthDeathSection() {
       />
     </SectionContainer>
   );
-}
+});
+
+export default BirthDeathSection;

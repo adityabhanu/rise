@@ -1,3 +1,4 @@
+import React, { useState, forwardRef, useImperativeHandle } from "react";
 import {
   Box,
   FormControlLabel,
@@ -6,7 +7,6 @@ import {
   Checkbox,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { useState } from "react";
 import {
   SectionContainer,
   DateRow,
@@ -67,7 +67,7 @@ const FAMOUS_CATEGORIES = [
   "Victims of crime and disaster",
 ];
 
-export default function DesignationsSection() {
+const DesignationsSection = forwardRef((props, ref) => {
   const [isVeteran, setIsVeteran] = useState(false);
   const [isFamous, setIsFamous] = useState(false);
   const [fameRating, setFameRating] = useState(0);
@@ -80,6 +80,15 @@ export default function DesignationsSection() {
         : [...prev, category]
     );
   };
+
+    useImperativeHandle(ref, () => ({
+    getData: () => ({
+      veteran: isVeteran,
+      famous: isFamous,
+      fameRating,
+      selectedCategories,
+    }),
+  }));
   return (
     <SectionContainer>
       <NameRow>
@@ -146,4 +155,6 @@ export default function DesignationsSection() {
       </NameRow>
     </SectionContainer>
   );
-}
+});
+
+export default DesignationsSection;
