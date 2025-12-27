@@ -1,60 +1,142 @@
 import { useState, useEffect } from "react";
-import { Box, Typography, Paper, Divider } from "@mui/material";
+import { Box, Typography, Paper, Button, Tabs, Tab } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useParams } from "react-router-dom";
 import Loader from "../components/common/Loader";
 import { getMemorialDetails } from "../api/memorialApi";
-
-/* ---------------- styled components ---------------- */
+import PhotoIcon from "@mui/icons-material/Photo";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import MemorialDetailsSection from "../components/MemorialDetails/MemorialDetailsSection";
 
 const PageWrapper = styled(Box)(({ theme }) => ({
-  marginTop: 80,
-  padding: theme.spacing(3),
-  backgroundColor: theme.palette.background.default,
-  minHeight: "100vh",
+  marginTop: 64,
+
+  [theme.breakpoints.down("sm")]: {
+    marginTop: 56,
+  },
 }));
 
 const HeaderCard = styled(Paper)(({ theme }) => ({
   display: "flex",
-  gap: theme.spacing(3),
-  padding: theme.spacing(3),
-  backgroundColor: theme.palette.background.paper,
+  gap: theme.spacing(10),
+  padding: theme.spacing(10),
+  backgroundColor: theme.palette.background.gray,
+  borderRadius: "0",
+
+  [theme.breakpoints.down("sm")]: {
+    flexDirection: "column",
+    gap: theme.spacing(4),
+    padding: theme.spacing(4),
+  },
 }));
 
 const ProfileImage = styled(Box)(({ theme }) => ({
-  width: 180,
-  height: 220,
-  backgroundColor: theme.palette.custom.tombstoneGray,
+  width: 250,
   borderRadius: 4,
+  display: "flex",
+  alignItems: "flex-start",
+  justifyContent: "center",
+
+  [theme.breakpoints.down("sm")]: {
+    width: "100%",
+    justifyContent: "center",
+  },
+}));
+
+const LabelTypography = styled(Typography)(({ theme }) => ({
+  color: theme.palette.text.white,
+  textTransform: "uppercase",
+  fontWeight: 600,
+  fontSize: "20px",
+  lineHeight: 1.3,
+}));
+
+const ValueTypography = styled(Typography)(({ theme }) => ({
+  color: theme.palette.text.white,
+  textTransform: "capitalize",
+  fontWeight: 400,
+  fontSize: "16px",
+  lineHeight: 1.4,
 }));
 
 const InfoRow = styled(Box)(({ theme }) => ({
-  marginTop: theme.spacing(1),
-  color: theme.palette.text.gray,
+  display: "grid",
+  gridTemplateColumns: "160px 1fr",
+  columnGap: theme.spacing(6),
+  alignItems: "start",
+  marginTop: theme.spacing(2),
+
+  [theme.breakpoints.down("md")]: {
+    gridTemplateColumns: "1fr",
+    rowGap: theme.spacing(0.5),
+  },
 }));
 
-const SectionCard = styled(Paper)(({ theme }) => ({
-  marginTop: theme.spacing(3),
-  padding: theme.spacing(3),
-  backgroundColor: theme.palette.background.paper,
+const StyledButtons = styled(Button)(({ theme }) => ({
+  gap: theme.spacing(0.5),
+  backgroundColor: theme.palette.background.white,
 }));
 
-const Label = styled("span")(({ theme }) => ({
-  fontWeight: 600,
-  color: theme.palette.text.primary,
+const ProfileButton = styled(Button)(({ theme }) => ({
+  backgroundColor: "#3f3e3e46",
+  color: theme.palette.text.white,
+  lineHeight: 1.5,
+  fontSize: "20px",
+  width: "fit-content",
+  padding: "6px 20px",
+  "&:hover": {
+    backgroundColor: "#534f4f46",
+  },
 }));
 
-/* ---------------- helpers ---------------- */
+const StyledTabs = styled(Tabs)(({ theme }) => ({
+  backgroundColor: "#ebefe7ff",
+
+  "& .MuiTabs-flexContainer": {
+    justifyContent: "center",
+  },
+
+  "& .MuiTabs-indicator": {
+    height: 3,
+    borderRadius: 2,
+    backgroundColor: theme.palette.primary.main,
+  },
+}));
 
 const formatDate = (date) =>
-  date ? new Date(date).toLocaleDateString() : "-";
+  date
+    ? new Date(date).toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      })
+    : "-";
 
-/* ---------------- component ---------------- */
+const calculateAge = (birthDate, deathDate) => {
+  if (!birthDate || !deathDate) return null;
+
+  const birth = new Date(birthDate);
+  const death = new Date(deathDate);
+
+  let age = death.getFullYear() - birth.getFullYear();
+
+  const hasHadBirthday =
+    death.getMonth() > birth.getMonth() ||
+    (death.getMonth() === birth.getMonth() &&
+      death.getDate() >= birth.getDate());
+
+  if (!hasHadBirthday) {
+    age -= 1;
+  }
+
+  return age;
+};
 
 export default function MemorialDetails() {
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
   const [memorial, setMemorial] = useState(null);
+  const [tabValue, setTabValue] = useState("memorial");
 
   useEffect(() => {
     const fetchMemorial = async () => {
@@ -82,6 +164,7 @@ export default function MemorialDetails() {
     LastName,
     Suffix,
     NickName,
+    MaidenName,
     DateOfBirth,
     DateOfDeath,
     DateOfBirthLocation,
@@ -98,79 +181,102 @@ export default function MemorialDetails() {
     <PageWrapper>
       {/* ---------- Header ---------- */}
       <HeaderCard elevation={0}>
-        <ProfileImage />
         <Box>
-          <Typography variant="subTitle">{fullName}</Typography>
+          <ProfileImage>
+            <PhotoIcon sx={{ height: "100%", width: "100%", color: "gray" }} />
+          </ProfileImage>
+          <Box sx={{ display: "flex", justifyContent: "center", gap: "5px" }}>
+            <StyledButtons>
+              {" "}
+              <AddCircleIcon fontSize="small" /> Add Photos
+            </StyledButtons>
+          </Box>
+        </Box>
 
-          {NickName && (
-            <Typography sx={{ mt: 0.5, color: "text.gray" }}>
-              “{NickName}”
-            </Typography>
-          )}
-
+        <Box>
+          <LabelTypography sx={{ fontSize: "36px", mb: 2 }}>
+            {[NickName, MaidenName].filter(Boolean).join(" ")}
+          </LabelTypography>
           <InfoRow>
-            <Label>Born:</Label> {formatDate(DateOfBirth)} —{" "}
-            {DateOfBirthLocation}
+            <LabelTypography>Original Name</LabelTypography>
+            <ValueTypography>{fullName}</ValueTypography>
           </InfoRow>
 
           <InfoRow>
-            <Label>Died:</Label> {formatDate(DateOfDeath)} —{" "}
-            {DateOfDeathLocation}
+            <LabelTypography>Birth</LabelTypography>
+            <Box sx={{ display: "flex", flexDirection: "column" }}>
+              <ValueTypography>{formatDate(DateOfBirth)}</ValueTypography>
+              <ValueTypography>{DateOfBirthLocation}</ValueTypography>
+            </Box>
           </InfoRow>
 
           <InfoRow>
-            <Label>Burial:</Label> {BurialInformation?.BurialType}
+            <LabelTypography>Death</LabelTypography>
+            <Box sx={{ display: "flex", flexDirection: "column" }}>
+              <ValueTypography>
+                {formatDate(DateOfDeath) +
+                  " (aged " +
+                  calculateAge(DateOfBirth, DateOfDeath) +
+                  ")"}
+              </ValueTypography>
+              <ValueTypography>{DateOfDeathLocation}</ValueTypography>
+            </Box>
+          </InfoRow>
+
+          <InfoRow>
+            <LabelTypography>Burial Memorial ID</LabelTypography>
+            <Box>
+              <ValueTypography>{BurialInformation?.Id}</ValueTypography>
+              <ValueTypography
+                sx={{
+                  textDecorationLine: "underline",
+                  textUnderlineOffset: "4px",
+                  cursor: "pointer",
+                  mt: 0.5,
+                  "&:hover": { textDecoration: "none" },
+                }}
+              >
+                View Source
+              </ValueTypography>
+            </Box>
+          </InfoRow>
+          <InfoRow>
+            <Box sx={{ mt: 2 }}>
+              <ProfileButton variant="small">EDIT</ProfileButton>
+            </Box>
           </InfoRow>
         </Box>
       </HeaderCard>
+      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+        <StyledTabs
+          value={tabValue}
+          onChange={(_, newValue) => setTabValue(newValue)}
+          textColor="primary"
+          indicatorColor="primary"
+        >
+          <Tab
+            sx={{ fontWeight: 600, fontSize: "20px" }}
+            label="MEMORIAL"
+            value="memorial"
+          />
+          <Tab
+            sx={{ fontWeight: 600, fontSize: "20px" }}
+            label="PHOTOS"
+            value="photos"
+          />
+        </StyledTabs>
+      </Box>
+      <Box>
+        {tabValue === "memorial" && (
+          <MemorialDetailsSection memorial={memorial} />
+        )}
 
-      {/* ---------- Biography ---------- */}
-      <SectionCard elevation={0}>
-        <Typography variant="sectionTitle">Biography</Typography>
-        <Divider sx={{ my: 2 }} />
-        <Box
-          dangerouslySetInnerHTML={{ __html: Biography }}
-          sx={{ color: "text.secondary" }}
-        />
-      </SectionCard>
-
-      {/* ---------- Inscription ---------- */}
-      {BurialInformation?.Inscription && (
-        <SectionCard elevation={0}>
-          <Typography variant="sectionTitle">Inscription</Typography>
-          <Divider sx={{ my: 2 }} />
-          <Typography>{BurialInformation.Inscription}</Typography>
-        </SectionCard>
-      )}
-
-      {/* ---------- Gravesite Details ---------- */}
-      {BurialInformation?.Gravesite && (
-        <SectionCard elevation={0}>
-          <Typography variant="sectionTitle">Gravesite Details</Typography>
-          <Divider sx={{ my: 2 }} />
-          <Typography>{BurialInformation.Gravesite}</Typography>
-        </SectionCard>
-      )}
-
-      {/* ---------- Burial Info ---------- */}
-      <SectionCard elevation={0}>
-        <Typography variant="sectionTitle">Burial Information</Typography>
-        <Divider sx={{ my: 2 }} />
-
-        <InfoRow>
-          <Label>Plot Number:</Label> {BurialInformation?.PlotNumber}
-        </InfoRow>
-
-        <InfoRow>
-          <Label>Monument:</Label>{" "}
-          {BurialInformation?.Monument ? "Yes" : "No"}
-        </InfoRow>
-
-        <InfoRow>
-          <Label>Cenotaph:</Label>{" "}
-          {BurialInformation?.Cenotaph ? "Yes" : "No"}
-        </InfoRow>
-      </SectionCard>
+        {tabValue === "photos" && (
+          <Typography sx={{ color: "text.secondary" }}>
+            Photos coming soon…
+          </Typography>
+        )}
+      </Box>{" "}
     </PageWrapper>
   );
 }
