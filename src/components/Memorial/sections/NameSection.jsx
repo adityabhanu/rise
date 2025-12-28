@@ -189,7 +189,7 @@ const NameSection = forwardRef(({ birthDeathRef }, ref) => {
               label="Nickname"
               size="small"
               value={localData.nickName}
-              onChange={(e) => updateField("nickname", e.target.value)}
+              onChange={(e) => updateField("nickName", e.target.value)}
             />
             <TextField
               label="Maiden Name"
