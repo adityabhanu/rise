@@ -53,12 +53,12 @@ export default function AddMemorialPage() {
 
   const handleSubmit = async () => {
     const finalPayload = {
-      ...nameRef.current.getData(),
-      ...birthDeathRef.current.getData(),
-      biography: bioRef.current.getData(),
-      ...designationsRef.current.getData(),
-      ...closeRelativeRef.current.getData(),
-      ...burialRef.current.getData(),
+      ...nameRef?.current?.getData(),
+      ...birthDeathRef?.current?.getData(),
+      biography: bioRef?.current?.getData(),
+      ...designationsRef?.current?.getData(),
+      ...closeRelativeRef?.current?.getData(),
+      ...burialRef?.current?.getData(),
     };
 
     setLoading(true);
