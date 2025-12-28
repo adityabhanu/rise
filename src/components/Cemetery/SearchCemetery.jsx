@@ -11,6 +11,7 @@ import { styled } from "@mui/material/styles";
 import { useTheme } from "@emotion/react";
 import BrowseLocations from "../common/BrowseLocations";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import { useNavigate } from "react-router-dom";
 
 const PageContainer = styled(Box)(({ theme }) => ({
   width: "100%",
@@ -58,6 +59,10 @@ const ButtonsGroup = styled(Box)(({ theme }) => ({
   flexDirection: "column",
   gap: theme.spacing(1),
   cursor: "pointer",
+  color: theme.palette.text.secondary,
+  "&:hover": {
+    color: theme.palette.text.primary,
+  },
 
   [theme.breakpoints.down("sm")]: {
     padding: "16px",
@@ -84,6 +89,7 @@ export default function SearchCemetery() {
   const [locationOptions, setLocationOptions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [openBrowse, setOpenBrowse] = useState(false);
+  const navigate = useNavigate();
 
   const theme = useTheme();
 
@@ -206,12 +212,11 @@ export default function SearchCemetery() {
         </Box>
       </FormCard>
       <Box sx={{ display: "flex" }}>
-        <ButtonsGroup>
+        <ButtonsGroup onClick={() => navigate(`/cemetery/create`)}>
           <AddCircleIcon
             sx={{
               width: "60px",
               height: "60px",
-              color: theme.palette.text.secondary,
             }}
           />
           <Typography>Add a Cemetery</Typography>

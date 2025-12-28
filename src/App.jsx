@@ -7,6 +7,7 @@ import CreateMemorialSearch from "./components/CreateMemorialSearch";
 import TranscribeSearch from "./components/TranscribeSearch";
 import AddMemorialPage from "./components/Memorial/AddMemorialPage";
 import MemorialDetails from "./pages/MemorialDetails";
+import AddCemetery from "./pages/AddCemetery";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/memorial/create" element={<AddMemorialPage />} />
         <Route path="/memorial/:id" element={<MemorialDetails />} />
         <Route path="/cemetery" element={<Cemetery />} />
+        <Route path="/cemetery/create" element={<AddCemetery />} />
         <Route
           path="/memorial/create/search-cemetery"
           element={<CreateMemorialSearch />}
