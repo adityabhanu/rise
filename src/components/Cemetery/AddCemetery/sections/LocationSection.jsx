@@ -26,7 +26,7 @@ const LocationSection = forwardRef((_, ref) => {
   useImperativeHandle(ref, () => ({
     getData: () => ({
       location,
-      address,
+      streetAddress: address,
       latitude: lat,
       longitude: lng,
     }),

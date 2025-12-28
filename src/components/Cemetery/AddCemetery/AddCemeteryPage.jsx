@@ -7,6 +7,7 @@ import LocationSection from "./sections/LocationSection";
 import DescriptionSection from "./sections/DescriptionSection";
 import SubmitSection from "./sections/SubmitSection";
 import AdditionalDetails from "./sections/AdditionalDetails";
+import { createCemetery } from "../../../api/cemeteryApi";
 
 const PageContainer = styled(Box)(({ theme }) => ({
   background: theme.palette.background.default,
@@ -29,12 +30,18 @@ export default function AddCemeteryPage() {
   const nameRef = useRef();
   const locationRef = useRef();
   const descriptionRef = useRef();
+  const contactInfoRef = useRef();
+  const cemeteryStatusRef = useRef();
+  const additionalInfoRef = useRef();
 
   const handleSubmit = () => {
     const payload = {
       ...nameRef.current.getData(),
       ...locationRef.current.getData(),
       description: descriptionRef.current.getData(),
+      ...contactInfoRef.current.getData(),
+      ...cemeteryStatusRef.current.getData(),
+      additionalInfo: additionalInfoRef.current.getData(),
     };
 
     console.log("Create cemetery payload:", payload);
@@ -65,7 +72,11 @@ export default function AddCemeteryPage() {
           <DescriptionSection ref={descriptionRef} />
           <Divider sx={{ my: 3 }} />
 
-          <AdditionalDetails />
+          <AdditionalDetails
+            additionalInfoRef={additionalInfoRef}
+            cemeteryStatusRef={cemeteryStatusRef}
+            contactInfoRef={contactInfoRef}
+          />
           <Divider sx={{ my: 3 }} />
 
           <SubmitSection onSubmit={handleSubmit} />

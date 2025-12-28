@@ -7,7 +7,7 @@ import {
   Row,
   Content,
   SectionTitle,
-  StyledTextField
+  StyledTextField,
 } from "../CemeteryStyles";
 
 const ContactInfoSection = forwardRef((_, ref) => {
@@ -19,7 +19,16 @@ const ContactInfoSection = forwardRef((_, ref) => {
   });
 
   useImperativeHandle(ref, () => ({
-    getData: () => data,
+    getData: () => {
+      return {
+        contactInfo: {
+          email: data.email,
+          website: data.website,
+          phone: data.phone,
+          officeAddress: data.address,
+        },
+      };
+    },
   }));
 
   const handleChange = (field) => (e) => {
@@ -29,62 +38,61 @@ const ContactInfoSection = forwardRef((_, ref) => {
   return (
     <SectionContainer>
       <SectionTitle variant="sectionTitle">Contact Info</SectionTitle>
-    <Box>
-      {/* Email + Website */}
-      <Row>
-        <Content
-          sx={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: 2,
-          }}
-        >
-          <StyledTextField
-            fullWidth
-            size="medium"
-            label="Email"
-            value={data.email}
-            onChange={handleChange("email")}
-          />
+      <Box>
+        {/* Email + Website */}
+        <Row>
+          <Content
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 2,
+            }}
+          >
+            <StyledTextField
+              fullWidth
+              size="medium"
+              label="Email"
+              value={data.email}
+              onChange={handleChange("email")}
+            />
 
-          <StyledTextField
-            fullWidth
-            size="medium"
-            label="Website (https://www.example.com)"
-            value={data.website}
-            onChange={handleChange("website")}
-          />
-        </Content>
-      </Row>
+            <StyledTextField
+              fullWidth
+              size="medium"
+              label="Website (https://www.example.com)"
+              value={data.website}
+              onChange={handleChange("website")}
+            />
+          </Content>
+        </Row>
 
-      {/* Phone */}
-      <Row>
-        <Content>
-          <StyledTextField
-            fullWidth
-            size="medium"
-            label="Phone"
-            value={data.phone}
-            onChange={handleChange("phone")}
-          />
-        </Content>
-      </Row>
+        {/* Phone */}
+        <Row>
+          <Content>
+            <StyledTextField
+              fullWidth
+              size="medium"
+              label="Phone"
+              value={data.phone}
+              onChange={handleChange("phone")}
+            />
+          </Content>
+        </Row>
 
-      {/* Office Address */}
-      <Row>
-        <Content>
-          <StyledTextField
-            fullWidth
-            multiline
-            minRows={3}
-            size="medium"
-            label="Office Address"
-            value={data.address}
-            onChange={handleChange("address")}
-          />
-
-        </Content>
-      </Row>
+        {/* Office Address */}
+        <Row>
+          <Content>
+            <StyledTextField
+              fullWidth
+              multiline
+              minRows={3}
+              size="medium"
+              label="Office Address"
+              value={data.address}
+              onChange={handleChange("address")}
+            />
+          </Content>
+        </Row>
       </Box>
     </SectionContainer>
   );

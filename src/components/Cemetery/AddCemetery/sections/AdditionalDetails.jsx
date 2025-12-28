@@ -6,7 +6,11 @@ import ContactInfoSection from "./ContactInfoSection";
 import CemeteryStatusSection from "./CemeteryStatusSection";
 import AdditionalInformationSection from "./AdditionalInformationSection";
 import { SectionContainer } from "../CemeteryStyles";
-const AdditionalDetails = () => {
+const AdditionalDetails = ({
+  contactInfoRef,
+  cemeteryStatusRef,
+  additionalInfoRef,
+}) => {
   const [showDetails, setShowDetails] = useState(false);
   const theme = useTheme();
   return (
@@ -30,13 +34,13 @@ const AdditionalDetails = () => {
 
       {showDetails && (
         <>
-          <ContactInfoSection />
+          <ContactInfoSection ref={contactInfoRef} />
           <Divider sx={{ my: 3 }} />
 
-          <CemeteryStatusSection />
+          <CemeteryStatusSection ref={cemeteryStatusRef} />
           <Divider sx={{ my: 3 }} />
 
-          <AdditionalInformationSection />
+          <AdditionalInformationSection ref={additionalInfoRef} />
         </>
       )}
     </SectionContainer>

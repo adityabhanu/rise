@@ -14,7 +14,9 @@ const CemeteryStatusSection = forwardRef((_, ref) => {
   const [status, setStatus] = useState("public");
 
   useImperativeHandle(ref, () => ({
-    getData: () => status,
+    getData: () => {
+      return { status: status };
+    },
   }));
 
   return (
