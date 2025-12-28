@@ -1,3 +1,12 @@
+import React from "react";
+import SearchCemetery from "../components/Cemetery/SearchCemetery";
+import CemeteryMapView from "../components/Cemetery/CemeteryMapView";
+
 export default function Cemetery() {
-  return <h1 style={{marginTop: "90px"}}>Cemetery Page</h1>;
+  return (
+    <>
+    <SearchCemetery />
+    <CemeteryMapView />
+    </>
+  )
 }
