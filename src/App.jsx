@@ -8,12 +8,14 @@ import TranscribeSearch from "./components/TranscribeSearch";
 import AddMemorialPage from "./components/Memorial/AddMemorialPage";
 import MemorialDetails from "./pages/MemorialDetails";
 import AddCemetery from "./pages/AddCemetery";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
     <Routes>
       <Route element={<PageLayout />}>
         <Route path="/" element={<Home />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/memorial" element={<Memorial />} />
         <Route path="/memorial/create" element={<AddMemorialPage />} />
         <Route path="/memorial/:id" element={<MemorialDetails />} />

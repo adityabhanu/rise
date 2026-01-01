@@ -65,6 +65,7 @@ export const uploadProfileImage = async (userId, file) => {
     headers: {
       "x-ms-blob-type": "BlockBlob",
       "Content-Type": file.type,
+      "x-ms-blob-cache-control": "no-cache, no-store, must-revalidate",
     },
     body: file,
   });
@@ -77,4 +78,27 @@ export const uploadProfileImage = async (userId, file) => {
     blobPath: BlobPath,
     expiresAt: ExpiresAt,
   };
+};
+
+export const updateUserProfile = async (userId, payload) => {
+  try {
+    const res = await apiClient.patch(
+      `/auth/users/${userId}`,
+      { payload },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!res?.success) {
+      return res;
+    }
+
+    return res;
+  } catch (err) {
+    console.error("Update user profile failed", err);
+    throw err;
+  }
 };

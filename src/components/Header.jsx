@@ -27,9 +27,11 @@ import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { openLoginDialog, openRegisterDialog } from "../store/slices/appSlice";
 import { logoutUser } from "../store/slices/userSlice";
+import { useNavigate } from "react-router-dom";
 
 export default function Header() {
   const theme = useTheme();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const isDesktop = useMediaQuery("(min-width:768px)");
   const { openLogin, openRegister } = useSelector((state) => state.app);
@@ -185,8 +187,17 @@ export default function Header() {
                   >
                     <MenuItem
                       onClick={() => {
+                        handleMenuClose();
+                        navigate("/profile");
+                      }}
+                    >
+                      Profile
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
                         dispatch(logoutUser());
                         handleMenuClose();
+                        navigate("/", { replace: true });
                       }}
                     >
                       Logout
@@ -275,8 +286,17 @@ export default function Header() {
                   >
                     <MenuItem
                       onClick={() => {
+                        handleMenuClose();
+                        navigate("/profile");
+                      }}
+                    >
+                      Profile
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
                         dispatch(logoutUser());
                         handleMenuClose();
+                        navigate("/", { replace: true });
                       }}
                     >
                       Logout
