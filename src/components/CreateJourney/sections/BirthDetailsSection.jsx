@@ -17,6 +17,7 @@ const BirthDetailsSection = forwardRef((_, ref) => {
     birthLength: "",
     hospital: "",
     doctor: "",
+    birthPlace: null,
   });
 
   const [mapOpen, setMapOpen] = useState(false);
@@ -36,8 +37,23 @@ const BirthDetailsSection = forwardRef((_, ref) => {
       );
       const json = await res.json();
 
-      const address = json.results?.[0]?.formatted_address || "";
-      update("hospital", address);
+      const result = json.results?.[0];
+
+      if (!result) return;
+
+      const birthPlace = {
+        name:
+          result.address_components?.[0]?.long_name || null,
+        latitude,
+        longitude,
+        address: result.formatted_address || null,
+      };
+
+      setData((prev) => ({
+        ...prev,
+        hospital: birthPlace.address || "",
+        birthPlace,
+      }));
     } catch (e) {
       console.error("Failed to resolve address", e);
     }

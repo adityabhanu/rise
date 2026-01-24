@@ -16,7 +16,7 @@ import LettersSection from "./sections/LettersSection";
 import SubmitSection from "./sections/SubmitSection";
 
 import { createMemorial } from "../../api/memorialApi";
-import { saveMemorialMedia  } from "../../api/memorialMediaApi";
+import { saveMemorialMedia } from "../../api/memorialMediaApi";
 import Loader from "../common/Loader";
 import StatusDialog from "../common/StatusDialog";
 import { buildCreateMemorialPayload } from "../../utils/buildCreateMemorialPayload";
@@ -66,66 +66,73 @@ export default function CreateJourney({ type }) {
 
   const navigate = useNavigate();
 
-const handleSubmit = async () => {
-  const payload = buildCreateMemorialPayload({
-    type,
-    privacy: privacyRef.current?.getData(),
-    name: nameRef.current?.getData(),
-    birth: birthRef.current?.getData(),
-    aboutAtBirth: aboutRef.current?.getData(),
-    family: familyRef.current?.getData(),
-    siblings: siblingsRef.current?.getData(),
-    visitors: visitorsRef.current?.getData(),
-    parentsThoughts: thoughtsRef.current?.getData(),
-    letters: lettersRef.current?.getData(),
-  });
-
-  setLoading(true);
-
-  try {
-    // 1️⃣ Create memorial (NO media yet)
-    const res = await createMemorial(payload);
-
-    if (!res || res.error) {
-      throw new Error(res?.error || "Invalid API response");
-    }
-
-    const memorialId = res?.Id || res?.id;
-    if (!memorialId) {
-      throw new Error("Memorial ID missing");
-    }
-
-    setCreatedMemorialId(memorialId);
-
-    // 2️⃣ Get media from MediaSection
-    const mediaData = mediaRef.current?.getData();
-
-    if (mediaData) {
-      await saveMemorialMedia(memorialId, mediaData);
-    }
-
-    // 3️⃣ Success
-    setStatusDialog({
-      open: true,
-      status: "success",
-      title: "Journey Created",
-      message: "Your journey has been created successfully.",
+  const handleSubmit = async () => {
+    const payload = buildCreateMemorialPayload({
+      type,
+      privacy: privacyRef.current?.getData(),
+      name: nameRef.current?.getData(),
+      birth: birthRef.current?.getData(),
+      aboutAtBirth: aboutRef.current?.getData(),
+      family: familyRef.current?.getData(),
+      siblings: siblingsRef.current?.getData(),
+      visitors: visitorsRef.current?.getData(),
+      parentsThoughts: thoughtsRef.current?.getData(),
+      letters: lettersRef.current?.getData(),
     });
-  } catch (err) {
-    console.error("Create Journey failed:", err);
 
-    setStatusDialog({
-      open: true,
-      status: "error",
-      title: "Something went wrong",
-      message:
-        "We couldn’t create the journey. Please review your details and try again.",
-    });
-  } finally {
-    setLoading(false);
-  }
-};
+    setLoading(true);
 
+    try {
+      // 1️⃣ Create memorial (NO media yet)
+      const res = await createMemorial(payload);
+
+      if (!res || res.error) {
+        throw new Error(res?.error || "Invalid API response");
+      }
+
+      const memorialId = res?.Id || res?.id;
+      if (!memorialId) {
+        throw new Error("Memorial ID missing");
+      }
+
+      setCreatedMemorialId(memorialId);
+
+      const mediaData = mediaRef.current?.getData();
+      const aboutData = aboutRef.current?.getData();
+
+      const finalMediaData = {
+        ...mediaData,
+        voiceNotes: [
+          ...(mediaData?.voiceNotes || []),
+          ...(aboutData?.voiceNotes || []),
+        ],
+      };
+
+      if (finalMediaData) {
+        await saveMemorialMedia(memorialId, finalMediaData);
+      }
+
+      // 3️⃣ Success
+      setStatusDialog({
+        open: true,
+        status: "success",
+        title: "Journey Created",
+        message: "Your journey has been created successfully.",
+      });
+    } catch (err) {
+      console.error("Create Journey failed:", err);
+
+      setStatusDialog({
+        open: true,
+        status: "error",
+        title: "Something went wrong",
+        message:
+          "We couldn’t create the journey. Please review your details and try again.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleDialogPrimaryAction = () => {
     setStatusDialog((prev) => ({ ...prev, open: false }));
@@ -144,9 +151,7 @@ const handleSubmit = async () => {
         status={statusDialog.status}
         title={statusDialog.title}
         message={statusDialog.message}
-        onClose={() =>
-          setStatusDialog((prev) => ({ ...prev, open: false }))
-        }
+        onClose={() => setStatusDialog((prev) => ({ ...prev, open: false }))}
         onPrimaryAction={handleDialogPrimaryAction}
       />
 
