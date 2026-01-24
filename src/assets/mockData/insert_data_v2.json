@@ -1,0 +1,153 @@
+{
+  "profileType": "PASSED | LIVING | NEWBORN",
+  "isPublic": false,
+
+  "fullName": "Aarav Sharma",
+  "birthDetails": {
+    "birthDate": "1990-06-12",
+    "birthTime": "08:45 AM",
+    "birthMetrics": {
+      "weightKg": 3.2,
+      "lengthCm": 52
+    },
+    "birthPlace": {
+      // separate table for current location
+      "name": "Green Valley Crematorium",
+      "lat": 65.05,
+      "lon": 65.0,
+      "address": "address"
+    },
+    "doctorName": "Dr. R. Mehta"
+  },
+
+  "passingDetails": {
+    "passingDate": "2023-11-18",
+    "passingPlace": {
+      // separate table for current location
+      "name": "Green Valley Crematorium",
+      "lat": 65.05,
+      "lon": 65.0,
+      "address": "address"
+    },
+    "cemetery": {
+      "name": "Green Valley Crematorium",
+      "lat": 65.05,
+      "lon": 65.0,
+      "address": "address"
+    },
+    "cause": "Cardiac arrest"
+  },
+
+  "appearanceAtBirth": {
+    "eyeColor": "Brown",
+    "skinTone": "Wheatish",
+    "lookAlike": "Father",
+    "birthmarks": "Small mole on left shoulder",
+    "doctorComment": "Healthy newborn with strong vitals",
+    "doctorVoiceNote": "/uploads/voice_notes/doctor_note_01.m4a"
+  },
+
+  "family": {
+    "spouse": {
+      "name": "Radha",
+      "story": "He was a good person"
+    },
+    "parents": {
+      "mother": "Sunita Sharma",
+      "father": "Rakesh Sharma"
+    },
+    "grandParents": {
+      "maternal": "Kamla Devi & Mohan Lal",
+      "paternal": "Sarla Devi & Om Prakash"
+    },
+    "siblings": [
+      {
+        "name": "Ananya Sharma",
+        "relationship": "Sister"
+      }
+    ],
+    "children": [
+      {
+        "name": "Kabir Sharma",
+        "relationship": "Son"
+      }
+    ],
+    "grandChildren": [
+      {
+        "name": "Ayaan Sharma",
+        "relationship": "Grandson"
+      }
+    ],
+    "familyPets": "Cats and Dogs"
+  },
+
+  "visitors": ["Rohit Verma", "Neha Kapoor", "Vikram Singh"],
+
+  "parentsThoughts": {
+    "foundOut": "We were overjoyed and emotional",
+    "firstHeld": "It felt magical and surreal",
+    "fears": "Worried about health and future",
+    "wishes": "A happy and meaningful life"
+  },
+
+  "letters": [
+    {
+      "from": "Mother",
+      "content": "You brought immense happiness into our lives."
+    },
+    {
+      "from": "Father",
+      "content": "I promise to always protect and guide you."
+    }
+  ],
+
+  "notes": {
+    "birthNotes": "Born during monsoon season",
+    "favorites": "Loved classical music and evening walks"
+  },
+
+  "personalities": {
+    "appearance": "Calm and gentle",
+    "identifiers": "Known for kindness",
+    "fear": "Fear of losing loved ones",
+    "wishes": "Peaceful and fulfilled life"
+  },
+
+  "hobbies": {
+    "petAnimals": "Dogs",
+    "familyTraditions": "Evening walks together",
+    "lifeLessons": "Value relationships over material things"
+  },
+
+  "lifeDetails": {
+    "earlyLife": {
+      "hometown": "Jaipur",
+      "fatherName": "Rakesh Sharma",
+      "motherName": "Sunita Sharma",
+      "background": "Middle-class traditional family",
+      "education": "St. Xavier's School"
+    },
+    "career": {
+      "mentors": "Uncle Mahesh Sharma",
+      "familyRole": "Primary breadwinner"
+    },
+    "finalDays": {
+      "lastDaysStory": "Surrounded by family and loved ones",
+      "finalWords": "Take care of each other",
+      "funeralDetails": "Traditional Hindu rites performed",
+      "obituary": "A loving father and devoted son",
+      "prayers": "Om Shanti"
+    }
+  },
+
+  "media": {
+    // ask for folder upload url. all folders must have a dintinct userid
+    "photos": ["/uploads/photos/baby_01.jpg", "/uploads/photos/baby_02.jpg"],
+    "footprints": ["/uploads/footprints/footprint_01.jpg"],
+    "familyPhotos": ["/uploads/familyPhotos/family_01.jpg"],
+    "weddingPhotos": ["/uploads/weddingPhotos/wedding_01.jpg"],
+    "videos": ["/uploads/videos/video_01.mp4"],
+    "voiceNotes": ["/uploads/voice_notes/voice_01.m4a"],
+    "handwrittenNotes": ["/uploads/handwrittenNotes/note_01.png"]
+  }
+}

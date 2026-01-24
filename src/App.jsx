@@ -9,6 +9,7 @@ import AddMemorialPage from "./components/Memorial/AddMemorialPage";
 import MemorialDetails from "./pages/MemorialDetails";
 import AddCemetery from "./pages/AddCemetery";
 import Profile from "./pages/Profile";
+import CreateJourney from "./components/CreateJourney/CreateJourney";
 
 function App() {
   return (
@@ -30,6 +31,10 @@ function App() {
           path="/transcribe/create/search-cemetery"
           element={<TranscribeSearch />}
         />
+
+        <Route path="/add/new-born" element={<CreateJourney type="newBorn" />} />
+        <Route path="/add/living-profile" element={<CreateJourney type="livingProfile" />} />
+        <Route path="/add/memorial" element={<CreateJourney type="memorial" />} />
       </Route>
     </Routes>
   );

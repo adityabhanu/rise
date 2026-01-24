@@ -1,5 +1,6 @@
 import { useTheme } from "@mui/material/styles";
 import SearchSection from "../components/SearchMemorial";
+import JourneyCards from "../components/JourneyCards";
 import bannerImage from "../assets/images/fg-bg-winterA.jpeg";
 import { Box, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -44,9 +45,10 @@ export default function Home() {
             textShadow: `0 0 6px rgba(0,0,0,0.6), 0 0 12px rgba(0,0,0,0.4), 0 0 20px rgba(0,0,0,0.3)`,
           }}
         >
-          Over 250 million memorials created by the community since 1995.
+          Capture life moments that matter
         </Typography>
-        <SearchSection />
+        <JourneyCards />
+        {/* <SearchSection /> */}
       </Banner>
       <Links />
     </>
