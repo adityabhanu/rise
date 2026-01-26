@@ -22,8 +22,10 @@ const Left = styled(Box)({
   gap: "12px",
 });
 
-const PrivacySection = forwardRef((_, ref) => {
-  const [isPrivate, setIsPrivate] = useState(true);
+const PrivacySection = forwardRef(({ type }, ref) => {
+  const defaultIsPrivate = type !== "memorial";
+
+  const [isPrivate, setIsPrivate] = useState(defaultIsPrivate);
 
   useImperativeHandle(ref, () => ({
     getData: () => ({ isPrivate }),

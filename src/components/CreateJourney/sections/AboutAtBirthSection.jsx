@@ -266,7 +266,7 @@ const AboutAtBirthSection = forwardRef((_, ref) => {
         <TextField
           fullWidth
           multiline
-          minRows={2}
+          rows={2}
           label="Unique birthmarks or features"
           value={birthmarks}
           sx={{ mt: 2 }}
@@ -277,7 +277,7 @@ const AboutAtBirthSection = forwardRef((_, ref) => {
         <TextField
           fullWidth
           multiline
-          minRows={2}
+          rows={2}
           label="Doctor / Nurse’s first comment"
           value={firstComment}
           sx={{ mt: 2 }}

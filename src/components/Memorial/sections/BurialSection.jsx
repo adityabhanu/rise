@@ -129,7 +129,7 @@ const BurialSection = forwardRef((props, ref) => {
           <StyledTextField
             label="Enter the inscription here. Only include what is on a grave marker. (optional)"
             multiline
-            minRows={4}
+            rows={4}
             value={inscription}
             onChange={(e) => setInscription(e.target.value)}
           />
@@ -139,7 +139,7 @@ const BurialSection = forwardRef((props, ref) => {
           <StyledTextField
             label="Details specific to grave marker or site (i.e. description, condition, history)"
             multiline
-            minRows={4}
+            rows={4}
             value={gravesiteDetails}
             onChange={(e) => setGravesiteDetails(e.target.value)}
           />

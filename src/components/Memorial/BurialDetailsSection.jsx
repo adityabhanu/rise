@@ -111,7 +111,7 @@ export default function BurialDetailsSection({
         label="Add any other burial details (OPTIONAL)"
         fullWidth
         multiline
-        minRows={4}
+        rows={4}
         value={burialDetails}
         onChange={(e) => setBurialDetails(e.target.value)}
       />

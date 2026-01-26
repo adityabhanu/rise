@@ -7,11 +7,10 @@ import {
 import { styled } from "@mui/material/styles";
 import { forwardRef, useImperativeHandle, useRef, useState } from "react";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import ClearIcon from '@mui/icons-material/Clear';
-
-const MAX_SIZE_MB = 5;
-const MAX_FOOTPRINTS = 2;
-const MAX_BABY_IMAGES = 5;
+import ClearIcon from "@mui/icons-material/Clear";
+import AudiotrackIcon from "@mui/icons-material/Audiotrack";
+import VideoLibraryIcon from "@mui/icons-material/VideoLibrary";
+import DescriptionIcon from "@mui/icons-material/Description";
 
 const MediaCard = styled(Box)(({ theme }) => ({
   borderRadius: 10,
@@ -21,17 +20,12 @@ const MediaCard = styled(Box)(({ theme }) => ({
   justifyContent: "space-between",
   cursor: "pointer",
   border: `1px dashed ${theme.palette.divider}`,
+  marginTop: theme.spacing(2),
 
   "&:hover": {
     background: theme.palette.background.default,
   },
 }));
-
-const MediaInfo = styled(Box)({
-  display: "flex",
-  alignItems: "center",
-  gap: 10,
-});
 
 const PreviewGrid = styled(Box)({
   display: "flex",
@@ -48,7 +42,7 @@ const PreviewItem = styled(Box)(({ theme }) => ({
   overflow: "hidden",
   border: `1px solid ${theme.palette.divider}`,
 
-  "& img": {
+  "& img, & video": {
     width: "100%",
     height: "100%",
     objectFit: "cover",
@@ -62,156 +56,261 @@ const DeleteBtn = styled(IconButton)(({ theme }) => ({
   background: theme.palette.background.paper,
 }));
 
-const MediaSection = forwardRef((_, ref) => {
-  const [footprints, setFootprints] = useState([]);
-  const [babyImages, setBabyImages] = useState([]);
+/* ---------- reusable media group ---------- */
+const MediaGroup = ({
+  title,
+  icon,
+  accept,
+  maxCount,
+  maxSizeMB,
+  files,
+  setFiles,
+  previewType = "image",
+}) => {
+  const inputRef = useRef(null);
 
-  const footprintsInputRef = useRef(null);
-  const babyImagesInputRef = useRef(null);
-
-  useImperativeHandle(ref, () => ({
-    getData: () => ({
-      footprints: footprints.map((i) => i.file),
-      photos: babyImages.map((i) => i.file),
-    }),
-  }));
-
-  const validateFiles = (files, existingCount, maxCount) => {
+  const validateFiles = (selected) => {
     const valid = [];
 
-    for (const file of files) {
-      if (file.size > MAX_SIZE_MB * 1024 * 1024) {
-        alert(`${file.name} exceeds 5MB`);
+    for (const file of selected) {
+      if (file.size > maxSizeMB * 1024 * 1024) {
+        alert(`${file.name} exceeds ${maxSizeMB}MB`);
         continue;
       }
 
-      if (existingCount + valid.length >= maxCount) {
-        alert(`Maximum ${maxCount} images allowed`);
+      if (files.length + valid.length >= maxCount) {
+        alert(`Maximum ${maxCount} files allowed`);
         break;
       }
 
       valid.push({
-        file,
-        preview: URL.createObjectURL(file),
         id: crypto.randomUUID(),
+        file,
+        preview:
+          previewType === "audio"
+            ? null
+            : URL.createObjectURL(file),
       });
     }
 
     return valid;
   };
 
-  const handleUpload = (e, type) => {
-    const files = Array.from(e.target.files);
-    if (!files.length) return;
+  const handleUpload = (e) => {
+    const selected = Array.from(e.target.files);
+    if (!selected.length) return;
 
-    if (type === "footprints") {
-      setFootprints((prev) => [
-        ...prev,
-        ...validateFiles(files, prev.length, MAX_FOOTPRINTS),
-      ]);
-    } else {
-      setBabyImages((prev) => [
-        ...prev,
-        ...validateFiles(files, prev.length, MAX_BABY_IMAGES),
-      ]);
-    }
-
+    setFiles((prev) => [...prev, ...validateFiles(selected)]);
     e.target.value = "";
   };
 
-  const handleDelete = (type, id) => {
-    const updater = type === "footprints" ? setFootprints : setBabyImages;
-
-    updater((prev) => {
+  const removeFile = (id) => {
+    setFiles((prev) => {
       const item = prev.find((i) => i.id === id);
-      if (item) URL.revokeObjectURL(item.preview);
+      if (item?.preview) URL.revokeObjectURL(item.preview);
       return prev.filter((i) => i.id !== id);
     });
   };
 
   return (
     <>
+      <input
+        ref={inputRef}
+        type="file"
+        accept={accept}
+        multiple={maxCount > 1}
+        hidden
+        onChange={handleUpload}
+      />
+
+      <MediaCard onClick={() => inputRef.current.click()}>
+        <Box display="flex" alignItems="center" gap={1}>
+          {icon}
+          <Typography>
+            {title} ({files.length}/{maxCount})
+          </Typography>
+        </Box>
+        <Button size="small">Add</Button>
+      </MediaCard>
+
+      <PreviewGrid>
+        {files.map((item) => (
+          <PreviewItem key={item.id}>
+            {previewType === "image" && (
+              <img src={item.preview} alt="" />
+            )}
+
+            {previewType === "video" && (
+              <video src={item.preview} />
+            )}
+
+            {previewType === "audio" && (
+              <Box
+                height="100%"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <AudiotrackIcon />
+              </Box>
+            )}
+
+            {previewType === "doc" && (
+              <Box
+                height="100%"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <DescriptionIcon />
+              </Box>
+            )}
+
+            <DeleteBtn
+              size="small"
+              onClick={() => removeFile(item.id)}
+            >
+              <ClearIcon fontSize="small" />
+            </DeleteBtn>
+          </PreviewItem>
+        ))}
+      </PreviewGrid>
+    </>
+  );
+};
+
+/* ===================== MAIN SECTION ===================== */
+const MediaSection = forwardRef(({ type }, ref) => {
+  const isNewBorn = type === "newBorn";
+
+  /* ---------- newborn ---------- */
+  const [footprints, setFootprints] = useState([]);
+  const [babyImages, setBabyImages] = useState([]);
+
+  /* ---------- living / memorial ---------- */
+  const [photos, setPhotos] = useState([]);
+  const [weddingPhotos, setWeddingPhotos] = useState([]);
+  const [familyPhotos, setFamilyPhotos] = useState([]);
+  const [videos, setVideos] = useState([]);
+  const [voiceNotes, setVoiceNotes] = useState([]);
+  const [handwrittenNotes, setHandwrittenNotes] = useState([]);
+
+  useImperativeHandle(ref, () => ({
+    getData: () =>
+      isNewBorn
+        ? {
+            footprints: footprints.map((f) => f.file),
+            photos: babyImages.map((f) => f.file),
+          }
+        : {
+            photos: photos.map((f) => f.file),
+            weddingPhotos: weddingPhotos.map((f) => f.file),
+            familyPhotos: familyPhotos.map((f) => f.file),
+            videos: videos.map((f) => f.file),
+            voiceNotes: voiceNotes.map((f) => f.file),
+            handwrittenNotes: handwrittenNotes.map((f) => f.file),
+          },
+  }));
+
+  if (isNewBorn) {
+    return (
+      <>
+        <Typography component="div" variant="sectionTitle" mb={2}>
+          Media
+        </Typography>
+
+        <MediaGroup
+          title="Footprints"
+          icon={<AddPhotoAlternateIcon />}
+          accept="image/*"
+          maxCount={2}
+          maxSizeMB={5}
+          files={footprints}
+          setFiles={setFootprints}
+        />
+
+        <MediaGroup
+          title="Baby Images"
+          icon={<AddPhotoAlternateIcon />}
+          accept="image/*"
+          maxCount={5}
+          maxSizeMB={5}
+          files={babyImages}
+          setFiles={setBabyImages}
+        />
+      </>
+    );
+  }
+
+  /* ---------- living profile / memorial ---------- */
+  return (
+    <>
       <Typography component="div" variant="sectionTitle" mb={2}>
-        Media
+        Media Uploads
       </Typography>
 
-      {/* Hidden inputs */}
-      <input
-        ref={footprintsInputRef}
-        type="file"
+      <MediaGroup
+        title="Photos"
+        icon={<AddPhotoAlternateIcon />}
         accept="image/*"
-        multiple
-        hidden
-        onChange={(e) => handleUpload(e, "footprints")}
-      />
-      <input
-        ref={babyImagesInputRef}
-        type="file"
-        accept="image/*"
-        multiple
-        hidden
-        onChange={(e) => handleUpload(e, "baby")}
+        maxCount={5}
+        maxSizeMB={5}
+        files={photos}
+        setFiles={setPhotos}
       />
 
-      {/* Footprints */}
-      <MediaCard onClick={() => footprintsInputRef.current.click()}>
-        <MediaInfo>
-          <AddPhotoAlternateIcon />
-          <Typography>
-            Footprints ({footprints.length}/{MAX_FOOTPRINTS})
-          </Typography>
-        </MediaInfo>
-        <Button size="small" disabled={footprints.length >= MAX_FOOTPRINTS}>
-          Add
-        </Button>
-      </MediaCard>
+      <MediaGroup
+        title="Wedding Photos"
+        icon={<AddPhotoAlternateIcon />}
+        accept="image/*"
+        maxCount={5}
+        maxSizeMB={5}
+        files={weddingPhotos}
+        setFiles={setWeddingPhotos}
+      />
 
-      <PreviewGrid>
-        {footprints.map((img) => (
-          <PreviewItem key={img.id}>
-            <img src={img.preview} alt="" />
-            <DeleteBtn
-              size="small"
-              onClick={() => handleDelete("footprints", img.id)}
-              disableRipple
-              disableFocusRipple
-            >
-              <ClearIcon fontSize="small" />
-            </DeleteBtn>
-          </PreviewItem>
-        ))}
-      </PreviewGrid>
+      <MediaGroup
+        title="Family Photos"
+        icon={<AddPhotoAlternateIcon />}
+        accept="image/*"
+        maxCount={5}
+        maxSizeMB={5}
+        files={familyPhotos}
+        setFiles={setFamilyPhotos}
+      />
 
-      <Box height={16} />
+      <MediaGroup
+        title="Videos"
+        icon={<VideoLibraryIcon />}
+        accept="video/*"
+        maxCount={5}
+        maxSizeMB={10}
+        files={videos}
+        setFiles={setVideos}
+        previewType="video"
+      />
 
-      {/* Baby Images */}
-      <MediaCard onClick={() => babyImagesInputRef.current.click()}>
-        <MediaInfo>
-          <AddPhotoAlternateIcon />
-          <Typography>
-            Baby Images ({babyImages.length}/{MAX_BABY_IMAGES})
-          </Typography>
-        </MediaInfo>
-        <Button size="small" disabled={babyImages.length >= MAX_BABY_IMAGES}>
-          Add
-        </Button>
-      </MediaCard>
+      <MediaGroup
+        title="Voice Notes"
+        icon={<AudiotrackIcon />}
+        accept="audio/*"
+        maxCount={1}
+        maxSizeMB={5}
+        files={voiceNotes}
+        setFiles={setVoiceNotes}
+        previewType="audio"
+      />
 
-      <PreviewGrid>
-        {babyImages.map((img) => (
-          <PreviewItem key={img.id}>
-            <img src={img.preview} alt="" />
-            <DeleteBtn
-              size="small"
-              onClick={() => handleDelete("baby", img.id)}
-              disableFocusRipple
-              disableRipple
-            >
-              <ClearIcon fontSize="small" />
-            </DeleteBtn>
-          </PreviewItem>
-        ))}
-      </PreviewGrid>
+      <MediaGroup
+        title="Handwritten Notes"
+        icon={<DescriptionIcon />}
+        accept="image/*,application/pdf"
+        maxCount={1}
+        maxSizeMB={5}
+        files={handwrittenNotes}
+        setFiles={setHandwrittenNotes}
+        previewType="doc"
+      />
     </>
   );
 });

@@ -14,12 +14,20 @@ import AboutAtBirthSection from "./sections/AboutAtBirthSection";
 import ParentsThoughtsSection from "./sections/ParentsThoughtsSection";
 import LettersSection from "./sections/LettersSection";
 import SubmitSection from "./sections/SubmitSection";
+import EarlyLifeSection from "./sections/EarlyLifeSection";
+import CareerSection from "./sections/CareerSection";
+import PersonalitySection from "./sections/PersonalitySection";
+import LifeLessonsSection from "./sections/LifeLessonsSection";
+import HobbiesSection from "./sections/HobbiesSection";
+import FinalDaysSection from "./sections/FinalDaysSection";
+import PassingDetailsSection from "./sections/PassingDetailsSection";
 
 import { createMemorial } from "../../api/memorialApi";
 import { saveMemorialMedia } from "../../api/memorialMediaApi";
 import Loader from "../common/Loader";
 import StatusDialog from "../common/StatusDialog";
 import { buildCreateMemorialPayload } from "../../utils/buildCreateMemorialPayload";
+import { stripEmpty } from "../../utils/helpers";
 
 const data = {
   newBorn: { title: "Start New Born Memory" },
@@ -54,6 +62,13 @@ export default function CreateJourney({ type }) {
   const aboutRef = useRef();
   const thoughtsRef = useRef();
   const lettersRef = useRef();
+  const earlyLifeRef = useRef();
+  const careerRef = useRef();
+  const personalityRef = useRef();
+  const hobbiesRef = useRef();
+  const lifeLessonsRef = useRef();
+  const finalDaysRef = useRef();
+  const passingDetailsRef = useRef();
 
   const [loading, setLoading] = useState(false);
   const [statusDialog, setStatusDialog] = useState({
@@ -67,7 +82,7 @@ export default function CreateJourney({ type }) {
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
-    const payload = buildCreateMemorialPayload({
+    const rawPayload = {
       type,
       privacy: privacyRef.current?.getData(),
       name: nameRef.current?.getData(),
@@ -78,7 +93,19 @@ export default function CreateJourney({ type }) {
       visitors: visitorsRef.current?.getData(),
       parentsThoughts: thoughtsRef.current?.getData(),
       letters: lettersRef.current?.getData(),
-    });
+      earlyLife: earlyLifeRef.current?.getData(),
+      career: careerRef.current?.getData(),
+      personality: personalityRef.current?.getData(),
+      hobbies: hobbiesRef.current?.getData(),
+      lifeLessons: lifeLessonsRef.current?.getData(),
+      finalDays: finalDaysRef.current?.getData(),
+      passingDetails: passingDetailsRef.current?.getData(),
+    };
+
+    // 🔥 REMOVE null / empty BEFORE builder
+    const cleanedInput = stripEmpty(rawPayload);
+
+    const payload = buildCreateMemorialPayload(cleanedInput);
 
     setLoading(true);
 
@@ -166,34 +193,77 @@ export default function CreateJourney({ type }) {
           {data[type]?.title}
         </Typography>
 
-        <PrivacySection ref={privacyRef} />
+        <PrivacySection ref={privacyRef} type={type} />
         <Divider sx={{ my: 3 }} />
 
         <NameSection ref={nameRef} />
         <Divider sx={{ my: 3 }} />
 
-        <BirthDetailsSection ref={birthRef} />
+        <BirthDetailsSection ref={birthRef} type={type} />
         <Divider sx={{ my: 3 }} />
 
-        <MediaSection ref={mediaRef} />
+        {type == "memorial" && (
+          <>
+            <PassingDetailsSection ref={passingDetailsRef} type={type} />
+
+            <Divider sx={{ my: 3 }} />
+            <VisitorsSection ref={visitorsRef} type={type} />
+            <Divider sx={{ my: 3 }} />
+          </>
+        )}
+
+        <MediaSection ref={mediaRef} type={type} />
         <Divider sx={{ my: 3 }} />
 
-        <FamilyInformationSection ref={familyRef} />
+        <FamilyInformationSection ref={familyRef} type={type} />
         <Divider sx={{ my: 3 }} />
 
-        <SiblingsSection ref={siblingsRef} />
-        <Divider sx={{ my: 3 }} />
+        {type == "newBorn" && (
+          <>
+            <SiblingsSection ref={siblingsRef} />
+            <Divider sx={{ my: 3 }} />
+            <VisitorsSection ref={visitorsRef} type={type} />
+            <Divider sx={{ my: 3 }} />
+          </>
+        )}
 
-        <VisitorsSection ref={visitorsRef} />
-        <Divider sx={{ my: 3 }} />
+        {type == "newBorn" && (
+          <>
+            <AboutAtBirthSection ref={aboutRef} />
+            <Divider sx={{ my: 3 }} />
 
-        <AboutAtBirthSection ref={aboutRef} />
-        <Divider sx={{ my: 3 }} />
+            <ParentsThoughtsSection ref={thoughtsRef} />
+            <Divider sx={{ my: 3 }} />
+          </>
+        )}
 
-        <ParentsThoughtsSection ref={thoughtsRef} />
-        <Divider sx={{ my: 3 }} />
+        {type != "newBorn" && (
+          <>
+            <EarlyLifeSection ref={earlyLifeRef} type={type} />
+            <Divider sx={{ my: 3 }} />
 
-        <LettersSection ref={lettersRef} />
+            <CareerSection ref={careerRef} type={type} />
+            <Divider sx={{ my: 3 }} />
+
+            <PersonalitySection ref={personalityRef} type={type} />
+            <Divider sx={{ my: 3 }} />
+
+            <HobbiesSection ref={hobbiesRef} type={type} />
+            <Divider sx={{ my: 3 }} />
+
+            <LifeLessonsSection ref={lifeLessonsRef} type={type} />
+            <Divider sx={{ my: 3 }} />
+          </>
+        )}
+
+        {type == "memorial" && (
+          <>
+            <FinalDaysSection ref={finalDaysRef} type={type} />
+            <Divider sx={{ my: 3 }} />
+          </>
+        )}
+
+        <LettersSection ref={lettersRef} type={type} />
 
         <SubmitSection onSubmit={handleSubmit} />
       </InnerContainer>

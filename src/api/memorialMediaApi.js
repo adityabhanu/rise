@@ -132,17 +132,22 @@ export const uploadMemorialMediaToBlob = async (
  */
 export const updateMemorialMedia = async (memorialId, mediaPayload) => {
   try {
+    const payload = {};
+
+    Object.entries(mediaPayload || {}).forEach(([key, value]) => {
+      if (Array.isArray(value) && value.length > 0) {
+        payload[key] = JSON.stringify(value);
+      }
+    });
+
+    // 🚫 Nothing to update
+    if (Object.keys(payload).length === 0) {
+      return null;
+    }
+
     const res = await apiClient.patch(
       `/memorials/${memorialId}/media`,
-      {
-        photos: JSON.stringify(mediaPayload.photos || []),
-        footprints: JSON.stringify(mediaPayload.footprints || []),
-        familyPhotos: JSON.stringify(mediaPayload.familyPhotos || []),
-        weddingPhotos: JSON.stringify(mediaPayload.weddingPhotos || []),
-        videos: JSON.stringify(mediaPayload.videos || []),
-        voiceNotes: JSON.stringify(mediaPayload.voiceNotes || []),
-        handwrittenNotes: JSON.stringify(mediaPayload.handwrittenNotes || []),
-      },
+      payload,
       {
         headers: {
           "Content-Type": "application/json",
@@ -156,6 +161,7 @@ export const updateMemorialMedia = async (memorialId, mediaPayload) => {
     return null;
   }
 };
+
 
 /**
  * STEP 5 (FINAL)

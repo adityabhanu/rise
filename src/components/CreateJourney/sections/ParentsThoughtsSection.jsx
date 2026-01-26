@@ -31,7 +31,7 @@ const ParentsThoughtsSection = forwardRef((_, ref) => {
         <TextField
           fullWidth
           multiline
-          minRows={4}
+          rows={4}
           label="What we felt when we found out about you"
           placeholder="Joy, fear, surprise, excitement..."
           value={feltWhenFound}
@@ -41,7 +41,7 @@ const ParentsThoughtsSection = forwardRef((_, ref) => {
         <TextField
           fullWidth
           multiline
-          minRows={4}
+          rows={4}
           sx={{ mt: 2 }}
           label="What we felt when we first held you"
           placeholder="Describe the unforgettable moment..."
@@ -52,7 +52,7 @@ const ParentsThoughtsSection = forwardRef((_, ref) => {
         <TextField
           fullWidth
           multiline
-          minRows={4}
+          rows={4}
           sx={{ mt: 2 }}
           label="What scares us"
           placeholder="Worries, uncertainties, hopes..."
@@ -63,7 +63,7 @@ const ParentsThoughtsSection = forwardRef((_, ref) => {
         <TextField
           fullWidth
           multiline
-          minRows={4}
+          rows={4}
           sx={{ mt: 2 }}
           label="Our biggest wish for you"
           placeholder="Health, happiness, courage, kindness..."

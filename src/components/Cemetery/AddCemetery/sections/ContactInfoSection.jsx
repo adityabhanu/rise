@@ -85,7 +85,7 @@ const ContactInfoSection = forwardRef((_, ref) => {
             <StyledTextField
               fullWidth
               multiline
-              minRows={3}
+              rows={3}
               size="medium"
               label="Office Address"
               value={data.address}

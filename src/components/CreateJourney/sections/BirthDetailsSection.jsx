@@ -9,7 +9,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import { forwardRef, useImperativeHandle, useState } from "react";
 import MapLocator from "../../common/MapLocator";
 
-const BirthDetailsSection = forwardRef((_, ref) => {
+const BirthDetailsSection = forwardRef(({ type }, ref) => {
+  const isNewBorn = type === "newBorn";
   const [data, setData] = useState({
     birthDate: "",
     birthTime: "",
@@ -22,8 +23,7 @@ const BirthDetailsSection = forwardRef((_, ref) => {
 
   const [mapOpen, setMapOpen] = useState(false);
 
-  const update = (key, value) =>
-    setData((prev) => ({ ...prev, [key]: value }));
+  const update = (key, value) => setData((prev) => ({ ...prev, [key]: value }));
 
   useImperativeHandle(ref, () => ({
     getData: () => data,
@@ -33,7 +33,7 @@ const BirthDetailsSection = forwardRef((_, ref) => {
   const resolveAddress = async ({ latitude, longitude }) => {
     try {
       const res = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${import.meta.env.VITE_GOOGLE_MAPS_KEY}`
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${import.meta.env.VITE_GOOGLE_MAPS_KEY}`,
       );
       const json = await res.json();
 
@@ -42,8 +42,7 @@ const BirthDetailsSection = forwardRef((_, ref) => {
       if (!result) return;
 
       const birthPlace = {
-        name:
-          result.address_components?.[0]?.long_name || null,
+        name: result.address_components?.[0]?.long_name || null,
         latitude,
         longitude,
         address: result.formatted_address || null,
@@ -61,9 +60,11 @@ const BirthDetailsSection = forwardRef((_, ref) => {
 
   return (
     <>
-      <Typography component="div" variant="sectionTitle" mb={2}>
-        Birth Details
-      </Typography>
+      {isNewBorn && (
+        <Typography component="div" variant="sectionTitle" mb={2}>
+          Birth Details
+        </Typography>
+      )}
 
       {/* === 3-per-row grid === */}
       <Box
@@ -71,8 +72,8 @@ const BirthDetailsSection = forwardRef((_, ref) => {
         width="100%"
         gap={2}
         gridTemplateColumns={{
-          xs: "1fr",                // mobile
-          sm: "repeat(3, 1fr)",     // tablet & desktop
+          xs: "1fr",
+          sm: isNewBorn ? "repeat(3, 1fr)" : "repeat(2, 1fr)",
         }}
       >
         <TextField
@@ -84,37 +85,43 @@ const BirthDetailsSection = forwardRef((_, ref) => {
           onChange={(e) => update("birthDate", e.target.value)}
         />
 
-        <TextField
-          label="Birth Time"
-          type="time"
-          fullWidth
-          InputLabelProps={{ shrink: true }}
-          value={data.birthTime}
-          onChange={(e) => update("birthTime", e.target.value)}
-        />
+        {isNewBorn && (
+          <TextField
+            label="Birth Time"
+            type="time"
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+            value={data.birthTime}
+            onChange={(e) => update("birthTime", e.target.value)}
+          />
+        )}
 
-        <TextField
-          label="Birth Weight (kg)"
-          type="number"
-          fullWidth
-          inputProps={{ min: 0, step: 0.1 }}
-          value={data.birthWeight}
-          onChange={(e) => update("birthWeight", e.target.value)}
-        />
+        {isNewBorn && (
+          <TextField
+            label="Birth Weight (kg)"
+            type="number"
+            fullWidth
+            inputProps={{ min: 0, step: 0.1 }}
+            value={data.birthWeight}
+            onChange={(e) => update("birthWeight", e.target.value)}
+          />
+        )}
 
-        <TextField
-          label="Birth Length (cm)"
-          type="number"
-          fullWidth
-          inputProps={{ min: 0, step: 0.1 }}
-          value={data.birthLength}
-          onChange={(e) => update("birthLength", e.target.value)}
-        />
+        {isNewBorn && (
+          <TextField
+            label="Birth Length (cm)"
+            type="number"
+            fullWidth
+            inputProps={{ min: 0, step: 0.1 }}
+            value={data.birthLength}
+            onChange={(e) => update("birthLength", e.target.value)}
+          />
+        )}
 
         {/* Hospital spans full row */}
-        <Box gridColumn={{ sm: "span 3" }}>
+        <Box gridColumn={{ sm: isNewBorn ? "span 3" : "span 1" }}>
           <TextField
-            label="Hospital of Birth"
+            label={isNewBorn ? "Hospital of Birth" : "Place of Birth"}
             fullWidth
             value={data.hospital}
             InputProps={{
@@ -131,14 +138,16 @@ const BirthDetailsSection = forwardRef((_, ref) => {
         </Box>
 
         {/* Doctor spans full row */}
-        <Box gridColumn={{ sm: "span 3" }}>
-          <TextField
-            label="Doctor Name"
-            fullWidth
-            value={data.doctor}
-            onChange={(e) => update("doctor", e.target.value)}
-          />
-        </Box>
+        {isNewBorn && (
+          <Box gridColumn={{ sm: "span 3" }}>
+            <TextField
+              label="Doctor Name"
+              fullWidth
+              value={data.doctor}
+              onChange={(e) => update("doctor", e.target.value)}
+            />
+          </Box>
+        )}
       </Box>
 
       {/* Map Dialog */}

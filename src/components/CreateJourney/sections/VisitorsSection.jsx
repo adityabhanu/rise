@@ -7,13 +7,14 @@ import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 const VisitorCard = styled(Box)(({ theme }) => ({
   borderRadius: 10,
   padding: theme.spacing(2),
-  marginTop: theme.spacing(2),
 }));
 
-const VisitorsSection = forwardRef((_, ref) => {
+const VisitorsSection = forwardRef(({ type }, ref) => {
   const [visitors, setVisitors] = useState([]);
   const [firstMoment, setFirstMoment] = useState("");
   const [favorites, setFavorites] = useState("");
+
+  const isNewBorn = type === "newBorn";
 
   useImperativeHandle(ref, () => ({
     getData: () => ({
@@ -33,7 +34,7 @@ const VisitorsSection = forwardRef((_, ref) => {
 
   const updateVisitorName = (index, value) => {
     setVisitors((prev) =>
-      prev.map((v, i) => (i === index ? { ...v, name: value } : v))
+      prev.map((v, i) => (i === index ? { ...v, name: value } : v)),
     );
   };
 
@@ -69,28 +70,31 @@ const VisitorsSection = forwardRef((_, ref) => {
         </VisitorCard>
       ))}
 
-      {/* Shared fields (ONLY ONCE) */}
-      <Box mt={3}>
-        <TextField
-          fullWidth
-          multiline
-          minRows={2}
-          label="The moment we first saw you…"
-          value={firstMoment}
-          onChange={(e) => setFirstMoment(e.target.value)}
-        />
-      </Box>
+      {isNewBorn && (
+        <>
+          <Box mt={3}>
+            <TextField
+              fullWidth
+              multiline
+              rows={2}
+              label="The moment we first saw you…"
+              value={firstMoment}
+              onChange={(e) => setFirstMoment(e.target.value)}
+            />
+          </Box>
 
-      <Box mt={2}>
-        <TextField
-          fullWidth
-          multiline
-          minRows={2}
-          label="Favorite toys, songs, foods…"
-          value={favorites}
-          onChange={(e) => setFavorites(e.target.value)}
-        />
-      </Box>
+          <Box mt={2}>
+            <TextField
+              fullWidth
+              multiline
+              rows={2}
+              label="Favorite toys, songs, foods…"
+              value={favorites}
+              onChange={(e) => setFavorites(e.target.value)}
+            />
+          </Box>
+        </>
+      )}
     </>
   );
 });
