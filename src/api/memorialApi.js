@@ -33,3 +33,22 @@ export const getMemorialDetails = async (memorialId) => {
     return null;
   }
 };
+
+
+export const getMemorialList = async () => {
+  try {
+    const res = await apiClient.get(
+      `/memorials/list`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return res || null;
+  } catch (err) {
+    console.warn("Get Memorial List Failed", err);
+    return null;
+  }
+};

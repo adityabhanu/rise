@@ -28,6 +28,11 @@ const theme = createTheme({
       lightTan: "#D9D2C6",
       softTeal: "#A0A8A0",
       tombstoneGray: "#E6E6E6",
+
+      mossGreen: "#6B7F5E",
+      oliveMist: "#B7C0A7",
+      warmStone: "#ECEBE6",
+      shadowGreen: "rgba(47, 64, 44, 0.12)",
     },
   },
 

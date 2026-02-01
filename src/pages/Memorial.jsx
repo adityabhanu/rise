@@ -1,5 +1,6 @@
 import React from "react";
 import SearchSection from "../components/SearchMemorial";
+import MemorialList from "../components/MemorialList";
 import { styled } from "@mui/material/styles";
 import { Typography, Container } from "@mui/material";
 import Links from "../components/Links";
@@ -23,8 +24,11 @@ export default function Memorial() {
     <>
       <MemorialContainer>
         <Container maxWidth="md">
-          <Typography variant="subTitle">Memorial Search</Typography>
-          <SearchSection />
+          <Typography variant="subTitle" gutterBottom>
+            Memorials
+          </Typography>
+          {/* <SearchSection /> */}
+          <MemorialList />
         </Container>
       </MemorialContainer>
       <Links />
