@@ -98,7 +98,7 @@ export function buildCreateMemorialPayload({
   });
 
   if (!isEmptyValue(parentsBlock)) {
-    payload.parentsThoughts = JSON.stringify(parentsBlock);
+    payload.parentThoughts = JSON.stringify(parentsBlock);
   }
 
   /* ---------------- Letters ---------------- */

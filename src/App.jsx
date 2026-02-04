@@ -7,6 +7,7 @@ import CreateMemorialSearch from "./components/CreateMemorialSearch";
 import TranscribeSearch from "./components/TranscribeSearch";
 import AddMemorialPage from "./components/Memorial/AddMemorialPage";
 import MemorialDetails from "./pages/MemorialDetails";
+import NewMemorialDetails from "./pages/NewMemorialDetails";
 import AddCemetery from "./pages/AddCemetery";
 import Profile from "./pages/Profile";
 import CreateJourney from "./components/CreateJourney/CreateJourney";
@@ -19,7 +20,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/memorial" element={<Memorial />} />
         <Route path="/memorial/create" element={<AddMemorialPage />} />
-        <Route path="/memorial/:id" element={<MemorialDetails />} />
+        <Route path="/memorial/:id" element={<NewMemorialDetails />} />
         <Route path="/cemetery" element={<Cemetery />} />
         <Route path="/cemetery/create" element={<AddCemetery />} />
         <Route
