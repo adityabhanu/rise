@@ -13,7 +13,6 @@ const Grid = styled(Box)(({ count }) => ({
   display: "grid",
   gap: 12,
   width: "100%",
-  // maxWidth: 900,           // 👈 keeps videos small
   margin: "0 auto",
 
   ...(count === 1 && {

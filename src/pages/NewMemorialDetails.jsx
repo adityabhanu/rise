@@ -168,19 +168,16 @@ export default function MemorialDetails() {
               title={`Photos of ${data?.FullName}`}
               images={media.photos}
             />
-            <Divider sx={{ my: 4 }} />
           </>
         )}
         {birth && (
           <>
             <BirthSection birthDetails={birth} />
-            <Divider sx={{ my: 4 }} />
           </>
         )}
         {appearanceObj && (
           <>
             <AppearanceAtBirthSection appearance={appearanceObj} />
-            <Divider sx={{ my: 4 }} />
           </>
         )}
 
@@ -188,7 +185,6 @@ export default function MemorialDetails() {
           <>
             <FamilySection family={family} />
 
-            <Divider sx={{ my: 4 }} />
           </>
         )}
         {media?.footprints?.length > 0 && (
@@ -197,7 +193,6 @@ export default function MemorialDetails() {
               title={`Footprints`}
               images={media.footprints}
             />
-            <Divider sx={{ my: 4 }} />
           </>
         )}
 
@@ -208,7 +203,6 @@ export default function MemorialDetails() {
               images={media.familyPhotos}
             />
 
-            <Divider sx={{ my: 4 }} />
           </>
         )}
 
@@ -218,13 +212,11 @@ export default function MemorialDetails() {
               title={`Wedding Photos`}
               images={media.weddingPhotos}
             />
-            <Divider sx={{ my: 4 }} />
           </>
         )}
         {media?.videos?.length > 0 && (
           <>
             <VideoMosaicSection videos={media.videos} />
-            <Divider sx={{ my: 4 }} />
           </>
         )}
 
@@ -238,35 +230,30 @@ export default function MemorialDetails() {
                   : "Voice Note"
               }
             />
-            <Divider sx={{ my: 4 }} />
           </>
         )}
 
         {media?.handwrittenNotes?.length > 0 && (
           <>
             <HandwrittenNotesSection notes={media.handwrittenNotes} />
-            <Divider sx={{ my: 4 }} />
           </>
         )}
 
         {parentThoughtsObj && (
           <>
             <ParentThoughtsSection thoughts={parentThoughtsObj} />
-            <Divider sx={{ my: 4 }} />
           </>
         )}
 
         {notesObj && (
           <>
             <NotesSection notes={notesObj} />
-            <Divider sx={{ my: 4 }} />
           </>
         )}
 
         {earlyLife && (
           <>
             <EarlyLifeSection earlyLife={earlyLife} />
-            <Divider sx={{ my: 4 }} />
           </>
         )}
 
@@ -274,7 +261,6 @@ export default function MemorialDetails() {
           <>
             <CareerWorkSection career={career} />
 
-            <Divider sx={{ my: 4 }} />
           </>
         )}
 
@@ -285,7 +271,6 @@ export default function MemorialDetails() {
               personality={personality}
               hobbies={hobbies}
             />
-            <Divider sx={{ my: 4 }} />
           </>
         )}
 
@@ -293,21 +278,18 @@ export default function MemorialDetails() {
           <>
             <FinalDaysSection finalDays={finalDays} />
 
-            <Divider sx={{ my: 4 }} />
           </>
         )}
 
         {passing && Object.keys(passing).length > 0 && (
           <>
             <PassingDetailsSection passing={passing} />
-            <Divider sx={{ my: 4 }} />
           </>
         )}
 
         {visitors?.length > 0 && (
           <>
             <VisitorsSection visitors={visitors} />
-            <Divider sx={{ my: 4 }} />
           </>
         )}
         {letters?.length > 0 && <LettersSection letters={letters} />}
