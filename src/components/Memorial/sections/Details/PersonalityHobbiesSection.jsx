@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Divider } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 /* ---------------- Styled (MATCH Early Life & Career) ---------------- */
@@ -25,24 +25,22 @@ export default function PersonalityHobbiesSection({
 }) {
   if (!personality && !hobbies) return null;
 
-  const {
-    appearance,
-    identifiers,
-    fear,
-    wishes,
-  } = personality || {};
-
-  const {
-    petAnimals,
-    familyTraditions,
-    lifeLessons,
-  } = hobbies || {};
+  const { appearance, identifiers, fear, wishes } = personality || {};
+  const { petAnimals, familyTraditions, lifeLessons } = hobbies || {};
 
   return (
     <Section>
-      <Typography variant="subTitle">
+      <Typography
+        variant="subTitle"
+        sx={{
+          color: "text.header",
+          fontFamily: (theme) => theme.typography.fontFamilyDisplay,
+        }}
+      >
         Personality, Hobbies & Interests
       </Typography>
+
+      <Divider sx={{ mb: 2, mt: 1.5 }} />
 
       {/* Personality */}
       {(appearance || identifiers || fear || wishes) && (

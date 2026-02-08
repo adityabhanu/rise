@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Divider } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 /* ---------------- Styled (MATCH Family) ---------------- */
@@ -32,9 +32,17 @@ export default function EarlyLifeSection({ earlyLife }) {
 
   return (
     <Section>
-      <Typography variant="subTitle">
+      <Typography
+        variant="subTitle"
+        sx={{
+          color: "text.header",
+          fontFamily: (theme) => theme.typography.fontFamilyDisplay,
+        }}
+      >
         Early Life
       </Typography>
+
+      <Divider sx={{ mb: 2, mt: 1.5 }} />
 
       {hometown && (
         <Group>

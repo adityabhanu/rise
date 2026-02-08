@@ -1,14 +1,10 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Divider } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 /* ---------------- Styled ---------------- */
 
 const Section = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(4),
-}));
-
-const SectionHeader = styled(Typography)(({ theme }) => ({
-  marginBottom: theme.spacing(2),
 }));
 
 const Group = styled(Box)(({ theme }) => ({
@@ -45,10 +41,20 @@ export default function AppearanceAtBirthSection({ appearance }) {
 
   return (
     <Section>
-      <SectionHeader variant="subTitle" sx={{mb: 4}}>
+      {/* Header */}
+      <Typography
+        variant="subTitle"
+        sx={{
+          color: "text.header",
+          fontFamily: (theme) => theme.typography.fontFamilyDisplay,
+        }}
+      >
         Appearance at Birth
-      </SectionHeader>
+      </Typography>
 
+      <Divider sx={{ mb: 2, mt: 1.5 }} />
+
+      {/* Content */}
       <Group>
         {eyeColor && (
           <MetaText>

@@ -22,6 +22,7 @@ import BirthSection from "../components/Memorial/sections/Details/BirthSection";
 import AppearanceAtBirthSection from "../components/Memorial/sections/Details/AppearanceAtBirthSection";
 import ParentThoughtsSection from "../components/Memorial/sections/Details/ParentThoughtsSection";
 import NotesSection from "../components/Memorial/sections/Details/NotesSection";
+import MemoryImageCarousel from "../components/Memorial/sections/Details/MemoryImageCarousel";
 
 /* ---------------- Helpers ---------------- */
 const safeParse = (v) => {
@@ -36,7 +37,6 @@ const safeParse = (v) => {
 const Page = styled(Box)(({ theme }) => ({
   minHeight: "100vh",
   backgroundColor: theme.palette.background.default,
-  padding: theme.spacing(4),
   marginTop: 64,
 
   [theme.breakpoints.down("sm")]: {
@@ -45,14 +45,11 @@ const Page = styled(Box)(({ theme }) => ({
 }));
 
 const SectionCard = styled(Box)(({ theme }) => ({
-  maxWidth: "90vw",
-  margin: "0 auto",
-  padding: theme.spacing(4),
-  backgroundColor: theme.palette.background.paper,
-  borderRadius: 16,
+  margin: "0 0",
   boxShadow: `0 8px 24px ${theme.palette.custom.shadowGreen}`,
-  marginTop: 74,
+  marginTop: 64,
   marginBottom: 10,
+  backgroundColor: theme.palette.background.default,
 
   [theme.breakpoints.down("sm")]: {
     marginTop: 66,
@@ -155,160 +152,166 @@ export default function MemorialDetails() {
   return (
     <SectionCard>
       <MemorialHeader
-        fullName={data.FullName}
+        fullName={data?.FullName}
         birthDate={birth?.birthDate}
         birthPlace={birth?.birthPlace?.address}
         passingDate={passing?.passingDate}
         isPublic={data.IsPublic}
         photo={photos?.[0]}
+        profileType={profileType}
       />
 
-      <Divider sx={{ my: 4 }} />
+      <Box sx={{ padding: "0 60px 0 60px" }}>
+        {media?.photos?.length > 0 && (
+          <>
+            <MemoryImageCarousel
+              title={`Photos of ${data?.FullName}`}
+              images={media.photos}
+            />
+            <Divider sx={{ my: 4 }} />
+          </>
+        )}
+        {birth && (
+          <>
+            <BirthSection birthDetails={birth} />
+            <Divider sx={{ my: 4 }} />
+          </>
+        )}
+        {appearanceObj && (
+          <>
+            <AppearanceAtBirthSection appearance={appearanceObj} />
+            <Divider sx={{ my: 4 }} />
+          </>
+        )}
 
-      {birth && (
-        <>
-          <BirthSection birthDetails={birth} />
-          <Divider sx={{ my: 4 }} />
-        </>
-      )}
-      {appearanceObj && (
-        <>
-          <AppearanceAtBirthSection appearance={appearanceObj} />
-          <Divider sx={{ my: 4 }} />
-        </>
-      )}
+        {hasFamilyData(family) && (
+          <>
+            <FamilySection family={family} />
 
-      {hasFamilyData(family) && (
-        <>
-          <FamilySection family={family} />
+            <Divider sx={{ my: 4 }} />
+          </>
+        )}
+        {media?.footprints?.length > 0 && (
+          <>
+            <MemoryImageCarousel
+              title={`Footprints`}
+              images={media.footprints}
+            />
+            <Divider sx={{ my: 4 }} />
+          </>
+        )}
 
-          <Divider sx={{ my: 4 }} />
-        </>
-      )}
+        {media?.familyPhotos?.length > 0 && (
+          <>
+            <MemoryImageCarousel
+              title={`Cherished Moments with Family`}
+              images={media.familyPhotos}
+            />
 
-      {media?.photos?.length > 0 && (
-        <>
-          <CoverflowImageSection title="Photos" images={media.photos} />
-          <Divider sx={{ my: 4 }} />
-        </>
-      )}
-      {media?.footprints?.length > 0 && (
-        <>
-          <CoverflowImageSection title="Footprints" images={media.footprints} />
-          <Divider sx={{ my: 4 }} />
-        </>
-      )}
+            <Divider sx={{ my: 4 }} />
+          </>
+        )}
 
-      {media?.weddingPhotos?.length > 0 && (
-        <>
-          <CoverflowImageSection
-            title="Wedding Photos"
-            images={media.weddingPhotos}
-          />
-          <Divider sx={{ my: 4 }} />
-        </>
-      )}
+        {media?.weddingPhotos?.length > 0 && (
+          <>
+            <MemoryImageCarousel
+              title={`Wedding Photos`}
+              images={media.weddingPhotos}
+            />
+            <Divider sx={{ my: 4 }} />
+          </>
+        )}
+        {media?.videos?.length > 0 && (
+          <>
+            <VideoMosaicSection videos={media.videos} />
+            <Divider sx={{ my: 4 }} />
+          </>
+        )}
 
-      {media?.familyPhotos?.length > 0 && (
-        <>
-          <CoverflowImageSection
-            title="Family Photos"
-            images={media.familyPhotos}
-          />
+        {media?.voiceNotes?.length > 0 && (
+          <>
+            <AudioTributeSection
+              voiceNotes={media.voiceNotes}
+              sectionTitle={
+                profileType?.toLowerCase() == "passed"
+                  ? "Audio Tribute"
+                  : "Voice Note"
+              }
+            />
+            <Divider sx={{ my: 4 }} />
+          </>
+        )}
 
-          <Divider sx={{ my: 4 }} />
-        </>
-      )}
-      {media?.videos?.length > 0 && (
-        <>
-          <VideoMosaicSection videos={media.videos} />
-          <Divider sx={{ my: 4 }} />
-        </>
-      )}
+        {media?.handwrittenNotes?.length > 0 && (
+          <>
+            <HandwrittenNotesSection notes={media.handwrittenNotes} />
+            <Divider sx={{ my: 4 }} />
+          </>
+        )}
 
-      {media?.voiceNotes?.length > 0 && (
-        <>
-          <AudioTributeSection
-            voiceNotes={media.voiceNotes}
-            sectionTitle={
-              profileType?.toLowerCase() == "passed"
-                ? "Audio Tribute"
-                : "Voice Note"
-            }
-          />
-          <Divider sx={{ my: 4 }} />
-        </>
-      )}
+        {parentThoughtsObj && (
+          <>
+            <ParentThoughtsSection thoughts={parentThoughtsObj} />
+            <Divider sx={{ my: 4 }} />
+          </>
+        )}
 
-      {media?.handwrittenNotes?.length > 0 && (
-        <>
-          <HandwrittenNotesSection notes={media.handwrittenNotes} />
-          <Divider sx={{ my: 4 }} />
-        </>
-      )}
+        {notesObj && (
+          <>
+            <NotesSection notes={notesObj} />
+            <Divider sx={{ my: 4 }} />
+          </>
+        )}
 
-      {parentThoughtsObj && (
-        <>
-          <ParentThoughtsSection thoughts={parentThoughtsObj} />
-          <Divider sx={{ my: 4 }} />
-        </>
-      )}
+        {earlyLife && (
+          <>
+            <EarlyLifeSection earlyLife={earlyLife} />
+            <Divider sx={{ my: 4 }} />
+          </>
+        )}
 
-      {notesObj && (
-        <>
-          <NotesSection notes={notesObj} />
-          <Divider sx={{ my: 4 }} />
-        </>
-      )}
+        {career && (
+          <>
+            <CareerWorkSection career={career} />
 
-      {earlyLife && (
-        <>
-          <EarlyLifeSection earlyLife={earlyLife} />
-          <Divider sx={{ my: 4 }} />
-        </>
-      )}
+            <Divider sx={{ my: 4 }} />
+          </>
+        )}
 
-      {career && (
-        <>
-          <CareerWorkSection career={career} />
+        {((personality && Object.keys(personality).length > 0) ||
+          (hobbies && Object.keys(hobbies).length > 0)) && (
+          <>
+            <PersonalityHobbiesSection
+              personality={personality}
+              hobbies={hobbies}
+            />
+            <Divider sx={{ my: 4 }} />
+          </>
+        )}
 
-          <Divider sx={{ my: 4 }} />
-        </>
-      )}
+        {finalDays && (
+          <>
+            <FinalDaysSection finalDays={finalDays} />
 
-      {((personality && Object.keys(personality).length > 0) ||
-        (hobbies && Object.keys(hobbies).length > 0)) && (
-        <>
-          <PersonalityHobbiesSection
-            personality={personality}
-            hobbies={hobbies}
-          />
-          <Divider sx={{ my: 4 }} />
-        </>
-      )}
+            <Divider sx={{ my: 4 }} />
+          </>
+        )}
 
-      {finalDays && (
-        <>
-          <FinalDaysSection finalDays={finalDays} />
+        {passing && Object.keys(passing).length > 0 && (
+          <>
+            <PassingDetailsSection passing={passing} />
+            <Divider sx={{ my: 4 }} />
+          </>
+        )}
 
-          <Divider sx={{ my: 4 }} />
-        </>
-      )}
-
-      {passing && Object.keys(passing).length > 0 && (
-        <>
-          <PassingDetailsSection passing={passing} />
-          <Divider sx={{ my: 4 }} />
-        </>
-      )}
-
-      {visitors?.length > 0 && (
-        <>
-          <VisitorsSection visitors={visitors} />
-          <Divider sx={{ my: 4 }} />
-        </>
-      )}
-      {letters?.length > 0 && <LettersSection letters={letters} />}
+        {visitors?.length > 0 && (
+          <>
+            <VisitorsSection visitors={visitors} />
+            <Divider sx={{ my: 4 }} />
+          </>
+        )}
+        {letters?.length > 0 && <LettersSection letters={letters} />}
+      </Box>
     </SectionCard>
   );
 }

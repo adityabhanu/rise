@@ -59,7 +59,7 @@ export default function Footer() {
     >
       <Container maxWidth="lg" sx={{ py: 3 }}>
         <Box sx={{ px: 5 }}>
-          <Divider />
+          <Divider sx={{ my: 3 }} />
           <Stack
             sx={{
               display: "flex",

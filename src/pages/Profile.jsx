@@ -15,7 +15,7 @@ import Loader from "../components/common/Loader";
 
 const PageWrapper = styled(Box)(({ theme }) => ({
   marginTop: 64,
-  backgroundColor: theme.palette.background.default,
+  backgroundColor: theme.palette.secondary.main,
   padding: theme.spacing(2),
   display: "flex",
   justifyContent: "center",
@@ -295,7 +295,6 @@ export default function Profile() {
               </Button>
               <Button
                 variant="contained"
-                color="success"
                 onClick={handleSave}
                 disabled={isLoading}
               >

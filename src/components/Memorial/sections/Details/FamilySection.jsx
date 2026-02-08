@@ -7,10 +7,6 @@ const Section = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(4),
 }));
 
-const SectionHeader = styled(Typography)(({ theme }) => ({
-  marginBottom: theme.spacing(2),
-}));
-
 const Group = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(2.5),
 }));
@@ -76,7 +72,7 @@ export default function FamilySection({ family }) {
     );
   };
 
-  const hasDivider =
+  const hasAnyData =
     spouse?.name ||
     parents ||
     grandParents ||
@@ -86,9 +82,22 @@ export default function FamilySection({ family }) {
     grandChildren?.length ||
     siblings?.length;
 
+  if (!hasAnyData) return null;
+
   return (
     <Section>
-      <SectionHeader variant="subTitle">Family</SectionHeader>
+      {/* Header */}
+      <Typography
+        variant="subTitle"
+        sx={{
+          color: "text.header",
+          fontFamily: (theme) => theme.typography.fontFamilyDisplay,
+        }}
+      >
+        Family
+      </Typography>
+
+      <Divider sx={{ mb: 2, mt: 1.5 }} />
 
       {/* Spouse (adult case) */}
       {spouse?.name && (
@@ -134,17 +143,17 @@ export default function FamilySection({ family }) {
         </Group>
       )}
 
-      {hasDivider && <Divider sx={{ my: 3 }} />}
-
       {renderList("Children", children)}
       {renderList("Grandchildren", grandChildren)}
       {renderList("Siblings", siblings)}
 
-      {/* Traditions (newborn) */}
+      {/* Traditions */}
       {familyTraditions && (
         <Group>
           <GroupTitle>Family Traditions</GroupTitle>
-          <MetaText sx={{ lineHeight: 1.6 }}>{familyTraditions}</MetaText>
+          <MetaText sx={{ lineHeight: 1.6 }}>
+            {familyTraditions}
+          </MetaText>
         </Group>
       )}
     </Section>

@@ -36,7 +36,7 @@ const data = {
 };
 
 const PageContainer = styled(Box)(({ theme }) => ({
-  background: theme.palette.background.default,
+  background: theme.palette.secondary.main,
   marginTop: "64px",
   padding: "24px",
   display: "flex",
@@ -189,6 +189,7 @@ export default function CreateJourney({ type }) {
           textAlign="center"
           mb={3}
           fontWeight={600}
+          color="text.header"
         >
           {data[type]?.title}
         </Typography>

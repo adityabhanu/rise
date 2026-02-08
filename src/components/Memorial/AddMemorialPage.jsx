@@ -15,7 +15,7 @@ import StatusDialog from "../common/StatusDialog";
 import { useNavigate } from "react-router-dom";
 
 const PageContainer = styled(Box)(({ theme }) => ({
-  background: theme.palette.background.default,
+  background: theme.palette.secondary.main,
   marginTop: "64px",
   padding: "24px",
   display: "flex",

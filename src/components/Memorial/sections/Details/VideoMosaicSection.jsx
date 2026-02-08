@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Divider } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 
@@ -13,7 +13,7 @@ const Grid = styled(Box)(({ count }) => ({
   display: "grid",
   gap: 12,
   width: "100%",
-  maxWidth: 900,           // 👈 keeps videos small
+  // maxWidth: 900,           // 👈 keeps videos small
   margin: "0 auto",
 
   ...(count === 1 && {
@@ -42,8 +42,7 @@ const Grid = styled(Box)(({ count }) => ({
 const Tile = styled(Box)(({ theme }) => ({
   position: "relative",
   width: "100%",
-  aspectRatio: "16 / 9",     // 👈 rectangle always
-  borderRadius: 12,
+  aspectRatio: "16 / 9",
   overflow: "hidden",
   backgroundColor: theme.palette.custom.tombstoneGray,
   cursor: "pointer",
@@ -80,9 +79,17 @@ export default function VideoMosaicSection({ videos = [] }) {
 
   return (
     <Section>
-      <Typography variant="subTitle" sx={{ mb: 2 }}>
+      <Typography
+        variant="subTitle"
+        sx={{
+          color: "text.header",
+          fontFamily: (theme) => theme.typography.fontFamilyDisplay,
+        }}
+      >
         Videos
       </Typography>
+
+      <Divider sx={{ mb: 2, mt: 1.5 }} />
 
       <Grid count={items.length} sx={{mt: 4}}>
         {items.map((src, i) => (

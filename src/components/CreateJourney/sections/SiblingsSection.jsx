@@ -50,7 +50,7 @@ const SiblingsSection = forwardRef((_, ref) => {
           Siblings{count > 0 && ` (${count})`}
         </Typography>
 
-        <IconButton onClick={addSibling}>
+        <IconButton onClick={addSibling} sx={{ color: "primary.main" }}>
           <AddIcon />
         </IconButton>
       </Box>
