@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Divider } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 /* ---------------- Styled (CONSISTENT WITH OTHER SECTIONS) ---------------- */
@@ -21,7 +21,7 @@ const Sender = styled(Typography)(({ theme }) => ({
 const LetterBox = styled(Box)(({ theme }) => ({
   padding: theme.spacing(2),
   borderRadius: 12,
-  backgroundColor: theme.palette.custom.warmStone,
+  backgroundColor: theme.palette.custom.babyBlue,
 }));
 
 const MetaText = styled(Typography)(({ theme }) => ({
@@ -50,9 +50,17 @@ export default function LettersSection({ letters }) {
 
   return (
     <Section>
-      <Typography variant="subTitle">
+      <Typography
+        variant="subTitle"
+        sx={{
+          color: "text.header",
+          fontFamily: (theme) => theme.typography.fontFamilyDisplay,
+        }}
+      >
         Letters
       </Typography>
+
+      <Divider sx={{ mb: 2, mt: 1.5 }} />
 
       {Object.entries(groupedLetters).map(
         ([sender, senderLetters]) => (
@@ -61,9 +69,7 @@ export default function LettersSection({ letters }) {
 
             {senderLetters.map((letter, i) => (
               <LetterBox key={i} sx={{ mb: 2 }}>
-                <MetaText>
-                  {letter.content}
-                </MetaText>
+                <MetaText>{letter.content}</MetaText>
               </LetterBox>
             ))}
           </Group>

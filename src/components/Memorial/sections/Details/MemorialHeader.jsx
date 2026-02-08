@@ -1,101 +1,115 @@
-import { Box, Typography, Chip } from "@mui/material";
-import PersonIcon from "@mui/icons-material/Person";
+import { Box, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import cloudBg from "../../../../assets/images/cloud-background.jpeg";
 
 /* ---------------- Styled ---------------- */
-const Wrapper = styled(Box)(({ theme }) => ({
-  display: "grid",
-  gridTemplateColumns: "260px 1fr",
-  gap: theme.spacing(3),
+
+const HeaderWrapper = styled(Box)(({ theme }) => ({
+  width: "100%",
+  padding: theme.spacing(3, 2, 7),
+  textAlign: "center",
+  position: "relative",
+
+  backgroundImage: `
+    linear-gradient(
+      to bottom,
+      rgba(255,255,255,0.15),
+      rgba(255,255,255,0.15)
+    ),
+    url(${cloudBg})
+  `,
+  backgroundSize: "100% 400%",
+  backgroundPosition: "center",
 
   [theme.breakpoints.down("sm")]: {
-    gridTemplateColumns: "1fr",
-    textAlign: "center",
+    padding: theme.spacing(8, 2, 6),
   },
 }));
 
-const MediaBox = styled(Box)(({ theme }) => ({
-  aspectRatio: "3 / 4",
-  borderRadius: 12,
-  backgroundColor: theme.palette.custom.tombstoneGray,
+const Subtitle = styled(Typography)(({ theme }) => ({
+  fontFamily: theme.typography.fontFamilyDisplay,
+  fontStyle: "italic",
+  fontSize: "1.1rem",
+  color: theme.palette.text.headerLight,
+  marginBottom: theme.spacing(1),
+}));
+
+const Name = styled(Typography)(({ theme }) => ({
+  fontFamily: theme.typography.fontFamilyDisplay,
+  fontSize: "3rem",
+  fontWeight: 600,
+  color: theme.palette.text.header,
+  marginBottom: theme.spacing(1.5),
+
+  [theme.breakpoints.down("sm")]: {
+    fontSize: "2.3rem",
+  },
+}));
+
+const DatesRow = styled(Box)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  overflow: "hidden",
+  gap: theme.spacing(2),
+  color: theme.palette.text.headerLight,
+  fontFamily: theme.typography.fontFamilyDisplay,
+  fontSize: "1.1rem",
+  letterSpacing: "0.08em",
 }));
 
-const ProfileImage = styled("img")({
-  width: "100%",
-  height: "100%",
-  objectFit: "cover",
-});
-
-const InfoBox = styled(Box)(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
-  gap: theme.spacing(1),
-}));
-
-const NameText = styled(Typography)(({ theme }) => ({
-  fontSize: 28, // 👈 increased
-  fontWeight: 600,
-  letterSpacing: "0.02em",
-  color: theme.palette.text.primary,
-
-  [theme.breakpoints.down("sm")]: {
-    fontSize: 24,
-  },
-}));
-
-const MetaText = styled(Typography)(({ theme }) => ({
-  fontSize: 14,
-  color: theme.palette.text.secondary,
+const Line = styled(Box)(({ theme }) => ({
+  width: 60,
+  height: 1,
+  backgroundColor: theme.palette.text.headerLight,
 }));
 
 /* ---------------- Helpers ---------------- */
-const formatDate = (d) => (d ? d.slice(0, 10) : "");
-const toCaps = (v) => (v ? v.toUpperCase() : "");
+
+const year = (d) => (d ? new Date(d).getFullYear() : "");
 
 /* ---------------- Component ---------------- */
+
 export default function MemorialHeader({
   fullName,
   birthDate,
-  birthPlace,
   passingDate,
-  isPublic,
-  photo,
+  profileType,
 }) {
+  const isPassed = profileType?.toUpperCase() === "PASSED";
+  const isNewBorn = profileType?.toUpperCase() === "NEWBORN";
+
+  const subtitleText = isPassed
+    ? "In Loving Memory of"
+    : isNewBorn
+      ? "Every story begins somewhere"
+      : "A life still being written";
+
+  const fullDate = (d) =>
+    d
+      ? new Date(d).toLocaleDateString(undefined, {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })
+      : "";
+
   return (
-    <Wrapper>
-      <MediaBox>
-        {photo ? (
-          <ProfileImage src={photo} alt={fullName} />
-        ) : (
-          <PersonIcon sx={{ fontSize: 120, color: "text.gray" }} />
-        )}
-      </MediaBox>
+    <HeaderWrapper>
+      <Subtitle>{subtitleText}</Subtitle>
 
-      <InfoBox>
-        {isPublic && (
-          <Chip
-            label="Public Memorial"
-            size="small"
-            sx={{
-              alignSelf: { xs: "center", sm: "flex-start" },
-              backgroundColor: "custom.oliveMist",
-            }}
-          />
-        )}
+      <Name>{fullName}</Name>
 
-        <NameText>{toCaps(fullName)}</NameText>
-
-        <MetaText>Born: {formatDate(birthDate)}</MetaText>
-
-        {birthPlace && <MetaText>Birth Place: {birthPlace}</MetaText>}
-
-        {passingDate && <MetaText>Passed: {formatDate(passingDate)}</MetaText>}
-      </InfoBox>
-    </Wrapper>
+      {birthDate && (
+        <DatesRow>
+          <Line />
+          <span>
+            {isPassed
+              ? `${year(birthDate)} — ${year(passingDate)}`
+              : `${fullDate(birthDate)}`}
+          </span>
+          <Line />
+        </DatesRow>
+      )}
+    </HeaderWrapper>
   );
 }

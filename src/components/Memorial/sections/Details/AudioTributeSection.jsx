@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography, Divider } from "@mui/material";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 
@@ -30,32 +30,36 @@ export default function AudioTributeSection({ sectionTitle, voiceNotes = [] }) {
 
   return (
     <Box sx={{ mt: 4 }}>
-      <Typography variant="subTitle">
+      <Typography
+        variant="subTitle"
+        sx={{
+          color: "text.header",
+          fontFamily: (theme) => theme.typography.fontFamilyDisplay,
+        }}
+      >
         {sectionTitle}
       </Typography>
 
-      <Box sx={{ mt: 1.5, display: "grid", gap: 1.5 }}>
+      <Divider sx={{ mb: 2, mt: 1.5 }} />
+
+      <Box sx={{ display: "grid", gap: 1.5 }}>
         {voiceNotes.map((url, i) => (
           <Box key={i}>
             <Button
               fullWidth
               startIcon={
-                playingIndex === i ? (
-                  <PauseIcon />
-                ) : (
-                  <PlayArrowIcon />
-                )
+                playingIndex === i ? <PauseIcon /> : <PlayArrowIcon />
               }
               sx={{
-                borderRadius: 999,
+                borderRadius: 8,
                 py: 1.6,
-                backgroundColor: "#1f2a25",
-                color: "#fff",
+                backgroundColor: "text.secondary",
+                color: "text.white",
                 textTransform: "none",
                 fontWeight: 500,
 
                 "&:hover": {
-                  backgroundColor: "#26352f",
+                  backgroundColor: "text.primary",
                 },
               }}
               onClick={() => togglePlay(i)}

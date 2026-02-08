@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Divider } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 /* ---------------- Styled (MATCH Early Life & Family) ---------------- */
@@ -22,19 +22,24 @@ const MetaText = styled(Typography)(({ theme }) => ({
 export default function CareerWorkSection({ career }) {
   if (!career) return null;
 
-  const {
-    mentors,
-    familyRole,
-  } = career;
+  const { mentors, familyRole } = career;
 
   // if everything is empty, don't render section
   if (!mentors && !familyRole) return null;
 
   return (
     <Section>
-      <Typography variant="subTitle">
+      <Typography
+        variant="subTitle"
+        sx={{
+          color: "text.header",
+          fontFamily: (theme) => theme.typography.fontFamilyDisplay,
+        }}
+      >
         Career & Work
       </Typography>
+
+      <Divider sx={{ mb: 2, mt: 1.5 }} />
 
       {mentors && (
         <Group>

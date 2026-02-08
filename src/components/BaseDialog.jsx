@@ -15,7 +15,7 @@ const Header = styled(Box)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
-  background: theme.palette.background.secondary,
+  background: theme.palette.primary.main,
   color: theme.palette.background.white,
 }));
 
@@ -26,11 +26,12 @@ const HeaderTypography = styled(Typography)(({ theme }) => ({
   fontSize: "1.1rem",
   display: "flex",
   alignItems: "center",
+  color: theme.palette.text.white,
 }));
 
 const CloseButton = styled(Box)(({ theme }) => ({
-  background: theme.palette.background.primary,
-  color: theme.palette.background.white,
+  background: theme.palette.primary.button,
+  color: theme.palette.background.black,
   width: 56,
   height: "100%",
   display: "flex",

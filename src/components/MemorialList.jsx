@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { Box, Chip, Divider, List, ListItem, Typography } from "@mui/material";
+import {
+  Box,
+  Chip,
+  List,
+  ListItem,
+  Typography,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 
@@ -7,23 +13,35 @@ import { getMemorialList } from "../api/memorialApi";
 import Loader from "./common/Loader";
 import { useNavigate } from "react-router-dom";
 
-// ---------------- Styled ----------------
+/* ---------------- Styled ---------------- */
+
 const PageWrapper = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(4),
-  backgroundColor: theme.palette.background.default,
   minHeight: "100vh",
+  padding: theme.spacing(6, 2),
+}));
+
+const ListPanel = styled(Box)(({ theme }) => ({
+  maxWidth: 960,
+  margin: "0 auto",
+  padding: theme.spacing(3),
+  backgroundColor: theme.palette.secondary.main, // Mist Blue panel
+  borderRadius: 16,
 }));
 
 const MemorialRow = styled(ListItem)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   gap: theme.spacing(3),
-  padding: theme.spacing(2),
+  padding: theme.spacing(2.5),
   borderRadius: 12,
   backgroundColor: theme.palette.background.paper,
-  transition: "background-color 0.2s ease",
+  border: `1px solid ${theme.palette.border.light}`,
+  transition: "transform 0.2s ease, box-shadow 0.2s ease",
+  cursor: "pointer",
+
   "&:hover": {
-    backgroundColor: theme.palette.custom.warmStone,
+    transform: "translateY(-2px)",
+    boxShadow: theme.palette.shadow.cardHover,
   },
 }));
 
@@ -32,7 +50,7 @@ const ImageWrapper = styled(Box)(({ theme }) => ({
   height: 72,
   borderRadius: "50%",
   overflow: "hidden",
-  backgroundColor: theme.palette.custom.tombstoneGray,
+  backgroundColor: theme.palette.custom.babyBlue,
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -47,7 +65,7 @@ const AvatarImg = styled("img")({
 
 const DefaultPersonIcon = styled(PersonOutlineIcon)(({ theme }) => ({
   fontSize: 40,
-  color: theme.palette.text.gray,
+  color: theme.palette.text.headerLight,
 }));
 
 const Content = styled(Box)({
@@ -61,7 +79,8 @@ const MetaRow = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(0.75),
 }));
 
-// ---------------- Helpers ----------------
+/* ---------------- Helpers ---------------- */
+
 const safeParse = (value) => {
   try {
     return value ? JSON.parse(value) : null;
@@ -70,9 +89,11 @@ const safeParse = (value) => {
   }
 };
 
-const formatDate = (date) => (date ? new Date(date).toLocaleDateString() : "-");
+const formatDate = (date) =>
+  date ? new Date(date).toLocaleDateString() : "-";
 
-// ---------------- Component ----------------
+/* ---------------- Component ---------------- */
+
 const MemorialList = () => {
   const [memorials, setMemorials] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -114,17 +135,20 @@ const MemorialList = () => {
   return (
     <PageWrapper>
       {loading && <Loader />}
-      <List disablePadding>
-        {memorials.map((memorial, index) => (
-          <Box key={memorial.id}>
+
+      <ListPanel>
+        <List disablePadding sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          {memorials.map((memorial) => (
             <MemorialRow
-  button
-  onClick={() => navigate(`/memorial/${memorial.id}`)}
-  sx={{ cursor: "pointer" }}
->
+              key={memorial.id}
+              onClick={() => navigate(`/memorial/${memorial.id}`)}
+            >
               <ImageWrapper>
                 {memorial.imageUrl ? (
-                  <AvatarImg src={memorial.imageUrl} alt={memorial.name} />
+                  <AvatarImg
+                    src={memorial.imageUrl}
+                    alt={memorial.name}
+                  />
                 ) : (
                   <DefaultPersonIcon />
                 )}
@@ -135,9 +159,9 @@ const MemorialList = () => {
                   variant="h6"
                   sx={{
                     fontWeight: 500,
+                    color: "text.header",
                     textTransform: "capitalize",
                   }}
-                  color="text.primary"
                 >
                   {memorial.name}
                 </Typography>
@@ -147,31 +171,33 @@ const MemorialList = () => {
                     Born: {formatDate(memorial.birthDate)}
                   </Typography>
 
-                  {memorial.profileType === "PASSED" && memorial.deathDate && (
-                    <Typography variant="body2" color="text.secondary">
-                      Passed: {formatDate(memorial.deathDate)}
-                    </Typography>
-                  )}
+                  {memorial.profileType === "PASSED" &&
+                    memorial.deathDate && (
+                      <Typography variant="body2" color="text.secondary">
+                        Passed: {formatDate(memorial.deathDate)}
+                      </Typography>
+                    )}
 
                   {memorial.isPublic && (
                     <Chip
                       label="Public"
                       size="small"
-                      color="success"
                       variant="outlined"
-                      sx={{ alignSelf: "flex-start", mt: 0.5 }}
+                      sx={{
+                        alignSelf: "flex-start",
+                        mt: 0.5,
+                        borderColor: "primary.main",
+                        color: "primary.main",
+                        fontWeight: 500,
+                      }}
                     />
                   )}
                 </MetaRow>
               </Content>
             </MemorialRow>
-
-            {index < memorials.length - 1 && (
-              <Divider sx={{ my: 1, opacity: 0.6 }} />
-            )}
-          </Box>
-        ))}
-      </List>
+          ))}
+        </List>
+      </ListPanel>
     </PageWrapper>
   );
 };

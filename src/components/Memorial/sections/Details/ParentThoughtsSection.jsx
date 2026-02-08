@@ -1,14 +1,10 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Divider } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 /* ---------------- Styled ---------------- */
 
 const Section = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(4),
-}));
-
-const SectionHeader = styled(Typography)(({ theme }) => ({
-  marginBottom: theme.spacing(2),
 }));
 
 const Group = styled(Box)(({ theme }) => ({
@@ -34,35 +30,47 @@ export default function ParentThoughtsSection({ thoughts }) {
 
   return (
     <Section>
-      <SectionHeader variant="subTitle">
+      <Typography
+        variant="subTitle"
+        sx={{
+          color: "text.header",
+          fontFamily: (theme) => theme.typography.fontFamilyDisplay,
+        }}
+      >
         Parent Thoughts
-      </SectionHeader>
+      </Typography>
+
+      <Divider sx={{ mb: 2, mt: 1.5 }} />
 
       <Group>
         {foundOut && (
           <MetaText>
-            <strong>When we found out about you:</strong><br />
+            <strong>When we found out about you:</strong>
+            <br />
             {foundOut}
           </MetaText>
         )}
 
         {firstHeld && (
           <MetaText>
-            <strong>When we first held you:</strong><br />
+            <strong>When we first held you:</strong>
+            <br />
             {firstHeld}
           </MetaText>
         )}
 
         {fears && (
           <MetaText>
-            <strong>What scares us:</strong><br />
+            <strong>What scares us:</strong>
+            <br />
             {fears}
           </MetaText>
         )}
 
         {wishes && (
           <MetaText>
-            <strong>Our biggest wish for you:</strong><br />
+            <strong>Our biggest wish for you:</strong>
+            <br />
             {wishes}
           </MetaText>
         )}

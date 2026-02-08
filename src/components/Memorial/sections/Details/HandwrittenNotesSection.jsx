@@ -1,7 +1,7 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Divider } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-/* ---------------- Styled (CONSISTENT WITH OTHER SECTIONS) ---------------- */
+/* ---------------- Styled ---------------- */
 
 const Section = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(4),
@@ -16,13 +16,17 @@ const Grid = styled(Box)(({ theme }) => ({
 
 const NoteCard = styled(Box)(({ theme }) => ({
   padding: theme.spacing(1.5),
-  borderRadius: 14,
-  backgroundColor: theme.palette.custom.warmStone,
+  borderRadius: 0,
+  backgroundColor: theme.palette.background.white,
+
+  boxShadow: `
+    0 8px 20px rgba(0, 0, 0, 0.12),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.06)
+  `,
 }));
 
 const NoteImage = styled("img")({
   width: "100%",
-  borderRadius: 10,
   objectFit: "contain",
   display: "block",
 });
@@ -34,9 +38,17 @@ export default function HandwrittenNotesSection({ notes = [] }) {
 
   return (
     <Section>
-      <Typography variant="subTitle">
+      <Typography
+        variant="subTitle"
+        sx={{
+          color: "text.header",
+          fontFamily: (theme) => theme.typography.fontFamilyDisplay,
+        }}
+      >
         Handwritten Notes
       </Typography>
+
+      <Divider sx={{ mb: 2, mt: 1.5 }} />
 
       <Grid>
         {notes.map((src, i) => (

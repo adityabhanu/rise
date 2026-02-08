@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Divider } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 /* ---------------- Styled (MATCH OTHER SECTIONS) ---------------- */
@@ -24,14 +24,26 @@ const formatDate = (d) => (d ? d.slice(0, 10) : "");
 
 export default function PassingDetailsSection({ passing }) {
   if (!passing || Object.keys(passing).length === 0) return null;
+
   const { passingDate, passingPlace, cemetery, cause } = passing;
 
   if (!passingDate && !passingPlace && !cemetery && !cause) {
     return null;
   }
+
   return (
     <Section>
-      <Typography variant="subTitle">Passing Details</Typography>
+      <Typography
+        variant="subTitle"
+        sx={{
+          color: "text.header",
+          fontFamily: (theme) => theme.typography.fontFamilyDisplay,
+        }}
+      >
+        Passing Details
+      </Typography>
+
+      <Divider sx={{ mb: 2, mt: 1.5 }} />
 
       {passingDate && (
         <Group>
@@ -41,13 +53,17 @@ export default function PassingDetailsSection({ passing }) {
 
       {passingPlace?.address && (
         <Group>
-          <MetaText>Place of passing: {passingPlace.address}</MetaText>
+          <MetaText>
+            Place of passing: {passingPlace.address}
+          </MetaText>
         </Group>
       )}
 
       {cemetery?.address && (
         <Group>
-          <MetaText>Final resting place: {cemetery.address}</MetaText>
+          <MetaText>
+            Final resting place: {cemetery.address}
+          </MetaText>
         </Group>
       )}
 

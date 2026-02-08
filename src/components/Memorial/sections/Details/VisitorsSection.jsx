@@ -1,4 +1,4 @@
-import { Box, Typography, Chip } from "@mui/material";
+import { Box, Typography, Chip, Divider } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 /* ---------------- Styled (MATCH OTHER SECTIONS) ---------------- */
@@ -33,21 +33,33 @@ export default function VisitorsSection({ visitors }) {
 
   return (
     <Section>
-      <Typography variant="subTitle">
+      <Typography
+        variant="subTitle"
+        sx={{
+          color: "text.header",
+          fontFamily: (theme) => theme.typography.fontFamilyDisplay,
+        }}
+      >
         Visitors
       </Typography>
 
-      <Container>
+      <Divider sx={{ mb: 2, mt: 1.5 }} />
 
+      <Container>
         <ChipGroup>
           {visitors.map((name, i) => (
             <Chip
               key={i}
               label={name}
+              variant="outlined"
               sx={{
-                backgroundColor: "background.paper",
+                borderColor: "text.primary",
                 color: "text.primary",
                 fontWeight: 400,
+                backgroundColor: "text.white",
+                "&:hover": {
+                  backgroundColor: "secondary.main",
+                },
               }}
             />
           ))}

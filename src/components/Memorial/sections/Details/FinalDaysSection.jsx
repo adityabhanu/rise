@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Divider } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 /* ---------------- Styled (MATCH ALL PREVIOUS SECTIONS) ---------------- */
@@ -43,15 +43,21 @@ export default function FinalDaysSection({ finalDays }) {
 
   return (
     <Section>
-      <Typography variant="subTitle">
+      <Typography
+        variant="subTitle"
+        sx={{
+          color: "text.header",
+          fontFamily: (theme) => theme.typography.fontFamilyDisplay,
+        }}
+      >
         Final Days
       </Typography>
 
+      <Divider sx={{ mb: 2, mt: 1.5 }} />
+
       {lastDaysStory && (
         <Group>
-          <MetaText>
-            {lastDaysStory}
-          </MetaText>
+          <MetaText>{lastDaysStory}</MetaText>
         </Group>
       )}
 
@@ -73,9 +79,7 @@ export default function FinalDaysSection({ finalDays }) {
 
       {obituary && (
         <Group>
-          <MetaText>
-            {obituary}
-          </MetaText>
+          <MetaText>{obituary}</MetaText>
         </Group>
       )}
 

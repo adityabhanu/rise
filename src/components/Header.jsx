@@ -22,7 +22,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { useTheme } from "@mui/material/styles";
 import RegisterDialog from "./RegisterDialog";
 import LoginDialog from "./LoginDialog";
-import riseLogo from "../assets/images/rise_logo.png";
+import riseLogo from "../assets/images/rise_logo_2.png";
 import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { openLoginDialog, openRegisterDialog } from "../store/slices/appSlice";
@@ -39,7 +39,6 @@ export default function Header() {
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const menuTextColor = scrolled ? theme.palette.text.white : "#FFFFFF";
 
   const location = useLocation();
   const isHomePage = location.pathname === "/";
@@ -53,7 +52,6 @@ export default function Header() {
     const handleScroll = () => {
       setScrolled(window.scrollY > 40);
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -63,46 +61,32 @@ export default function Header() {
     { label: "Cemeteries", path: "/cemetery" },
   ];
 
+  const menuTextColor = theme.palette.text.primary;
+
   return (
     <>
       <AppBar
         position="fixed"
         sx={{
-          transition: "all 0.3s ease",
-          backgroundColor: isHomePage
-            ? scrolled
-              ? theme.palette.background.secondary
-              : "transparent"
-            : theme.palette.background.secondary,
-
-          boxShadow: isHomePage
-            ? scrolled
-              ? "0 2px 4px rgba(0,0,0,0.1)"
-              : "none"
-            : "0 2px 4px rgba(0,0,0,0.1)",
-
-          borderBottom: isHomePage
-            ? scrolled
-              ? `1px solid ${theme.palette.background.secondary}`
-              : "none"
-            : `1px solid ${theme.palette.background.secondary}`,
-
-          backgroundImage:
-            isHomePage && !scrolled
-              ? "linear-gradient(to bottom, #36322D 6px, rgba(54, 50, 45, 0) 95%)"
-              : "none",
+          transition: "background-color 0.3s ease",
+          backgroundColor: scrolled
+            ? theme.palette.background.default
+            : isHomePage
+              ? "transparent"
+              : theme.palette.background.default,
+          boxShadow: scrolled ? "0 1px 4px rgba(0,0,0,0.06)" : "none",
+          borderBottom: scrolled
+            ? `1px solid ${theme.palette.divider}`
+            : "none",
         }}
       >
-        <Toolbar sx={{ display: "flex", alignItems: "center", py: 0 }}>
+        <Toolbar sx={{ display: "flex", alignItems: "center", minHeight: 64 }}>
           {/* Mobile Menu Button */}
           {!isDesktop && (
             <IconButton
               edge="start"
               onClick={() => setDrawerOpen(true)}
-              sx={{
-                mr: 2,
-                color: theme.palette.background.white,
-              }}
+              sx={{ mr: 2, color: menuTextColor }}
             >
               <MenuIcon />
             </IconButton>
@@ -113,8 +97,7 @@ export default function Header() {
             <RouterLink to="/">
               <img
                 src={riseLogo}
-                width="150"
-                height="32"
+                width="100"
                 alt="RISE"
                 style={{ display: "block" }}
               />
@@ -123,7 +106,7 @@ export default function Header() {
 
           {/* Desktop Menu */}
           {isDesktop && (
-            <Box sx={{ display: "flex", gap: 3 }}>
+            <Box sx={{ display: "flex", gap: 3, ml: 4 }}>
               {menuItems.map((item) => (
                 <Button
                   key={item.label}
@@ -131,17 +114,17 @@ export default function Header() {
                   to={item.path}
                   sx={{
                     color: menuTextColor,
-                    fontSize: "1rem",
-                    fontWeight: "600",
+                    fontSize: "0.95rem",
+                    fontWeight: 600,
                     position: "relative",
                     "&:hover::after": {
                       content: '""',
                       position: "absolute",
                       left: 0,
-                      bottom: !scrolled && isHomePage ? -4 : -15,
+                      bottom: -6,
                       width: "100%",
-                      height: "3px", // underline thickness
-                      backgroundColor: menuTextColor, // dark green
+                      height: "2px",
+                      backgroundColor: theme.palette.primary.main,
                     },
                   }}
                 >
@@ -151,39 +134,35 @@ export default function Header() {
             </Box>
           )}
 
-          {/* Register + Sign In */}
-          {isDesktop && (
-            <Box
-              sx={{
-                display: "flex",
-                gap: 2,
-                justifyContent: "flex-end",
-                flex: 1,
-              }}
-            >
-              {user ? (
+          {/* Right Section */}
+          <Box
+            sx={{
+              display: "flex",
+              gap: 2,
+              justifyContent: "flex-end",
+              flex: 1,
+            }}
+          >
+            {isDesktop &&
+              (user ? (
                 <>
                   <IconButton
                     onClick={handleMenuClick}
-                    sx={{
-                      color: scrolled ? theme.palette.text.white : "#FFFFFF",
-                    }}
+                    sx={{ color: menuTextColor }}
                   >
                     {user.profilePic ? (
                       <Avatar
                         src={user.profilePic}
                         alt={user.publicName || user.firstName}
-                        size="large"
                       />
                     ) : (
-                      <AccountCircleIcon fontSize="large" />
+                      <AccountCircleIcon />
                     )}
                   </IconButton>
                   <Menu
                     anchorEl={anchorEl}
                     open={menuOpen}
                     onClose={handleMenuClose}
-                    disableScrollLock
                   >
                     <MenuItem
                       onClick={() => {
@@ -208,107 +187,22 @@ export default function Header() {
                 <>
                   <Button
                     onClick={() => dispatch(openRegisterDialog())}
-                    sx={{
-                      color: menuTextColor,
-                      position: "relative",
-                      fontWeight: "600",
-                      "&:hover::after": {
-                        content: '""',
-                        position: "absolute",
-                        left: 0,
-                        bottom: !scrolled && isHomePage ? -4 : -16,
-                        width: "100%",
-                        height: "3px",
-                        backgroundColor: menuTextColor,
-                      },
-                    }}
+                    sx={{ color: menuTextColor, fontWeight: 600 }}
                   >
                     REGISTER
                   </Button>
                   <Button
                     onClick={() => dispatch(openLoginDialog())}
-                    sx={{
-                      color: menuTextColor,
-                      position: "relative",
-                      fontWeight: "600",
-                      "&:hover::after": {
-                        content: '""',
-                        position: "absolute",
-                        left: 0,
-                        bottom: !scrolled && isHomePage ? -4 : -16,
-                        width: "100%",
-                        height: "3px", // underline thickness
-                        backgroundColor: menuTextColor, // dark green
-                      },
-                    }}
+                    sx={{ color: menuTextColor, fontWeight: 600 }}
                   >
                     SIGN IN
                   </Button>
                 </>
-              )}
-            </Box>
-          )}
-
-          {/* Mobile Right-side icons */}
-          {!isDesktop && (
-            <Box
-              sx={{
-                display: "flex",
-                gap: 2,
-                justifyContent: "flex-end",
-                flex: 1,
-              }}
-            >
-              {user && (
-                <>
-                  <IconButton
-                    onClick={handleMenuClick}
-                    sx={{
-                      color: scrolled ? theme.palette.text.white : "#FFFFFF",
-                    }}
-                  >
-                    {user.profilePic ? (
-                      <Avatar
-                        src={user.profilePic}
-                        alt={user.publicName || user.firstName}
-                        size="large"
-                      />
-                    ) : (
-                      <AccountCircleIcon fontSize="large" />
-                    )}
-                  </IconButton>
-
-                  <Menu
-                    anchorEl={anchorEl}
-                    open={menuOpen}
-                    onClose={handleMenuClose}
-                    disableScrollLock
-                  >
-                    <MenuItem
-                      onClick={() => {
-                        handleMenuClose();
-                        navigate("/profile");
-                      }}
-                    >
-                      Profile
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => {
-                        dispatch(logoutUser());
-                        handleMenuClose();
-                        navigate("/", { replace: true });
-                      }}
-                    >
-                      Logout
-                    </MenuItem>
-                  </Menu>
-                </>
-              )}
-            </Box>
-          )}
+              ))}
+          </Box>
         </Toolbar>
 
-        {/* Drawer Menu (Mobile) */}
+        {/* Drawer Menu */}
         <Drawer
           anchor="left"
           open={drawerOpen}
@@ -332,7 +226,6 @@ export default function Header() {
                 </ListItem>
               ))}
 
-              {/* Mobile Only Items */}
               {!user && (
                 <>
                   <ListItem disablePadding>

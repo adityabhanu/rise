@@ -3,92 +3,168 @@ import { createTheme } from "@mui/material/styles";
 const theme = createTheme({
   palette: {
     background: {
-      default: "#e2e9c8",
-      paper: "#F5F7F2",
-      primary: "#2F402C",
-      secondary: "#4F5E45",
-      white: "#fff",
-      footer: "#f7f5f0",
-      gray: "#6f6f6f",
+      default: "#F7FAFD", // Soft Cloud
+      paper: "#FFFFFF",
+      footer: "#F7FAFD",
+      white: "#FFFFFF",
+      black: "#000000",
     },
-    text: {
-      primary: "#2F402C",
-      secondary: "#4F5E45",
-      white: "#fff",
-      gray: "#6f6f6f",
-    },
-    primary: {
-      main: "#4D6C3A",
-    },
-    success: {
-      main: "#5E714E",
-    },
-    custom: {
-      darkForestGreen: "#3A4036",
-      lightTan: "#D9D2C6",
-      softTeal: "#A0A8A0",
-      tombstoneGray: "#E6E6E6",
 
-      mossGreen: "#6B7F5E",
-      oliveMist: "#B7C0A7",
-      warmStone: "#ECEBE6",
-      shadowGreen: "rgba(47, 64, 44, 0.12)",
+    primary: {
+      main: "#7FB3FF", // Sky Blue CTA
+      button: "#5A86D6",
+    },
+
+    secondary: {
+      main: "#E6F0FF", // Mist Blue
+    },
+
+    text: {
+      primary: "#243447",
+      header: "#244369",
+      headerLight: "#204878",
+      secondary: "#5F6F82",
+      disabled: "#8A99AD",
+      muted: "#8A99AD",
+      white: "#FFFFFF",
+    },
+
+    divider: "#E6EEF6",
+
+    border: {
+      light: "#E6EEF6", // Card border
+      inner: "#FFFFFF",
+    },
+
+    custom: {
+      babyBlue: "#CFE6FF",
+      mistBlue: "#E6F0FF",
+      softLavender: "#E9E6FF",
+      cardBorder: "#E6EEF6",
+      cardShadow: "0px 12px 30px rgba(0,0,0,0.06)",
+    },
+    shadow: {
+      card: "0px 12px 30px rgba(0,0,0,0.06)",
+      cardHover: "0px 18px 40px rgba(0,0,0,0.08)",
     },
   },
 
   typography: {
     fontFamily: "sans-serif",
+    fontFamilyDisplay: `"Playfair Display", serif`,
     fontSize: 15,
     fontWeightRegular: 400,
-    lineHeight: 1.5,
+    lineHeight: 1.6,
+
+    h3: {
+      fontWeight: 600,
+      letterSpacing: "1.2px",
+      color: "#243447",
+    },
+
+    h5: {
+      fontWeight: 600,
+      color: "#5F6F82",
+    },
 
     allVariants: {
       fontFamily: "sans-serif",
       fontSize: 15,
-      lineHeight: 1.5,
+      lineHeight: 1.6,
       fontWeight: 400,
+      color: "#243447",
     },
   },
 
   components: {
-    MuiButton: {
+    MuiCssBaseline: {
       styleOverrides: {
-        root: {
-          borderRadius: 8,
-          textTransform: "none",
-          fontWeight: 500,
+        body: {
+          backgroundColor: "#F7FAFD",
         },
       },
     },
+
+    // IMPORTANT: keep buttons rectangular
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: 8, // same as your current
+          textTransform: "none",
+          fontWeight: 500,
+          boxShadow: "none",
+        },
+        contained: {
+          boxShadow: "none",
+        },
+        containedSuccess: {
+      backgroundColor: "#7FB3FF",
+      color: "#FFFFFF",
+
+      "&:hover": {
+        backgroundColor: "#5A86D6",
+      },
+    },
+
+    outlinedSuccess: {
+      borderColor: "#7FB3FF",
+      color: "#7FB3FF",
+
+      "&:hover": {
+        backgroundColor: "rgba(127,179,255,0.08)",
+      },
+    },
+      },
+    },
+
+    // IMPORTANT: keep text fields rectangular
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          borderRadius: 8,
+          backgroundColor: "#FFFFFF",
+        },
+      },
+    },
+
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "#FFFFFF",
+          border: "1px solid #E6EEF6",
+          boxShadow: "0px 12px 30px rgba(0,0,0,0.06)",
+        },
+      },
+    },
+
+    MuiDialog: {
+      styleOverrides: {
+        paper: {
+          borderRadius: 12, // dialog only, not inputs/buttons
+          backgroundColor: "#FFFFFF",
+        },
+      },
+    },
+
     MuiTypography: {
       variants: [
         {
           props: { variant: "sectionTitle" },
           style: {
             fontSize: "1.2rem",
-            fontWeight: "300 !important",
-            color: "#626262",
+            fontWeight: 300,
+            color: "#5F6F82",
           },
         },
         {
           props: { variant: "subTitle" },
           style: {
             fontSize: "22px",
-            fontWeight: "400",
-            color: "#4F5E45",
+            fontWeight: 400,
+            color: "#243447",
           },
         },
       ],
-    },
-    MuiCssBaseline: {
-      styleOverrides: {
-        body: {
-          fontFamily: "sans-serif",
-          fontSize: "0.9375rem",
-          lineHeight: 1.5,
-          fontWeight: 400,
-        },
-      },
     },
   },
 });

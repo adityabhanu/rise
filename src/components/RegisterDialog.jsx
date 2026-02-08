@@ -14,6 +14,7 @@ import BaseDialog from "./BaseDialog";
 import { useDispatch } from "react-redux";
 import { closeRegisterDialog, openLoginDialog } from "../store/slices/appSlice";
 import { registerUser, uploadProfileImage } from "../api/authApi";
+import { useTheme } from "@emotion/react";
 
 const Section = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(2),
@@ -21,6 +22,7 @@ const Section = styled(Box)(({ theme }) => ({
 
 export default function RegisterDialog({ open, onClose }) {
   const dispatch = useDispatch();
+  const theme = useTheme();
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -267,7 +269,7 @@ export default function RegisterDialog({ open, onClose }) {
           label={
             <span>
               I would like to be a photo volunteer.{" "}
-              <span style={{ color: "#4D6C3A", cursor: "pointer" }}>
+              <span style={{ color: theme.palette.primary.main, cursor: "pointer" }}>
                 What is a Photo Volunteer?
               </span>
             </span>
@@ -298,11 +300,11 @@ export default function RegisterDialog({ open, onClose }) {
           label={
             <span>
               I have read and agree to the{" "}
-              <span style={{ color: "#4D6C3A", cursor: "pointer" }}>
+              <span style={{ color: theme.palette.primary.main, cursor: "pointer" }}>
                 Terms and Conditions
               </span>{" "}
               and{" "}
-              <span style={{ color: "#4D6C3A", cursor: "pointer" }}>
+              <span style={{ color: theme.palette.primary.main, cursor: "pointer" }}>
                 Privacy Statement
               </span>
             </span>
