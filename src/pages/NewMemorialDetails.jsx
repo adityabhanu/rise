@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Divider } from "@mui/material";
+import { Box, Divider, Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { getMemorialDetails } from "../api/memorialApi";
@@ -23,6 +23,9 @@ import AppearanceAtBirthSection from "../components/Memorial/sections/Details/Ap
 import ParentThoughtsSection from "../components/Memorial/sections/Details/ParentThoughtsSection";
 import NotesSection from "../components/Memorial/sections/Details/NotesSection";
 import MemoryImageCarousel from "../components/Memorial/sections/Details/MemoryImageCarousel";
+import AddIcon from "@mui/icons-material/Add";
+import TimelineEventDialog from "../components/Memorial/sections/Details/TimelineEventDialog";
+import TimelineSection from "../components/Memorial/sections/Details/TimelineSection";
 
 /* ---------------- Helpers ---------------- */
 const safeParse = (v) => {
@@ -61,6 +64,7 @@ const SectionCard = styled(Box)(({ theme }) => ({
 export default function MemorialDetails() {
   const { id } = useParams();
   const [data, setData] = useState(null);
+  const [timelineOpen, setTimelineOpen] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -101,6 +105,52 @@ export default function MemorialDetails() {
   const appearanceObj = safeParse(data?.AppearanceAtBirth) || null;
   const parentThoughtsObj = safeParse(data?.ParentThoughts) || null;
   const notesObj = safeParse(data?.Notes) || null;
+  const timelines = safeParse(data?.Timelines) || [];
+
+  const dummyTimelinesString = JSON.stringify([
+    {
+      title: "First Job",
+      eventDate: "2005-06-15",
+      description:
+        "Started first job as a junior engineer. A proud and memorable milestone.",
+      Media: JSON.stringify({
+        photos: JSON.stringify([
+          "https://rgriseb80b.blob.core.windows.net/memorial-uploads/0a7f6ba5-6946-4d5c-ad52-75341cc26eda/photos/Gemini_Generated_Image_xmo7a8xmo7a8xmo7.png",
+          "https://rgriseb80b.blob.core.windows.net/memorial-uploads/0a7f6ba5-6946-4d5c-ad52-75341cc26eda/photos/Gemini_Generated_Image_xmo7a8xmo7a8xmo7.png",
+          "https://rgriseb80b.blob.core.windows.net/memorial-uploads/0a7f6ba5-6946-4d5c-ad52-75341cc26eda/photos/Gemini_Generated_Image_xmo7a8xmo7a8xmo7.png",
+          "https://rgriseb80b.blob.core.windows.net/memorial-uploads/0a7f6ba5-6946-4d5c-ad52-75341cc26eda/photos/Gemini_Generated_Image_xmo7a8xmo7a8xmo7.png",
+          "https://rgriseb80b.blob.core.windows.net/memorial-uploads/0a7f6ba5-6946-4d5c-ad52-75341cc26eda/photos/Gemini_Generated_Image_xmo7a8xmo7a8xmo7.png",
+        ]),
+        videos: JSON.stringify([
+          "https://rgriseb80b.blob.core.windows.net/memorial-uploads/0a7f6ba5-6946-4d5c-ad52-75341cc26eda/videos/22.01.2026_10.46.55_REC.mp4",
+        ]),
+        voiceNotes: JSON.stringify([
+          "https://rgriseb80b.blob.core.windows.net/memorial-uploads/0a7f6ba5-6946-4d5c-ad52-75341cc26eda/voicenotes/Shubha Chalo Jaane do.mp3",
+        ]),
+      }),
+    },
+    {
+      title: "Wedding Day",
+      eventDate: "2010-11-21",
+      description:
+        "A beautiful day surrounded by family, friends, and endless smiles.",
+      Media: JSON.stringify({
+        photos: JSON.stringify([
+          "https://rgriseb80b.blob.core.windows.net/memorial-uploads/0a7f6ba5-6946-4d5c-ad52-75341cc26eda/photos/Gemini_Generated_Image_xmo7a8xmo7a8xmo7.png",
+          "https://rgriseb80b.blob.core.windows.net/memorial-uploads/0a7f6ba5-6946-4d5c-ad52-75341cc26eda/photos/Gemini_Generated_Image_xmo7a8xmo7a8xmo7.png",
+          "https://rgriseb80b.blob.core.windows.net/memorial-uploads/0a7f6ba5-6946-4d5c-ad52-75341cc26eda/photos/Gemini_Generated_Image_xmo7a8xmo7a8xmo7.png",
+          "https://rgriseb80b.blob.core.windows.net/memorial-uploads/0a7f6ba5-6946-4d5c-ad52-75341cc26eda/photos/Gemini_Generated_Image_xmo7a8xmo7a8xmo7.png",
+          "https://rgriseb80b.blob.core.windows.net/memorial-uploads/0a7f6ba5-6946-4d5c-ad52-75341cc26eda/photos/Gemini_Generated_Image_xmo7a8xmo7a8xmo7.png",
+        ]),
+        videos: JSON.stringify([
+          "https://rgriseb80b.blob.core.windows.net/memorial-uploads/0a7f6ba5-6946-4d5c-ad52-75341cc26eda/videos/22.01.2026_10.46.55_REC.mp4",
+        ]),
+        voiceNotes: JSON.stringify([
+          "https://rgriseb80b.blob.core.windows.net/memorial-uploads/0a7f6ba5-6946-4d5c-ad52-75341cc26eda/voicenotes/Shubha Chalo Jaane do.mp3",
+        ]),
+      }),
+    },
+  ]);
 
   const hasFamilyData = (family) => {
     if (!family || typeof family !== "object") return false;
@@ -184,7 +234,6 @@ export default function MemorialDetails() {
         {hasFamilyData(family) && (
           <>
             <FamilySection family={family} />
-
           </>
         )}
         {media?.footprints?.length > 0 && (
@@ -202,7 +251,6 @@ export default function MemorialDetails() {
               title={`Cherished Moments with Family`}
               images={media.familyPhotos}
             />
-
           </>
         )}
 
@@ -233,6 +281,11 @@ export default function MemorialDetails() {
           </>
         )}
 
+        {/* {timelines?.length > 0 && (
+          <TimelineSection timelines={safeParse(dummyTimelinesString)} />
+        )} */}
+        <TimelineSection timelines={safeParse(dummyTimelinesString)} />
+
         {media?.handwrittenNotes?.length > 0 && (
           <>
             <HandwrittenNotesSection notes={media.handwrittenNotes} />
@@ -260,7 +313,6 @@ export default function MemorialDetails() {
         {career && (
           <>
             <CareerWorkSection career={career} />
-
           </>
         )}
 
@@ -277,7 +329,6 @@ export default function MemorialDetails() {
         {finalDays && (
           <>
             <FinalDaysSection finalDays={finalDays} />
-
           </>
         )}
 
@@ -293,6 +344,21 @@ export default function MemorialDetails() {
           </>
         )}
         {letters?.length > 0 && <LettersSection letters={letters} />}
+        <Box sx={{ mt: 6, mb: 4, textAlign: "center" }}>
+          <Button
+            startIcon={<AddIcon />}
+            variant="contained"
+            color="success"
+            onClick={() => setTimelineOpen(true)}
+          >
+            Add Timeline Event
+          </Button>
+        </Box>
+
+        <TimelineEventDialog
+          open={timelineOpen}
+          onClose={() => setTimelineOpen(false)}
+        />
       </Box>
     </SectionCard>
   );

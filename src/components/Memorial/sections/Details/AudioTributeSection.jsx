@@ -3,7 +3,11 @@ import { Box, Button, Typography, Divider } from "@mui/material";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 
-export default function AudioTributeSection({ sectionTitle, voiceNotes = [] }) {
+export default function AudioTributeSection({
+  sectionTitle,
+  voiceNotes = [],
+  hideHeader = false,
+}) {
   const audioRefs = useRef([]);
   const [playingIndex, setPlayingIndex] = useState(null);
 
@@ -30,26 +34,28 @@ export default function AudioTributeSection({ sectionTitle, voiceNotes = [] }) {
 
   return (
     <Box sx={{ mt: 4 }}>
-      <Typography
-        variant="subTitle"
-        sx={{
-          color: "text.header",
-          fontFamily: (theme) => theme.typography.fontFamilyDisplay,
-        }}
-      >
-        {sectionTitle}
-      </Typography>
+      {!hideHeader && sectionTitle && (
+        <>
+          <Typography
+            variant="subTitle"
+            sx={{
+              color: "text.header",
+              fontFamily: (theme) => theme.typography.fontFamilyDisplay,
+            }}
+          >
+            {sectionTitle}
+          </Typography>
 
-      <Divider sx={{ mb: 2, mt: 1.5 }} />
+          <Divider sx={{ mb: 2, mt: 1.5 }} />
+        </>
+      )}
 
       <Box sx={{ display: "grid", gap: 1.5 }}>
         {voiceNotes.map((url, i) => (
           <Box key={i}>
             <Button
               fullWidth
-              startIcon={
-                playingIndex === i ? <PauseIcon /> : <PlayArrowIcon />
-              }
+              startIcon={playingIndex === i ? <PauseIcon /> : <PlayArrowIcon />}
               sx={{
                 borderRadius: 8,
                 py: 1.6,
@@ -64,9 +70,7 @@ export default function AudioTributeSection({ sectionTitle, voiceNotes = [] }) {
               }}
               onClick={() => togglePlay(i)}
             >
-              {playingIndex === i
-                ? "Pause Audio Tribute"
-                : "Play Audio Tribute"}
+              {playingIndex === i ? "Pause Audio" : "Play Audio"}
             </Button>
 
             {/* hidden native audio */}

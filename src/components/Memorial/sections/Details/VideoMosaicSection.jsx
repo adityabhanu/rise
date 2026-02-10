@@ -37,7 +37,6 @@ const Grid = styled(Box)(({ count }) => ({
   }),
 }));
 
-
 const Tile = styled(Box)(({ theme }) => ({
   position: "relative",
   width: "100%",
@@ -53,7 +52,6 @@ const Poster = styled("video")({
   objectFit: "cover",
 });
 
-
 const Overlay = styled(Box)({
   position: "absolute",
   inset: 0,
@@ -63,9 +61,20 @@ const Overlay = styled(Box)({
   background: "rgba(0,0,0,0.35)",
 });
 
+const PlayCircle = styled(Box)({
+  width: 72,
+  height: 72,
+  borderRadius: "50%",
+  background: "rgba(0,0,0,0.65)",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+});
+
 const PlayIcon = styled(PlayArrowIcon)({
-  fontSize: 64,
+  fontSize: 44,
   color: "#fff",
+  marginLeft: 4, // gives proper play-button centering feel
 });
 
 /* ---------------- Component ---------------- */
@@ -90,7 +99,7 @@ export default function VideoMosaicSection({ videos = [] }) {
 
       <Divider sx={{ mb: 2, mt: 1.5 }} />
 
-      <Grid count={items.length} sx={{mt: 4}}>
+      <Grid count={items.length} sx={{ mt: 4 }}>
         {items.map((src, i) => (
           <Tile key={i} onClick={() => setActive(i)}>
             {active === i ? (
@@ -105,7 +114,9 @@ export default function VideoMosaicSection({ videos = [] }) {
                 {/* Using video tag to auto-grab first frame */}
                 <Poster src={src} muted preload="metadata" />
                 <Overlay>
-                  <PlayIcon />
+                  <PlayCircle>
+                    <PlayIcon />
+                  </PlayCircle>
                 </Overlay>
               </>
             )}
