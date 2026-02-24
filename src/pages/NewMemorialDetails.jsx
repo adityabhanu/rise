@@ -105,52 +105,7 @@ export default function MemorialDetails() {
   const appearanceObj = safeParse(data?.AppearanceAtBirth) || null;
   const parentThoughtsObj = safeParse(data?.ParentThoughts) || null;
   const notesObj = safeParse(data?.Notes) || null;
-  const timelines = safeParse(data?.Timelines) || [];
-
-  const dummyTimelinesString = JSON.stringify([
-    {
-      title: "First Job",
-      eventDate: "2005-06-15",
-      description:
-        "Started first job as a junior engineer. A proud and memorable milestone.",
-      Media: JSON.stringify({
-        photos: JSON.stringify([
-          "https://rgriseb80b.blob.core.windows.net/memorial-uploads/0a7f6ba5-6946-4d5c-ad52-75341cc26eda/photos/Gemini_Generated_Image_xmo7a8xmo7a8xmo7.png",
-          "https://rgriseb80b.blob.core.windows.net/memorial-uploads/0a7f6ba5-6946-4d5c-ad52-75341cc26eda/photos/Gemini_Generated_Image_xmo7a8xmo7a8xmo7.png",
-          "https://rgriseb80b.blob.core.windows.net/memorial-uploads/0a7f6ba5-6946-4d5c-ad52-75341cc26eda/photos/Gemini_Generated_Image_xmo7a8xmo7a8xmo7.png",
-          "https://rgriseb80b.blob.core.windows.net/memorial-uploads/0a7f6ba5-6946-4d5c-ad52-75341cc26eda/photos/Gemini_Generated_Image_xmo7a8xmo7a8xmo7.png",
-          "https://rgriseb80b.blob.core.windows.net/memorial-uploads/0a7f6ba5-6946-4d5c-ad52-75341cc26eda/photos/Gemini_Generated_Image_xmo7a8xmo7a8xmo7.png",
-        ]),
-        videos: JSON.stringify([
-          "https://rgriseb80b.blob.core.windows.net/memorial-uploads/0a7f6ba5-6946-4d5c-ad52-75341cc26eda/videos/22.01.2026_10.46.55_REC.mp4",
-        ]),
-        voiceNotes: JSON.stringify([
-          "https://rgriseb80b.blob.core.windows.net/memorial-uploads/0a7f6ba5-6946-4d5c-ad52-75341cc26eda/voicenotes/Shubha Chalo Jaane do.mp3",
-        ]),
-      }),
-    },
-    {
-      title: "Wedding Day",
-      eventDate: "2010-11-21",
-      description:
-        "A beautiful day surrounded by family, friends, and endless smiles.",
-      Media: JSON.stringify({
-        photos: JSON.stringify([
-          "https://rgriseb80b.blob.core.windows.net/memorial-uploads/0a7f6ba5-6946-4d5c-ad52-75341cc26eda/photos/Gemini_Generated_Image_xmo7a8xmo7a8xmo7.png",
-          "https://rgriseb80b.blob.core.windows.net/memorial-uploads/0a7f6ba5-6946-4d5c-ad52-75341cc26eda/photos/Gemini_Generated_Image_xmo7a8xmo7a8xmo7.png",
-          "https://rgriseb80b.blob.core.windows.net/memorial-uploads/0a7f6ba5-6946-4d5c-ad52-75341cc26eda/photos/Gemini_Generated_Image_xmo7a8xmo7a8xmo7.png",
-          "https://rgriseb80b.blob.core.windows.net/memorial-uploads/0a7f6ba5-6946-4d5c-ad52-75341cc26eda/photos/Gemini_Generated_Image_xmo7a8xmo7a8xmo7.png",
-          "https://rgriseb80b.blob.core.windows.net/memorial-uploads/0a7f6ba5-6946-4d5c-ad52-75341cc26eda/photos/Gemini_Generated_Image_xmo7a8xmo7a8xmo7.png",
-        ]),
-        videos: JSON.stringify([
-          "https://rgriseb80b.blob.core.windows.net/memorial-uploads/0a7f6ba5-6946-4d5c-ad52-75341cc26eda/videos/22.01.2026_10.46.55_REC.mp4",
-        ]),
-        voiceNotes: JSON.stringify([
-          "https://rgriseb80b.blob.core.windows.net/memorial-uploads/0a7f6ba5-6946-4d5c-ad52-75341cc26eda/voicenotes/Shubha Chalo Jaane do.mp3",
-        ]),
-      }),
-    },
-  ]);
+  const timelines = data?.Timelines || [];
 
   const hasFamilyData = (family) => {
     if (!family || typeof family !== "object") return false;
@@ -281,10 +236,9 @@ export default function MemorialDetails() {
           </>
         )}
 
-        {/* {timelines?.length > 0 && (
-          <TimelineSection timelines={safeParse(dummyTimelinesString)} />
-        )} */}
-        <TimelineSection timelines={safeParse(dummyTimelinesString)} />
+        {timelines?.length > 0 && (
+          <TimelineSection timelines={timelines} />
+        )}
 
         {media?.handwrittenNotes?.length > 0 && (
           <>
@@ -358,6 +312,7 @@ export default function MemorialDetails() {
         <TimelineEventDialog
           open={timelineOpen}
           onClose={() => setTimelineOpen(false)}
+          memorialId={id}
         />
       </Box>
     </SectionCard>

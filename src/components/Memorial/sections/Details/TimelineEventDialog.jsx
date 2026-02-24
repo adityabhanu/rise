@@ -1,10 +1,14 @@
 import { useState, useRef } from "react";
-import { Box, TextField, Button, IconButton, Typography } from "@mui/material";
+import { Box, TextField, Button, IconButton } from "@mui/material";
 import BaseDialog from "../../../BaseDialog";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import AudiotrackIcon from "@mui/icons-material/Audiotrack";
 import VideoLibraryIcon from "@mui/icons-material/VideoLibrary";
 import ClearIcon from "@mui/icons-material/Clear";
+
+import Loader from "../../../common/Loader";
+import StatusDialog from "../../../common/StatusDialog";
+import { saveTimelineEvent } from "../../../../api/timelineApi";
 
 /* ---------- limits ---------- */
 const PHOTO_MAX_MB = 5;
@@ -82,11 +86,9 @@ const MediaPicker = ({
         sx={{
           justifyContent: "flex-start",
           mt: 2,
-
           borderColor: "border.light",
           color: "text.primary",
           backgroundColor: "background.paper",
-
           "&.Mui-disabled": {
             borderColor: "divider",
             color: "text.disabled",
@@ -114,7 +116,6 @@ const MediaPicker = ({
                 backgroundColor: "background.paper",
               }}
             >
-              {/* preview */}
               {previewType === "image" && (
                 <img
                   src={item.preview}
@@ -141,7 +142,6 @@ const MediaPicker = ({
                 </Box>
               )}
 
-              {/* remove */}
               <IconButton
                 size="small"
                 onClick={() => remove(item.id)}
@@ -164,7 +164,11 @@ const MediaPicker = ({
 
 /* ===================== MAIN DIALOG ===================== */
 
-export default function TimelineEventDialog({ open, onClose }) {
+export default function TimelineEventDialog({
+  open,
+  onClose,
+  memorialId,
+}) {
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
   const [description, setDescription] = useState("");
@@ -173,90 +177,149 @@ export default function TimelineEventDialog({ open, onClose }) {
   const [video, setVideo] = useState([]);
   const [audio, setAudio] = useState([]);
 
-  const handleSave = () => {
-    const payload = {
-      title,
-      date,
-      description,
-      photos: photos.map((p) => p.file),
-      video: video[0]?.file || null,
-      audio: audio[0]?.file || null,
-    };
+  const [loading, setLoading] = useState(false);
+  const [statusDialog, setStatusDialog] = useState({
+    open: false,
+    status: "success",
+    title: "",
+    message: "",
+  });
 
-    console.log("Timeline Event Payload", payload);
-    onClose();
+  const handleSave = async () => {
+    if (!memorialId) return;
+
+    setLoading(true);
+
+    try {
+      const res = await saveTimelineEvent(memorialId, {
+        title,
+        date: new Date(date).toISOString(),
+        description,
+        mediaFiles: {
+          photos: photos.map((p) => p.file),
+          video: video.map((v) => v.file),
+          audio: audio.map((a) => a.file),
+        },
+      });
+
+      if (!res || res?.error) {
+        throw new Error("Timeline save failed");
+      }
+
+      setStatusDialog({
+        open: true,
+        status: "success",
+        title: "Timeline Added",
+        message: "The timeline event was added successfully.",
+      });
+    } catch (err) {
+      console.error(err);
+
+      setStatusDialog({
+        open: true,
+        status: "error",
+        title: "Something went wrong",
+        message:
+          "We couldn’t save the timeline event. Please try again.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDialogPrimaryAction = () => {
+    setStatusDialog((prev) => ({ ...prev, open: false }));
+
+    if (statusDialog.status === "success") {
+      onClose();
+    }
   };
 
   return (
-    <BaseDialog
-      open={open}
-      onClose={onClose}
-      title="Add Timeline Event"
-      actions={
-        <Button variant="contained" color="success" onClick={handleSave}>
-          Save Event
-        </Button>
-      }
-    >
-      <Box display="grid" gap={2}>
-        <TextField
-          label="Event Title"
-          fullWidth
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
+    <>
+      {loading && <Loader />}
 
-        <TextField
-          label="Event Date"
-          type="date"
-          fullWidth
-          InputLabelProps={{ shrink: true }}
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-        />
+      <StatusDialog
+        open={statusDialog.open}
+        status={statusDialog.status}
+        title={statusDialog.title}
+        message={statusDialog.message}
+        onClose={() =>
+          setStatusDialog({ ...statusDialog, open: false })
+        }
+        onPrimaryAction={handleDialogPrimaryAction}
+      />
 
-        <TextField
-          label="Description"
-          multiline
-          rows={4}
-          fullWidth
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
+      <BaseDialog
+        open={open}
+        onClose={onClose}
+        title="Add Timeline Event"
+        actions={
+          <Button variant="contained" color="success" onClick={handleSave}>
+            Save Event
+          </Button>
+        }
+      >
+        <Box display="grid" gap={2}>
+          <TextField
+            label="Event Title"
+            fullWidth
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
 
-        <MediaPicker
-          title="Photos"
-          icon={<AddPhotoAlternateIcon />}
-          accept="image/*"
-          maxCount={5}
-          maxSizeMB={PHOTO_MAX_MB}
-          files={photos}
-          setFiles={setPhotos}
-          previewType="image"
-        />
+          <TextField
+            label="Event Date"
+            type="date"
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+          />
 
-        <MediaPicker
-          title="Video"
-          icon={<VideoLibraryIcon />}
-          accept="video/*"
-          maxCount={1}
-          maxSizeMB={VIDEO_MAX_MB}
-          files={video}
-          setFiles={setVideo}
-          previewType="video"
-        />
+          <TextField
+            label="Description"
+            multiline
+            rows={4}
+            fullWidth
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
 
-        <MediaPicker
-          title="Audio"
-          icon={<AudiotrackIcon />}
-          accept="audio/*"
-          maxCount={1}
-          maxSizeMB={AUDIO_MAX_MB}
-          files={audio}
-          setFiles={setAudio}
-          previewType="audio"
-        />
-      </Box>
-    </BaseDialog>
+          <MediaPicker
+            title="Photos"
+            icon={<AddPhotoAlternateIcon />}
+            accept="image/*"
+            maxCount={5}
+            maxSizeMB={PHOTO_MAX_MB}
+            files={photos}
+            setFiles={setPhotos}
+            previewType="image"
+          />
+
+          <MediaPicker
+            title="Video"
+            icon={<VideoLibraryIcon />}
+            accept="video/*"
+            maxCount={1}
+            maxSizeMB={VIDEO_MAX_MB}
+            files={video}
+            setFiles={setVideo}
+            previewType="video"
+          />
+
+          <MediaPicker
+            title="Audio"
+            icon={<AudiotrackIcon />}
+            accept="audio/*"
+            maxCount={1}
+            maxSizeMB={AUDIO_MAX_MB}
+            files={audio}
+            setFiles={setAudio}
+            previewType="audio"
+          />
+        </Box>
+      </BaseDialog>
+    </>
   );
 }

@@ -159,22 +159,20 @@ export default function TimelineSection({ timelines = [] }) {
 
       {timelines.map((item, index) => {
         /* ---------- Parse media ---------- */
-        const mediaRaw = safeParse(item.Media) || {};
-
-        const photos = safeParse(mediaRaw.photos) || [];
-        const videos = safeParse(mediaRaw.videos) || [];
-        const voiceNotes = safeParse(mediaRaw.voiceNotes) || [];
+        const photos = item?.Media?.Photos || [];
+        const videos = item?.Media?.Video || [];
+        const voiceNotes = item?.Media?.Audio || [];
 
         return (
           <Box key={index}>
             <Item>
-              <DateText>{formatDate(item.eventDate)}</DateText>
+              <DateText>{formatDate(item?.Date)}</DateText>
 
               <Content>
-                <Title>{item.title}</Title>
+                <Title>{item?.Title}</Title>
 
-                {item.description && (
-                  <Description>{item.description}</Description>
+                {item?.Description && (
+                  <Description>{item?.Description}</Description>
                 )}
 
                 {/* Photos → reuse MemoryImageCarousel */}
