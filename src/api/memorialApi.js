@@ -52,3 +52,18 @@ export const getMemorialList = async () => {
     return null;
   }
 };
+
+export const deleteMemorial = async (memorialId) => {
+  try {
+    const res = await apiClient.delete(`/memorials/${memorialId}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    return res || true;
+  } catch (err) {
+    console.warn("Delete Memorial Failed", err);
+    return null;
+  }
+};

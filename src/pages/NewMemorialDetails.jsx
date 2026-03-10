@@ -26,6 +26,8 @@ import MemoryImageCarousel from "../components/Memorial/sections/Details/MemoryI
 import AddIcon from "@mui/icons-material/Add";
 import TimelineEventDialog from "../components/Memorial/sections/Details/TimelineEventDialog";
 import TimelineSection from "../components/Memorial/sections/Details/TimelineSection";
+import DeleteMemorialButton from "../components/Memorial/sections/Details/DeleteMemorialButton";
+import { useSelector } from "react-redux";
 
 /* ---------------- Helpers ---------------- */
 const safeParse = (v) => {
@@ -65,6 +67,7 @@ export default function MemorialDetails() {
   const { id } = useParams();
   const [data, setData] = useState(null);
   const [timelineOpen, setTimelineOpen] = useState(false);
+  const { user, loggedInStatus } = useSelector((state) => state.user);
 
   useEffect(() => {
     (async () => {
@@ -74,6 +77,8 @@ export default function MemorialDetails() {
   }, [id]);
 
   if (!data) return <Loader />;
+
+  const isOwner = loggedInStatus && user?.id === data?.CreatedBy;
 
   // hard rule: only PASSED memorials
   // if (data.ProfileType !== "PASSED") return null;
@@ -236,9 +241,7 @@ export default function MemorialDetails() {
           </>
         )}
 
-        {timelines?.length > 0 && (
-          <TimelineSection timelines={timelines} />
-        )}
+        {timelines?.length > 0 && <TimelineSection timelines={timelines} />}
 
         {media?.handwrittenNotes?.length > 0 && (
           <>
@@ -298,16 +301,29 @@ export default function MemorialDetails() {
           </>
         )}
         {letters?.length > 0 && <LettersSection letters={letters} />}
-        <Box sx={{ mt: 6, mb: 4, textAlign: "center" }}>
-          <Button
-            startIcon={<AddIcon />}
-            variant="contained"
-            color="success"
-            onClick={() => setTimelineOpen(true)}
-          >
-            Add Timeline Event
-          </Button>
-        </Box>
+        {loggedInStatus && (
+          <>
+            <Box sx={{ mt: 6, mb: 4, textAlign: "center" }}>
+              <Button
+                startIcon={<AddIcon />}
+                variant="contained"
+                color="success"
+                onClick={() => setTimelineOpen(true)}
+              >
+                Add Timeline Event
+              </Button>
+            </Box>
+          </>
+        )}
+
+        {isOwner && (
+          <DeleteMemorialButton
+            memorialId={id}
+            onDeleted={() => {
+              window.location.href = "/";
+            }}
+          />
+        )}
 
         <TimelineEventDialog
           open={timelineOpen}
