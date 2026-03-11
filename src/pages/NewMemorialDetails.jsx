@@ -320,7 +320,7 @@ export default function MemorialDetails() {
           <DeleteMemorialButton
             memorialId={id}
             onDeleted={() => {
-              window.location.href = "/";
+              window.location.href = "/rise";
             }}
           />
         )}
