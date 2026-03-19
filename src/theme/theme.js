@@ -42,6 +42,7 @@ const theme = createTheme({
       softLavender: "#E9E6FF",
       cardBorder: "#E6EEF6",
       cardShadow: "0px 12px 30px rgba(0,0,0,0.06)",
+      homeBlue: "#486b9e",
     },
     shadow: {
       card: "0px 12px 30px rgba(0,0,0,0.06)",
