@@ -21,6 +21,7 @@ import LifeLessonsSection from "./sections/LifeLessonsSection";
 import HobbiesSection from "./sections/HobbiesSection";
 import FinalDaysSection from "./sections/FinalDaysSection";
 import PassingDetailsSection from "./sections/PassingDetailsSection";
+import NewbornIntroEffect from "./sections/NewbornIntroEffect";
 
 import { createMemorial } from "../../api/memorialApi";
 import { saveMemorialMedia } from "../../api/memorialMediaApi";
@@ -172,7 +173,7 @@ export default function CreateJourney({ type }) {
   return (
     <PageContainer>
       {loading && <Loader />}
-
+      {type === "newBorn" && <NewbornIntroEffect />}
       <StatusDialog
         open={statusDialog.open}
         status={statusDialog.status}
