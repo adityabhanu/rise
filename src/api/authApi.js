@@ -102,3 +102,11 @@ export const updateUserProfile = async (userId, payload) => {
     throw err;
   }
 };
+
+export const forgotPassword = (email) => {
+  return apiClient.post("/auth/forgot-password", { email });
+};
+
+export const resetPassword = (payload) => {
+  return apiClient.post("/auth/reset-password", payload);
+};
