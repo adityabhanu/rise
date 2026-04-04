@@ -31,7 +31,10 @@ export default function DeleteMemorialButton({ memorialId, onDeleted }) {
         open={open}
         onClose={() => setOpen(false)}
         memorialId={memorialId}
-        onDeleted={onDeleted}
+        onDeleted={() => {
+          setOpen(false);
+          onDeleted?.();
+        }}
       />
     </>
   );

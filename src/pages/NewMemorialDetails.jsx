@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Box, Divider, Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -65,6 +65,7 @@ const SectionCard = styled(Box)(({ theme }) => ({
 /* ---------------- Component ---------------- */
 export default function MemorialDetails() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [timelineOpen, setTimelineOpen] = useState(false);
   const { user, loggedInStatus } = useSelector((state) => state.user);
@@ -320,7 +321,7 @@ export default function MemorialDetails() {
           <DeleteMemorialButton
             memorialId={id}
             onDeleted={() => {
-              window.location.href = "/rise";
+              navigate("/memorial");
             }}
           />
         )}
