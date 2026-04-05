@@ -24,6 +24,17 @@ const PassingDetailsSection = forwardRef(({ type }, ref) => {
 
   useImperativeHandle(ref, () => ({
     getData: () => data,
+    setData: (incoming) => {
+      if (!incoming) return;
+
+      setData((prev) => ({
+        ...prev,
+        passingDate: incoming.passingDate || "",
+        cause: incoming.cause || "",
+        passingPlace: incoming.passingPlace || null,
+        cemetery: incoming.cemetery || null,
+      }));
+    },
   }));
 
   if (!isVisible) return null;
@@ -32,15 +43,14 @@ const PassingDetailsSection = forwardRef(({ type }, ref) => {
   const resolveAddress = async ({ latitude, longitude }) => {
     try {
       const res = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${import.meta.env.VITE_GOOGLE_MAPS_KEY}`
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${import.meta.env.VITE_GOOGLE_MAPS_KEY}`,
       );
       const json = await res.json();
       const result = json.results?.[0];
       if (!result) return;
 
       const baseLocation = {
-        name:
-          result.address_components?.[0]?.long_name || null,
+        name: result.address_components?.[0]?.long_name || null,
         address: result.formatted_address || null,
       };
 
@@ -86,9 +96,7 @@ const PassingDetailsSection = forwardRef(({ type }, ref) => {
           fullWidth
           InputLabelProps={{ shrink: true }}
           value={data.passingDate}
-          onChange={(e) =>
-            setData({ ...data, passingDate: e.target.value })
-          }
+          onChange={(e) => setData({ ...data, passingDate: e.target.value })}
         />
 
         {/* Place of Passing */}
@@ -130,9 +138,7 @@ const PassingDetailsSection = forwardRef(({ type }, ref) => {
           label="Cause of Passing"
           fullWidth
           value={data.cause}
-          onChange={(e) =>
-            setData({ ...data, cause: e.target.value })
-          }
+          onChange={(e) => setData({ ...data, cause: e.target.value })}
         />
       </Box>
 

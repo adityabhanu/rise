@@ -67,3 +67,22 @@ export const deleteMemorial = async (memorialId) => {
     return null;
   }
 };
+
+export const updateMemorial = async (memorialId, payload) => {
+  try {
+    const res = await apiClient.put(
+      `/memorials/${memorialId}`,
+      payload,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return res || null;
+  } catch (err) {
+    console.warn("Update Memorial Failed", err);
+    return null;
+  }
+};

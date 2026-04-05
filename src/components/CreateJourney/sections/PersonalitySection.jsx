@@ -13,6 +13,24 @@ const PersonalitySection = forwardRef(({ type }, ref) => {
 
   useImperativeHandle(ref, () => ({
     getData: () => data,
+    setData: (incoming) => {
+    if (!incoming) {
+      setData({
+        appearance: "",
+        identifiers: "",
+        fear: "",
+        wishes: "",
+      });
+      return;
+    }
+
+    setData({
+      appearance: incoming?.appearance || "",
+      identifiers: incoming?.identifiers || "",
+      fear: incoming?.fear || "",
+      wishes: incoming?.wishes || "",
+    });
+  },
   }));
 
   if (!isVisible) return null;

@@ -8,6 +8,15 @@ const LifeLessonsSection = forwardRef(({ type }, ref) => {
 
   useImperativeHandle(ref, () => ({
     getData: () => ({ lifeLessons }),
+
+    setData: (incoming) => {
+    if (!incoming) {
+      setLifeLessons("");
+      return;
+    }
+
+    setLifeLessons(incoming?.lifeLessons || "");
+  },
   }));
 
   if (!isVisible) return null;

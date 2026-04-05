@@ -24,6 +24,7 @@ import ParentThoughtsSection from "../components/Memorial/sections/Details/Paren
 import NotesSection from "../components/Memorial/sections/Details/NotesSection";
 import MemoryImageCarousel from "../components/Memorial/sections/Details/MemoryImageCarousel";
 import AddIcon from "@mui/icons-material/Add";
+import EditIcon from "@mui/icons-material/Edit";
 import TimelineEventDialog from "../components/Memorial/sections/Details/TimelineEventDialog";
 import TimelineSection from "../components/Memorial/sections/Details/TimelineSection";
 import DeleteMemorialButton from "../components/Memorial/sections/Details/DeleteMemorialButton";
@@ -318,12 +319,31 @@ export default function MemorialDetails() {
         )}
 
         {isOwner && (
-          <DeleteMemorialButton
-            memorialId={id}
-            onDeleted={() => {
-              navigate("/memorial");
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              gap: 2,
+              flexWrap: "wrap",
             }}
-          />
+          >
+            <Button
+              sx={{ my: 6 }}
+              startIcon={<EditIcon />}
+              variant="contained"
+              color="success"
+              onClick={() => navigate(`/memorial/${id}/edit`)}
+            >
+              Edit Memorial
+            </Button>
+
+            <DeleteMemorialButton
+              memorialId={id}
+              onDeleted={() => {
+                navigate("/memorial");
+              }}
+            />
+          </Box>
         )}
 
         <TimelineEventDialog

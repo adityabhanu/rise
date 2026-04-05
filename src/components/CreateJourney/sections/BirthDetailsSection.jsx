@@ -27,6 +27,14 @@ const BirthDetailsSection = forwardRef(({ type }, ref) => {
 
   useImperativeHandle(ref, () => ({
     getData: () => data,
+    setData: (incoming) => {
+    if (!incoming) return;
+
+    setData((prev) => ({
+      ...prev,
+      ...incoming,
+    }));
+  },
   }));
 
   // Convert lat/lng → address

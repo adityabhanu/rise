@@ -26,6 +26,29 @@ const LettersSection = forwardRef(({ type }, ref) => {
           ([, value]) => value !== null && value.trim() !== "",
         ),
       ),
+    setData: (incoming) => {
+    // reset all first
+    const initial = roles.reduce((acc, role) => {
+      acc[role] = null;
+      return acc;
+    }, {});
+
+    if (!incoming) {
+      setLetters(initial);
+      return;
+    }
+
+    // map incoming → enable only those present
+    const mapped = { ...initial };
+
+    Object.entries(incoming).forEach(([role, content]) => {
+      if (roles.includes(role)) {
+        mapped[role] = content || "";
+      }
+    });
+
+    setLetters(mapped);
+  },
   }));
 
   const enableLetter = (role) => {

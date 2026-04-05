@@ -6,6 +6,11 @@ const NameSection = forwardRef((_, ref) => {
 
   useImperativeHandle(ref, () => ({
     getData: () => ({ fullName }),
+    setData: (incoming) => {
+    if (incoming?.fullName) {
+      setFullName(incoming.fullName);
+    }
+  },
   }));
 
   return (

@@ -19,6 +19,20 @@ const ParentsThoughtsSection = forwardRef((_, ref) => {
       fears,
       biggestWish,
     }),
+    setData: (data) => {
+    if (!data) {
+      setFeltWhenFound("");
+      setFirstHeld("");
+      setFears("");
+      setBiggestWish("");
+      return;
+    }
+
+    setFeltWhenFound(data?.feltWhenFound || "");
+    setFirstHeld(data?.firstHeld || "");
+    setFears(data?.fears || "");
+    setBiggestWish(data?.biggestWish || "");
+  },
   }));
 
   return (

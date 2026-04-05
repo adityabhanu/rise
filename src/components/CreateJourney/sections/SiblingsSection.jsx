@@ -38,6 +38,19 @@ const SiblingsSection = forwardRef((_, ref) => {
 
   useImperativeHandle(ref, () => ({
     getData: () => siblings,
+    setData: (data) => {
+    if (!data || !Array.isArray(data)) {
+      setSiblings([]);
+      return;
+    }
+
+    const normalized = data.map((sib) => ({
+      name: sib?.name || "",
+      relationship: sib?.relationship || "",
+    }));
+
+    setSiblings(normalized);
+  },
   }));
 
   const count = siblings.length;

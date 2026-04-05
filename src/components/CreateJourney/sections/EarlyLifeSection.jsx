@@ -14,6 +14,26 @@ const EarlyLifeSection = forwardRef(({ type }, ref) => {
 
   useImperativeHandle(ref, () => ({
     getData: () => data,
+    setData: (incoming) => {
+    if (!incoming) {
+      setData({
+        hometown: "",
+        fatherName: "",
+        motherName: "",
+        background: "",
+        education: "",
+      });
+      return;
+    }
+
+    setData({
+      hometown: incoming?.hometown || "",
+      fatherName: incoming?.fatherName || "",
+      motherName: incoming?.motherName || "",
+      background: incoming?.background || "",
+      education: incoming?.education || "",
+    });
+  },
   }));
 
   if (!isVisible) return null;

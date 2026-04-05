@@ -11,6 +11,21 @@ const HobbiesSection = forwardRef(({ type }, ref) => {
 
   useImperativeHandle(ref, () => ({
     getData: () => data,
+
+    setData: (incoming) => {
+    if (!incoming) {
+      setData({
+        petAnimals: "",
+        familyTraditions: "",
+      });
+      return;
+    }
+
+    setData({
+      petAnimals: incoming?.petAnimals || "",
+      familyTraditions: incoming?.familyTraditions || "",
+    });
+  },
   }));
 
   if (!isVisible) return null;

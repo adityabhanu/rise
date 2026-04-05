@@ -29,6 +29,11 @@ const PrivacySection = forwardRef(({ type }, ref) => {
 
   useImperativeHandle(ref, () => ({
     getData: () => ({ isPrivate }),
+    setData: (incoming) => {
+    if (typeof incoming?.isPrivate === "boolean") {
+      setIsPrivate(incoming.isPrivate);
+    }
+  },
   }));
 
   return (

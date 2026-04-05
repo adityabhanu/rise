@@ -28,7 +28,7 @@ export const generateMemorialUploadSas = async (memorialId) => {
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     const { FullUploadUrl, ExpiresAt } = res || {};
@@ -51,11 +51,7 @@ export const generateMemorialUploadSas = async (memorialId) => {
  * STEP 2
  * Upload ONE file to Azure Blob using SAS
  */
-const uploadFileToBlob = async ({
-  uploadBaseUrl,
-  relativePath,
-  file,
-}) => {
+const uploadFileToBlob = async ({ uploadBaseUrl, relativePath, file }) => {
   const [baseUrl, sas] = uploadBaseUrl.split("?");
 
   const uploadUrl = `${baseUrl}/${relativePath}?${sas}`;
@@ -80,12 +76,8 @@ const uploadFileToBlob = async ({
  * STEP 3
  * Upload ALL memorial media to blob
  */
-export const uploadMemorialMediaToBlob = async (
-  memorialId,
-  mediaFiles
-) => {
-  const { uploadBaseUrl } =
-    await generateMemorialUploadSas(memorialId);
+export const uploadMemorialMediaToBlob = async (memorialId, mediaFiles) => {
+  const { uploadBaseUrl } = await generateMemorialUploadSas(memorialId);
 
   const uploadedMedia = {
     photos: [],
@@ -115,9 +107,9 @@ export const uploadMemorialMediaToBlob = async (
           file,
         }).then((url) => {
           uploadedMedia[key].push(
-            `${import.meta.env.VITE_BLOB_URL}memorial-uploads/${memorialId}/${relativePath}`
+            `${import.meta.env.VITE_BLOB_URL}memorial-uploads/${memorialId}/${relativePath}`,
           );
-        })
+        }),
       );
     });
   });
@@ -135,8 +127,10 @@ export const updateMemorialMedia = async (memorialId, mediaPayload) => {
     const payload = {};
 
     Object.entries(mediaPayload || {}).forEach(([key, value]) => {
-      if (Array.isArray(value) && value.length > 0) {
-        payload[key] = JSON.stringify(value);
+      if (Array.isArray(value)) {
+        payload[key] = value.length ? JSON.stringify(value) : "[]";
+      } else {
+        payload[key] = null;
       }
     });
 
@@ -152,7 +146,7 @@ export const updateMemorialMedia = async (memorialId, mediaPayload) => {
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     return res || null;
@@ -162,17 +156,38 @@ export const updateMemorialMedia = async (memorialId, mediaPayload) => {
   }
 };
 
-
 /**
  * STEP 5 (FINAL)
  * Upload all media + update DB
  */
-export const saveMemorialMedia = async (
-  memorialId,
-  mediaFiles
-) => {
-  const uploadedMedia =
-    await uploadMemorialMediaToBlob(memorialId, mediaFiles);
+export const saveMemorialMedia = async (memorialId, mediaFiles) => {
+  // 1️⃣ Separate existing vs new
+  const existingMedia = {};
+  const newMedia = {};
 
-  return updateMemorialMedia(memorialId, uploadedMedia);
+  Object.entries(mediaFiles || {}).forEach(([key, items]) => {
+    if (!Array.isArray(items)) return;
+
+    existingMedia[key] = items.filter((i) => typeof i === "string");
+    newMedia[key] = items.filter((i) => i instanceof File);
+  });
+
+  // 2️⃣ Upload new files
+  const uploadedMedia = await uploadMemorialMediaToBlob(memorialId, newMedia);
+
+  // 3️⃣ Merge existing + uploaded
+  const finalMediaPayload = {};
+
+  Object.keys(MEDIA_FOLDERS).forEach((key) => {
+    const existing = existingMedia[key] || [];
+    const uploaded = uploadedMedia[key] || [];
+
+    const combined = [...existing, ...uploaded];
+
+    // IMPORTANT: send even empty array []
+    finalMediaPayload[key] = combined;
+  });
+
+  // 4️⃣ Call PATCH API
+  return updateMemorialMedia(memorialId, finalMediaPayload);
 };

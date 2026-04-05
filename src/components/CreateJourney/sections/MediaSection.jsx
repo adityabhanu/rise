@@ -1,9 +1,4 @@
-import {
-  Box,
-  Typography,
-  Button,
-  IconButton,
-} from "@mui/material";
+import { Box, Typography, Button, IconButton } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { forwardRef, useImperativeHandle, useRef, useState } from "react";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
@@ -86,10 +81,7 @@ const MediaGroup = ({
       valid.push({
         id: crypto.randomUUID(),
         file,
-        preview:
-          previewType === "audio"
-            ? null
-            : URL.createObjectURL(file),
+        preview: previewType === "audio" ? null : URL.createObjectURL(file),
       });
     }
 
@@ -136,13 +128,9 @@ const MediaGroup = ({
       <PreviewGrid>
         {files.map((item) => (
           <PreviewItem key={item.id}>
-            {previewType === "image" && (
-              <img src={item.preview} alt="" />
-            )}
+            {previewType === "image" && <img src={item.preview} alt="" />}
 
-            {previewType === "video" && (
-              <video src={item.preview} />
-            )}
+            {previewType === "video" && <video src={item.preview} />}
 
             {previewType === "audio" && (
               <Box
@@ -166,10 +154,7 @@ const MediaGroup = ({
               </Box>
             )}
 
-            <DeleteBtn
-              size="small"
-              onClick={() => removeFile(item.id)}
-            >
+            <DeleteBtn size="small" onClick={() => removeFile(item.id)}>
               <ClearIcon fontSize="small" />
             </DeleteBtn>
           </PreviewItem>
@@ -178,6 +163,14 @@ const MediaGroup = ({
     </>
   );
 };
+
+const mapUrlsToFiles = (urls = []) =>
+  urls.map((url) => ({
+    id: crypto.randomUUID(),
+    file: url, // IMPORTANT: keep URL here
+    preview: url, // show image
+    isExisting: true, // 🔥 critical flag
+  }));
 
 /* ===================== MAIN SECTION ===================== */
 const MediaSection = forwardRef(({ type }, ref) => {
@@ -210,6 +203,21 @@ const MediaSection = forwardRef(({ type }, ref) => {
             voiceNotes: voiceNotes.map((f) => f.file),
             handwrittenNotes: handwrittenNotes.map((f) => f.file),
           },
+    setData: (incoming) => {
+      if (!incoming) return;
+
+      if (isNewBorn) {
+        setFootprints(mapUrlsToFiles(incoming.footprints));
+        setBabyImages(mapUrlsToFiles(incoming.photos));
+      } else {
+        setPhotos(mapUrlsToFiles(incoming.photos));
+        setWeddingPhotos(mapUrlsToFiles(incoming.weddingPhotos));
+        setFamilyPhotos(mapUrlsToFiles(incoming.familyPhotos));
+        setVideos(mapUrlsToFiles(incoming.videos));
+        setVoiceNotes(mapUrlsToFiles(incoming.voiceNotes));
+        setHandwrittenNotes(mapUrlsToFiles(incoming.handwrittenNotes));
+      }
+    },
   }));
 
   if (isNewBorn) {

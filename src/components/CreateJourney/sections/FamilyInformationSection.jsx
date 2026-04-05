@@ -137,6 +137,42 @@ const FamilyInformationSection = forwardRef(({ type }, ref) => {
         siblings,
       };
     },
+    setData: (incoming) => {
+    if (!incoming) return;
+
+    // 🔥 NEWBORN
+    if (isNewBorn) {
+      setNewbornData({
+        "Mother's Name": incoming.parents?.mother || "",
+        "Father's Name": incoming.parents?.father || "",
+        "Maternal Grandparents’ Names":
+          incoming.grandParents?.maternal || "",
+        "Paternal Grandparents’ Names":
+          incoming.grandParents?.paternal || "",
+        "Family Pet(s)": incoming.familyPets || "",
+        familyTraditions: incoming.familyTraditions || "",
+      });
+
+      return;
+    }
+
+    // 🔥 LIVING / MEMORIAL
+    setSpouse(incoming.spouse || { name: "", story: "" });
+
+    setChildren(
+      Array.isArray(incoming.children) ? incoming.children : []
+    );
+
+    setGrandChildren(
+      Array.isArray(incoming.grandChildren)
+        ? incoming.grandChildren
+        : []
+    );
+
+    setSiblings(
+      Array.isArray(incoming.siblings) ? incoming.siblings : []
+    );
+  },
   }));
 
   /* ================= NEWBORN UI ================= */

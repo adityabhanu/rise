@@ -82,7 +82,7 @@ export default function NewbornIntroEffect({ duration = 7000 }) {
     audioRef.current = audio;
 
     audio.play().catch(() => {
-      console.log("Autoplay blocked");
+      console.warn("Autoplay blocked");
     });
 
     // 👶 fade out overlay after 3 sec

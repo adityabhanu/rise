@@ -14,6 +14,26 @@ const FinalDaysSection = forwardRef(({ type }, ref) => {
 
   useImperativeHandle(ref, () => ({
     getData: () => data,
+    setData: (incoming) => {
+    if (!incoming) {
+      setData({
+        lastDaysStory: "",
+        finalWords: "",
+        funeralDetails: "",
+        obituary: "",
+        prayers: "",
+      });
+      return;
+    }
+
+    setData({
+      lastDaysStory: incoming?.lastDaysStory || "",
+      finalWords: incoming?.finalWords || "",
+      funeralDetails: incoming?.funeralDetails || "",
+      obituary: incoming?.obituary || "",
+      prayers: incoming?.prayers || "",
+    });
+  },
   }));
 
   if (!isVisible) return null;

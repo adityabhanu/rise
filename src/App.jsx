@@ -36,6 +36,7 @@ function App() {
         <Route path="/add/new-born" element={<CreateJourney type="newBorn" />} />
         <Route path="/add/living-profile" element={<CreateJourney type="livingProfile" />} />
         <Route path="/add/memorial" element={<CreateJourney type="memorial" />} />
+        <Route path="/memorial/:id/edit" element={<CreateJourney editMode />} />
       </Route>
     </Routes>
   );

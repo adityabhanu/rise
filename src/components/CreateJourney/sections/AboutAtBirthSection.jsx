@@ -53,8 +53,16 @@ export function VoiceNoteRow({ value, onChange }) {
       return;
     }
 
+    // ✅ Case 1: existing URL
+    if (typeof value === "string") {
+      setPreviewUrl(value);
+      return;
+    }
+
+    // ✅ Case 2: new file
     const url = URL.createObjectURL(value);
     setPreviewUrl(url);
+
     return () => URL.revokeObjectURL(url);
   }, [value]);
 
@@ -109,7 +117,7 @@ export function VoiceNoteRow({ value, onChange }) {
         onClick={() => !value && inputRef.current?.click()}
       >
         <IconButton size="small" onClick={value ? togglePlay : undefined}>
-          {value ? (isPlaying ? <PauseIcon /> : <PlayArrowIcon />) : <MicIcon />}
+          {value ? isPlaying ? <PauseIcon /> : <PlayArrowIcon /> : <MicIcon />}
         </IconButton>
 
         <Typography
@@ -190,13 +198,31 @@ const AboutAtBirthSection = forwardRef((_, ref) => {
       firstComment,
       voiceNotes,
     }),
+    setData: (data) => {
+      if (!data) {
+        setEyeColor("");
+        setSkinTone("");
+        setLookAlike("");
+        setBirthmarks("");
+        setFirstComment("");
+        setVoiceNotes([]);
+        return;
+      }
+      setEyeColor(data?.eyeColor || "");
+      setSkinTone(data?.skinTone || "");
+      setLookAlike(data?.lookAlike || "");
+      setBirthmarks(data?.birthmarks || "");
+      setFirstComment(data?.doctorComment || "");
+
+      // ⚠️ Important: handle media carefully
+      // If API gives URLs, convert to UI format if needed
+      setVoiceNotes(data?.voiceNotes || []);
+    },
   }));
 
   return (
     <>
-      <Typography variant="sectionTitle">
-        About you at Birth
-      </Typography>
+      <Typography variant="sectionTitle">About you at Birth</Typography>
 
       <SectionCard>
         <Typography fontWeight={600} color="text.secondary">
@@ -270,7 +296,7 @@ const AboutAtBirthSection = forwardRef((_, ref) => {
                 setVoiceNotes((prev) =>
                   file === null
                     ? prev.filter((_, i) => i !== index)
-                    : prev.map((v, i) => (i === index ? file : v))
+                    : prev.map((v, i) => (i === index ? file : v)),
                 )
               }
             />

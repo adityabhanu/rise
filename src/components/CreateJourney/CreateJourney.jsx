@@ -1,7 +1,7 @@
 import { Box, Typography, Divider } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useRef, useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 
 import PrivacySection from "./sections/PrivacySection";
 import NameSection from "./sections/NameSection";
@@ -23,11 +23,19 @@ import FinalDaysSection from "./sections/FinalDaysSection";
 import PassingDetailsSection from "./sections/PassingDetailsSection";
 import NewbornIntroEffect from "./sections/NewbornIntroEffect";
 
-import { createMemorial } from "../../api/memorialApi";
+import {
+  createMemorial,
+  getMemorialDetails,
+  updateMemorial,
+} from "../../api/memorialApi";
 import { saveMemorialMedia } from "../../api/memorialMediaApi";
 import Loader from "../common/Loader";
 import StatusDialog from "../common/StatusDialog";
 import { buildCreateMemorialPayload } from "../../utils/buildCreateMemorialPayload";
+import {
+  transformApiToForm,
+  mapProfileTypeToUI,
+} from "../../utils/transformApiToForm";
 import { stripEmpty } from "../../utils/helpers";
 
 const data = {
@@ -71,6 +79,11 @@ export default function CreateJourney({ type }) {
   const finalDaysRef = useRef();
   const passingDetailsRef = useRef();
 
+  const { id } = useParams();
+  const isEditMode = Boolean(id);
+
+  const [journeyType, setJourneyType] = useState(type);
+  const [isPrefillLoading, setIsPrefillLoading] = useState(isEditMode);
   const [loading, setLoading] = useState(false);
   const [statusDialog, setStatusDialog] = useState({
     open: false,
@@ -84,7 +97,7 @@ export default function CreateJourney({ type }) {
 
   const handleSubmit = async () => {
     const rawPayload = {
-      type,
+      type: journeyType,
       privacy: privacyRef.current?.getData(),
       name: nameRef.current?.getData(),
       birth: birthRef.current?.getData(),
@@ -112,15 +125,24 @@ export default function CreateJourney({ type }) {
 
     try {
       // 1️⃣ Create memorial (NO media yet)
-      const res = await createMemorial(payload);
 
-      if (!res || res.error) {
-        throw new Error(res?.error || "Invalid API response");
-      }
+      let memorialId;
 
-      const memorialId = res?.Id || res?.id;
-      if (!memorialId) {
-        throw new Error("Memorial ID missing");
+      if (isEditMode) {
+        await updateMemorial(id, payload);
+        memorialId = id;
+      } else {
+        const res = await createMemorial(payload);
+
+        if (!res || res.error) {
+          throw new Error(res?.error || "Invalid API response");
+        }
+
+        memorialId = res?.Id || res?.id;
+
+        if (!memorialId) {
+          throw new Error("Memorial ID missing");
+        }
       }
 
       setCreatedMemorialId(memorialId);
@@ -144,8 +166,10 @@ export default function CreateJourney({ type }) {
       setStatusDialog({
         open: true,
         status: "success",
-        title: "Journey Created",
-        message: "Your journey has been created successfully.",
+        title: isEditMode ? "Journey Updated" : "Journey Created",
+        message: isEditMode
+          ? "Your changes have been saved successfully."
+          : "Your journey has been created successfully.",
       });
     } catch (err) {
       console.error("Create Journey failed:", err);
@@ -169,11 +193,52 @@ export default function CreateJourney({ type }) {
       navigate(`/memorial/${createdMemorialId}`);
     }
   };
+  useEffect(() => {
+    if (!isEditMode) return;
 
+    (async () => {
+      try {
+        const res = await getMemorialDetails(id);
+        if (!res) return;
+
+        const uiType = mapProfileTypeToUI(res?.ProfileType);
+        setJourneyType(uiType);
+
+        const parsed = transformApiToForm(res);
+
+        privacyRef.current?.setData(parsed?.privacy);
+        nameRef.current?.setData(parsed?.name);
+        birthRef.current?.setData(parsed?.birth);
+        passingDetailsRef.current?.setData(parsed?.passingDetails);
+        visitorsRef.current?.setData(parsed?.visitors);
+        mediaRef.current?.setData(parsed?.media);
+        familyRef.current?.setData(parsed?.family);
+        siblingsRef.current?.setData(parsed?.siblings);
+        aboutRef.current?.setData(parsed?.aboutAtBirth);
+        thoughtsRef.current?.setData(parsed?.parentsThoughts);
+        earlyLifeRef.current?.setData(parsed?.earlyLife);
+        careerRef.current?.setData(parsed?.career);
+        personalityRef.current?.setData(parsed?.personality);
+        hobbiesRef.current?.setData(parsed?.hobbies);
+        lifeLessonsRef.current?.setData(parsed?.lifeLessons);
+        finalDaysRef.current?.setData(parsed?.finalDays);
+        lettersRef.current?.setData(parsed?.letters);
+      } catch (err) {
+        console.error("Prefill failed", err);
+      } finally {
+      setIsPrefillLoading(false);
+    }
+    })();
+  }, [id]);
+
+  if (isEditMode && isPrefillLoading) {
+  return <Loader />;
+}
   return (
     <PageContainer>
       {loading && <Loader />}
-      {type === "newBorn" && <NewbornIntroEffect />}
+      {console.log("Journey Type:", journeyType)}
+      {journeyType === "newBorn" && !isEditMode && <NewbornIntroEffect />}
       <StatusDialog
         open={statusDialog.open}
         status={statusDialog.status}
@@ -192,44 +257,44 @@ export default function CreateJourney({ type }) {
           fontWeight={600}
           color="text.header"
         >
-          {data[type]?.title}
+          {data[journeyType]?.title}
         </Typography>
 
-        <PrivacySection ref={privacyRef} type={type} />
+        <PrivacySection ref={privacyRef} type={journeyType} />
         <Divider sx={{ my: 3 }} />
 
         <NameSection ref={nameRef} />
         <Divider sx={{ my: 3 }} />
 
-        <BirthDetailsSection ref={birthRef} type={type} />
+        <BirthDetailsSection ref={birthRef} type={journeyType} />
         <Divider sx={{ my: 3 }} />
 
-        {type == "memorial" && (
+        {journeyType == "memorial" && (
           <>
-            <PassingDetailsSection ref={passingDetailsRef} type={type} />
+            <PassingDetailsSection ref={passingDetailsRef} type={journeyType} />
 
             <Divider sx={{ my: 3 }} />
-            <VisitorsSection ref={visitorsRef} type={type} />
+            <VisitorsSection ref={visitorsRef} type={journeyType} />
             <Divider sx={{ my: 3 }} />
           </>
         )}
 
-        <MediaSection ref={mediaRef} type={type} />
+        <MediaSection ref={mediaRef} type={journeyType} />
         <Divider sx={{ my: 3 }} />
 
-        <FamilyInformationSection ref={familyRef} type={type} />
+        <FamilyInformationSection ref={familyRef} type={journeyType} />
         <Divider sx={{ my: 3 }} />
 
-        {type == "newBorn" && (
+        {journeyType == "newBorn" && (
           <>
             <SiblingsSection ref={siblingsRef} />
             <Divider sx={{ my: 3 }} />
-            <VisitorsSection ref={visitorsRef} type={type} />
+            <VisitorsSection ref={visitorsRef} type={journeyType} />
             <Divider sx={{ my: 3 }} />
           </>
         )}
 
-        {type == "newBorn" && (
+        {journeyType == "newBorn" && (
           <>
             <AboutAtBirthSection ref={aboutRef} />
             <Divider sx={{ my: 3 }} />
@@ -239,33 +304,33 @@ export default function CreateJourney({ type }) {
           </>
         )}
 
-        {type != "newBorn" && (
+        {journeyType != "newBorn" && (
           <>
-            <EarlyLifeSection ref={earlyLifeRef} type={type} />
+            <EarlyLifeSection ref={earlyLifeRef} type={journeyType} />
             <Divider sx={{ my: 3 }} />
 
-            <CareerSection ref={careerRef} type={type} />
+            <CareerSection ref={careerRef} type={journeyType} />
             <Divider sx={{ my: 3 }} />
 
-            <PersonalitySection ref={personalityRef} type={type} />
+            <PersonalitySection ref={personalityRef} type={journeyType} />
             <Divider sx={{ my: 3 }} />
 
-            <HobbiesSection ref={hobbiesRef} type={type} />
+            <HobbiesSection ref={hobbiesRef} type={journeyType} />
             <Divider sx={{ my: 3 }} />
 
-            <LifeLessonsSection ref={lifeLessonsRef} type={type} />
+            <LifeLessonsSection ref={lifeLessonsRef} type={journeyType} />
             <Divider sx={{ my: 3 }} />
           </>
         )}
 
-        {type == "memorial" && (
+        {journeyType == "memorial" && (
           <>
-            <FinalDaysSection ref={finalDaysRef} type={type} />
+            <FinalDaysSection ref={finalDaysRef} type={journeyType} />
             <Divider sx={{ my: 3 }} />
           </>
         )}
 
-        <LettersSection ref={lettersRef} type={type} />
+        <LettersSection ref={lettersRef} type={journeyType} />
 
         <SubmitSection onSubmit={handleSubmit} />
       </InnerContainer>

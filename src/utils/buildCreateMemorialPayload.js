@@ -7,6 +7,7 @@ export function buildCreateMemorialPayload({
   birth,
   aboutAtBirth,
   family,
+  siblings,
   visitors,
   parentsThoughts,
   letters,
@@ -67,9 +68,17 @@ export function buildCreateMemorialPayload({
   }
 
   /* ---------------- Family ---------------- */
-  if (!isEmptyValue(family)) {
-    payload.family = JSON.stringify(cleanObject(family));
-  }
+  const familyBlock = cleanObject({
+  ...family,
+
+  ...(Array.isArray(siblings) && siblings.length
+    ? { siblings }
+    : {}),
+});
+
+if (!isEmptyValue(familyBlock)) {
+  payload.family = JSON.stringify(familyBlock);
+}
 
   /* ---------------- Visitors ---------------- */
   const visitorsList = Array.isArray(visitors?.visitors)

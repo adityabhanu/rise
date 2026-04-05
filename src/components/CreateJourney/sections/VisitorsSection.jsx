@@ -22,6 +22,14 @@ const VisitorsSection = forwardRef(({ type }, ref) => {
       firstMoment,
       favorites,
     }),
+    setData: (incoming) => {
+    if (!incoming) return;
+
+    setVisitors(incoming.visitors || []);
+    setFirstMoment(incoming.firstMoment || "");
+    setFavorites(incoming.favorites || "");
+  },
+    
   }));
 
   const addVisitor = () => {

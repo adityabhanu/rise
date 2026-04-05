@@ -11,6 +11,20 @@ const CareerSection = forwardRef(({ type }, ref) => {
 
   useImperativeHandle(ref, () => ({
     getData: () => data,
+    setData: (incoming) => {
+    if (!incoming) {
+      setData({
+        mentors: "",
+        familyRole: "",
+      });
+      return;
+    }
+
+    setData({
+      mentors: incoming?.mentors || "",
+      familyRole: incoming?.familyRole || "",
+    });
+  },
   }));
 
   if (!isVisible) return null;
