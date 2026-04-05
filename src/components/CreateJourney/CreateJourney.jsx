@@ -237,7 +237,6 @@ export default function CreateJourney({ type }) {
   return (
     <PageContainer>
       {loading && <Loader />}
-      {console.log("Journey Type:", journeyType)}
       {journeyType === "newBorn" && !isEditMode && <NewbornIntroEffect />}
       <StatusDialog
         open={statusDialog.open}
