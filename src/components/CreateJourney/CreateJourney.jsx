@@ -232,71 +232,66 @@ export default function CreateJourney({ type }) {
   //   })();
   // }, [id]);
 
-useEffect(() => {
-  if (!isEditMode) return;
+  useEffect(() => {
+    if (!isEditMode) return;
 
-  (async () => {
-    setIsPrefillLoading(true);
+    (async () => {
+      try {
+        setIsPrefillLoading(true);
 
-    try {
-      const res = await getMemorialDetails(id);
-      if (!res) return;
+        const res = await getMemorialDetails(id);
+        if (!res) return;
 
-      setApiData(res);
+        setApiData(res);
 
-      const uiType = mapProfileTypeToUI(res.ProfileType);
-      setJourneyType(uiType);
+        const uiType = mapProfileTypeToUI(res?.ProfileType);
+        setJourneyType(uiType);
+      } catch (err) {
+        console.error("Prefill fetch failed", err);
+        setIsPrefillLoading(false);
+      }
+    })();
+  }, [id, isEditMode]);
 
-    } catch (err) {
-      console.error(err);
-      setIsPrefillLoading(false);
-    }
-  })();
-}, [id, isEditMode]);
+  useEffect(() => {
+    if (!apiData) return;
 
+    const parsed = transformApiToForm(apiData);
 
-useEffect(() => {
-  if (!apiData) return;
+    const timer = setTimeout(() => {
+      try {
+        privacyRef.current?.setData(parsed?.privacy);
+        nameRef.current?.setData(parsed?.name);
+        birthRef.current?.setData(parsed?.birth);
+        passingDetailsRef.current?.setData(parsed?.passingDetails);
+        visitorsRef.current?.setData(parsed?.visitors);
+        mediaRef.current?.setData(parsed?.media);
+        familyRef.current?.setData(parsed?.family);
+        siblingsRef.current?.setData(parsed?.siblings);
+        aboutRef.current?.setData(parsed?.aboutAtBirth);
+        thoughtsRef.current?.setData(parsed?.parentsThoughts);
+        earlyLifeRef.current?.setData(parsed?.earlyLife);
+        careerRef.current?.setData(parsed?.career);
+        personalityRef.current?.setData(parsed?.personality);
+        hobbiesRef.current?.setData(parsed?.hobbies);
+        lifeLessonsRef.current?.setData(parsed?.lifeLessons);
+        finalDaysRef.current?.setData(parsed?.finalDays);
+        lettersRef.current?.setData(parsed?.letters);
 
-  // wait until refs are ready
+        setIsPrefillLoading(false);
+      } catch (err) {
+        console.error("Prefill crash:", err);
+        setIsPrefillLoading(false);
+      }
+    }, 0); // 🔥 IMPORTANT
 
-  const parsed = transformApiToForm(apiData);
+    return () => clearTimeout(timer);
+  }, [apiData, journeyType]);
 
-  try {
-    privacyRef.current?.setData(parsed?.privacy);
-    nameRef.current?.setData(parsed?.name);
-    birthRef.current?.setData(parsed?.birth);
-    passingDetailsRef.current?.setData(parsed?.passingDetails);
-    visitorsRef.current?.setData(parsed?.visitors);
-    mediaRef.current?.setData(parsed?.media);
-    familyRef.current?.setData(parsed?.family);
-    siblingsRef.current?.setData(parsed?.siblings);
-    aboutRef.current?.setData(parsed?.aboutAtBirth);
-    thoughtsRef.current?.setData(parsed?.parentsThoughts);
-    earlyLifeRef.current?.setData(parsed?.earlyLife);
-    careerRef.current?.setData(parsed?.career);
-    personalityRef.current?.setData(parsed?.personality);
-    hobbiesRef.current?.setData(parsed?.hobbies);
-    lifeLessonsRef.current?.setData(parsed?.lifeLessons);
-    finalDaysRef.current?.setData(parsed?.finalDays);
-    lettersRef.current?.setData(parsed?.letters);
-
-    // 🔥 ONLY set false AFTER successful execution
-    setIsPrefillLoading(false);
-
-  } catch (err) {
-    console.error("Prefill crash:", err);
-    setIsPrefillLoading(false); // fallback
-  }
-
-}, [apiData, journeyType]);
-
-  if (isEditMode && isPrefillLoading) {
-    return <Loader />;
-  }
   return (
     <PageContainer>
       {loading && <Loader />}
+      {isPrefillLoading && <Loader />}
       {journeyType === "newBorn" && !isEditMode && <NewbornIntroEffect />}
       <StatusDialog
         open={statusDialog.open}
