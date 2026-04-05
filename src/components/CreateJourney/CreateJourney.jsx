@@ -205,35 +205,36 @@ export default function CreateJourney({ type }) {
         setJourneyType(uiType);
 
         const parsed = transformApiToForm(res);
-
-        privacyRef.current?.setData(parsed?.privacy);
-        nameRef.current?.setData(parsed?.name);
-        birthRef.current?.setData(parsed?.birth);
-        passingDetailsRef.current?.setData(parsed?.passingDetails);
-        visitorsRef.current?.setData(parsed?.visitors);
-        mediaRef.current?.setData(parsed?.media);
-        familyRef.current?.setData(parsed?.family);
-        siblingsRef.current?.setData(parsed?.siblings);
-        aboutRef.current?.setData(parsed?.aboutAtBirth);
-        thoughtsRef.current?.setData(parsed?.parentsThoughts);
-        earlyLifeRef.current?.setData(parsed?.earlyLife);
-        careerRef.current?.setData(parsed?.career);
-        personalityRef.current?.setData(parsed?.personality);
-        hobbiesRef.current?.setData(parsed?.hobbies);
-        lifeLessonsRef.current?.setData(parsed?.lifeLessons);
-        finalDaysRef.current?.setData(parsed?.finalDays);
-        lettersRef.current?.setData(parsed?.letters);
+        setTimeout(() => {
+          privacyRef.current?.setData(parsed?.privacy);
+          nameRef.current?.setData(parsed?.name);
+          birthRef.current?.setData(parsed?.birth);
+          passingDetailsRef.current?.setData(parsed?.passingDetails);
+          visitorsRef.current?.setData(parsed?.visitors);
+          mediaRef.current?.setData(parsed?.media);
+          familyRef.current?.setData(parsed?.family);
+          siblingsRef.current?.setData(parsed?.siblings);
+          aboutRef.current?.setData(parsed?.aboutAtBirth);
+          thoughtsRef.current?.setData(parsed?.parentsThoughts);
+          earlyLifeRef.current?.setData(parsed?.earlyLife);
+          careerRef.current?.setData(parsed?.career);
+          personalityRef.current?.setData(parsed?.personality);
+          hobbiesRef.current?.setData(parsed?.hobbies);
+          lifeLessonsRef.current?.setData(parsed?.lifeLessons);
+          finalDaysRef.current?.setData(parsed?.finalDays);
+          lettersRef.current?.setData(parsed?.letters);
+        }, 0);
       } catch (err) {
         console.error("Prefill failed", err);
       } finally {
-      setIsPrefillLoading(false);
-    }
+        setIsPrefillLoading(false);
+      }
     })();
   }, [id]);
 
   if (isEditMode && isPrefillLoading) {
-  return <Loader />;
-}
+    return <Loader />;
+  }
   return (
     <PageContainer>
       {loading && <Loader />}
