@@ -84,6 +84,7 @@ export default function CreateJourney({ type }) {
 
   const [journeyType, setJourneyType] = useState(type);
   const [isPrefillLoading, setIsPrefillLoading] = useState(isEditMode);
+  const [apiData, setApiData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [statusDialog, setStatusDialog] = useState({
     open: false,
@@ -193,44 +194,102 @@ export default function CreateJourney({ type }) {
       navigate(`/memorial/${createdMemorialId}`);
     }
   };
-  useEffect(() => {
-    if (!isEditMode) return;
+  // useEffect(() => {
+  //   if (!isEditMode) return;
 
-    (async () => {
-      try {
-        const res = await getMemorialDetails(id);
-        if (!res) return;
+  //   (async () => {
+  //     try {
+  //       const res = await getMemorialDetails(id);
+  //       if (!res) return;
 
-        const uiType = mapProfileTypeToUI(res?.ProfileType);
-        setJourneyType(uiType);
+  //       const uiType = mapProfileTypeToUI(res?.ProfileType);
+  //       setJourneyType(uiType);
 
-        const parsed = transformApiToForm(res);
-        setTimeout(() => {
-          privacyRef.current?.setData(parsed?.privacy);
-          nameRef.current?.setData(parsed?.name);
-          birthRef.current?.setData(parsed?.birth);
-          passingDetailsRef.current?.setData(parsed?.passingDetails);
-          visitorsRef.current?.setData(parsed?.visitors);
-          mediaRef.current?.setData(parsed?.media);
-          familyRef.current?.setData(parsed?.family);
-          siblingsRef.current?.setData(parsed?.siblings);
-          aboutRef.current?.setData(parsed?.aboutAtBirth);
-          thoughtsRef.current?.setData(parsed?.parentsThoughts);
-          earlyLifeRef.current?.setData(parsed?.earlyLife);
-          careerRef.current?.setData(parsed?.career);
-          personalityRef.current?.setData(parsed?.personality);
-          hobbiesRef.current?.setData(parsed?.hobbies);
-          lifeLessonsRef.current?.setData(parsed?.lifeLessons);
-          finalDaysRef.current?.setData(parsed?.finalDays);
-          lettersRef.current?.setData(parsed?.letters);
-        }, 0);
-      } catch (err) {
-        console.error("Prefill failed", err);
-      } finally {
-        setIsPrefillLoading(false);
-      }
-    })();
-  }, [id]);
+  //       const parsed = transformApiToForm(res);
+
+  //       privacyRef.current?.setData(parsed?.privacy);
+  //       nameRef.current?.setData(parsed?.name);
+  //       birthRef.current?.setData(parsed?.birth);
+  //       passingDetailsRef.current?.setData(parsed?.passingDetails);
+  //       visitorsRef.current?.setData(parsed?.visitors);
+  //       mediaRef.current?.setData(parsed?.media);
+  //       familyRef.current?.setData(parsed?.family);
+  //       siblingsRef.current?.setData(parsed?.siblings);
+  //       aboutRef.current?.setData(parsed?.aboutAtBirth);
+  //       thoughtsRef.current?.setData(parsed?.parentsThoughts);
+  //       earlyLifeRef.current?.setData(parsed?.earlyLife);
+  //       careerRef.current?.setData(parsed?.career);
+  //       personalityRef.current?.setData(parsed?.personality);
+  //       hobbiesRef.current?.setData(parsed?.hobbies);
+  //       lifeLessonsRef.current?.setData(parsed?.lifeLessons);
+  //       finalDaysRef.current?.setData(parsed?.finalDays);
+  //       lettersRef.current?.setData(parsed?.letters);
+  //     } catch (err) {
+  //       console.error("Prefill failed", err);
+  //     } finally {
+  //       setIsPrefillLoading(false);
+  //     }
+  //   })();
+  // }, [id]);
+
+useEffect(() => {
+  if (!isEditMode) return;
+
+  (async () => {
+    setIsPrefillLoading(true);
+
+    try {
+      const res = await getMemorialDetails(id);
+      if (!res) return;
+
+      setApiData(res);
+
+      const uiType = mapProfileTypeToUI(res.ProfileType);
+      setJourneyType(uiType);
+
+    } catch (err) {
+      console.error(err);
+      setIsPrefillLoading(false);
+    }
+  })();
+}, [id, isEditMode]);
+
+
+useEffect(() => {
+  if (!apiData) return;
+
+  // wait until refs are ready
+
+  const parsed = transformApiToForm(apiData);
+
+  try {
+    privacyRef.current?.setData(parsed?.privacy);
+    nameRef.current?.setData(parsed?.name);
+    birthRef.current?.setData(parsed?.birth);
+    passingDetailsRef.current?.setData(parsed?.passingDetails);
+    visitorsRef.current?.setData(parsed?.visitors);
+    mediaRef.current?.setData(parsed?.media);
+    familyRef.current?.setData(parsed?.family);
+    siblingsRef.current?.setData(parsed?.siblings);
+    aboutRef.current?.setData(parsed?.aboutAtBirth);
+    thoughtsRef.current?.setData(parsed?.parentsThoughts);
+    earlyLifeRef.current?.setData(parsed?.earlyLife);
+    careerRef.current?.setData(parsed?.career);
+    personalityRef.current?.setData(parsed?.personality);
+    hobbiesRef.current?.setData(parsed?.hobbies);
+    lifeLessonsRef.current?.setData(parsed?.lifeLessons);
+    finalDaysRef.current?.setData(parsed?.finalDays);
+    lettersRef.current?.setData(parsed?.letters);
+
+    // 🔥 ONLY set false AFTER successful execution
+    setIsPrefillLoading(false);
+
+  } catch (err) {
+    console.error("Prefill crash:", err);
+    setIsPrefillLoading(false); // fallback
+  }
+
+}, [apiData, journeyType]);
 
   if (isEditMode && isPrefillLoading) {
     return <Loader />;
