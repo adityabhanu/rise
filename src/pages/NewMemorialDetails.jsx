@@ -243,7 +243,13 @@ export default function MemorialDetails() {
           </>
         )}
 
-        {timelines?.length > 0 && <TimelineSection timelines={timelines} isOwner={isOwner} />}
+        {timelines?.length > 0 && (
+          <TimelineSection
+            timelines={timelines}
+            isOwner={isOwner}
+            memorialId={id}
+          />
+        )}
 
         {media?.handwrittenNotes?.length > 0 && (
           <>

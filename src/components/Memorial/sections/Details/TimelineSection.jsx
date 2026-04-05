@@ -11,6 +11,7 @@ import Loader from "../../../common/Loader";
 import StatusDialog from "../../../common/StatusDialog";
 import { deleteTimelineEvent } from "../../../../api/timelineApi";
 import { DeleteTimelineDialog } from "./DeleteTimelineDialog";
+import TimelineEventDialog from "./TimelineEventDialog";
 
 /* ---- Timeline Video Tile ---- */
 
@@ -153,10 +154,16 @@ const formatDate = (d) =>
 
 /* ---------------- Component ---------------- */
 
-export default function TimelineSection({ timelines = [], isOwner = false }) {
+export default function TimelineSection({
+  timelines = [],
+  isOwner = false,
+  memorialId,
+}) {
   const [activeVideo, setActiveVideo] = useState(null);
   const [loading, setLoading] = useState(false);
   const [timelineList, setTimelineList] = useState(timelines);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState(null);
 
   const [statusDialog, setStatusDialog] = useState({
     open: false,
@@ -213,6 +220,12 @@ export default function TimelineSection({ timelines = [], isOwner = false }) {
     }
   };
 
+  const handleUpdateTimeline = (updatedItem) => {
+    setTimelineList((prev) =>
+      prev.map((t) => (t.Id === updatedItem.Id ? updatedItem : t)),
+    );
+  };
+
   return (
     <Section>
       <Typography
@@ -246,7 +259,10 @@ export default function TimelineSection({ timelines = [], isOwner = false }) {
                       {/* Edit */}
                       <IconButton
                         size="small"
-                        onClick={() => onEdit?.(item, index)}
+                        onClick={() => {
+                          setEditingItem(item);
+                          setDialogOpen(true);
+                        }}
                         sx={(theme) => ({
                           width: 32,
                           height: 32,
@@ -369,6 +385,17 @@ export default function TimelineSection({ timelines = [], isOwner = false }) {
           loading={loading}
         />
       </>
+
+      <TimelineEventDialog
+        open={dialogOpen}
+        onClose={() => {
+          setDialogOpen(false);
+          setEditingItem(null);
+        }}
+        memorialId={memorialId}
+        initialData={editingItem}
+        onSuccess={handleUpdateTimeline}
+      />
     </Section>
   );
 }

@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Box, TextField, Button, IconButton } from "@mui/material";
 import BaseDialog from "../../../BaseDialog";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
@@ -8,7 +8,11 @@ import ClearIcon from "@mui/icons-material/Clear";
 
 import Loader from "../../../common/Loader";
 import StatusDialog from "../../../common/StatusDialog";
-import { saveTimelineEvent } from "../../../../api/timelineApi";
+import {
+  saveTimelineEvent,
+  updateTimelineEvent,
+  uploadTimelineMediaToBlob,
+} from "../../../../api/timelineApi";
 
 /* ---------- limits ---------- */
 const PHOTO_MAX_MB = 5;
@@ -168,7 +172,11 @@ export default function TimelineEventDialog({
   open,
   onClose,
   memorialId,
+  initialData,
+  onSuccess,
 }) {
+  const isEditMode = !!initialData;
+
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
   const [description, setDescription] = useState("");
@@ -185,32 +193,126 @@ export default function TimelineEventDialog({
     message: "",
   });
 
+  useEffect(() => {
+    if (!initialData) return;
+
+    setTitle(initialData?.Title || "");
+    setDate(initialData?.Date?.split("T")[0] || "");
+    setDescription(initialData?.Description || "");
+
+    setPhotos(
+      (initialData?.Media?.Photos || []).map((url) => ({
+        id: crypto.randomUUID(),
+        file: null,
+        preview: url,
+      })),
+    );
+
+    setVideo(
+      (initialData?.Media?.Video || []).map((url) => ({
+        id: crypto.randomUUID(),
+        file: null,
+        preview: url,
+      })),
+    );
+
+    setAudio(
+      (initialData?.Media?.Audio || []).map((url) => ({
+        id: crypto.randomUUID(),
+        file: null,
+        preview: url,
+      })),
+    );
+  }, [initialData]);
+
   const handleSave = async () => {
     if (!memorialId) return;
 
     setLoading(true);
 
     try {
-      const res = await saveTimelineEvent(memorialId, {
-        title,
-        date: new Date(date).toISOString(),
-        description,
-        mediaFiles: {
-          photos: photos.map((p) => p.file),
-          video: video.map((v) => v.file),
-          audio: audio.map((a) => a.file),
-        },
-      });
+      let res;
 
+      const formattedDate = new Date(date).toISOString();
+
+      if (isEditMode) {
+        // ✅ 1. Separate new vs existing
+        const newPhotos = photos.filter((p) => p.file);
+        const existingPhotos = photos
+          .filter((p) => !p.file)
+          .map((p) => p.preview);
+
+        const newVideo = video.filter((v) => v.file);
+        const existingVideo = video
+          .filter((v) => !v.file)
+          .map((v) => v.preview);
+
+        const newAudio = audio.filter((a) => a.file);
+        const existingAudio = audio
+          .filter((a) => !a.file)
+          .map((a) => a.preview);
+
+        // ✅ 2. Upload ONLY new files
+        let uploaded = { photos: [], video: [], audio: [] };
+
+        if (newPhotos.length || newVideo.length || newAudio.length) {
+          uploaded = await uploadTimelineMediaToBlob(memorialId, {
+            photos: newPhotos.map((p) => p.file),
+            video: newVideo.map((v) => v.file),
+            audio: newAudio.map((a) => a.file),
+          });
+        }
+
+        // ✅ 3. Merge existing + uploaded
+        const finalMedia = {
+          photos: [...existingPhotos, ...uploaded.photos],
+          video: [...existingVideo, ...uploaded.video],
+          audio: [...existingAudio, ...uploaded.audio],
+        };
+
+        // ✅ 4. Call API
+        res = await updateTimelineEvent(initialData.Id, {
+          memorialId,
+          title,
+          date: formattedDate,
+          description,
+          media: finalMedia,
+        });
+
+        // ✅ 5. Update UI
+        const updatedItem = {
+          ...initialData,
+          Title: title,
+          Date: formattedDate,
+          Description: description,
+          Media: {
+            Photos: finalMedia.photos,
+            Video: finalMedia.video,
+            Audio: finalMedia.audio,
+          },
+        };
+
+        onSuccess?.(updatedItem);
+      } else {
+        res = await saveTimelineEvent(memorialId, {
+          title,
+          date: formattedDate,
+          description,
+          mediaFiles: {
+            photos: photos.map((p) => p.file),
+            video: video.map((v) => v.file),
+            audio: audio.map((a) => a.file),
+          },
+        });
+      }
       if (!res || res?.error) {
         throw new Error("Timeline save failed");
       }
-
       setStatusDialog({
         open: true,
         status: "success",
-        title: "Timeline Added",
-        message: "The timeline event was added successfully.",
+        title: isEditMode ? "Timeline Updated" : "Timeline Added",
+        message: "The timeline event was saved successfully.",
       });
     } catch (err) {
       console.error(err);
@@ -219,8 +321,7 @@ export default function TimelineEventDialog({
         open: true,
         status: "error",
         title: "Something went wrong",
-        message:
-          "We couldn’t save the timeline event. Please try again.",
+        message: "We couldn’t save the timeline event. Please try again.",
       });
     } finally {
       setLoading(false);
@@ -244,9 +345,7 @@ export default function TimelineEventDialog({
         status={statusDialog.status}
         title={statusDialog.title}
         message={statusDialog.message}
-        onClose={() =>
-          setStatusDialog({ ...statusDialog, open: false })
-        }
+        onClose={() => setStatusDialog({ ...statusDialog, open: false })}
         onPrimaryAction={handleDialogPrimaryAction}
       />
 

@@ -143,3 +143,12 @@ export const deleteTimelineEvent = async (timelineId) => {
     return { error: true };
   }
 };
+
+export const updateTimelineEvent = async (timelineId, payload) => {
+  try {
+    const res = await apiClient.put(`/memorials/timeline/${timelineId}`, payload);
+    return res || null;
+  } catch (err) {
+    return { error: true };
+  }
+};
