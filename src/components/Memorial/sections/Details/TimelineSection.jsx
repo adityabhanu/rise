@@ -4,6 +4,13 @@ import MemoryImageCarousel from "./MemoryImageCarousel";
 import AudioTributeSection from "./AudioTributeSection";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import { useState } from "react";
+import IconButton from "@mui/material/IconButton";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import Loader from "../../../common/Loader";
+import StatusDialog from "../../../common/StatusDialog";
+import { deleteTimelineEvent } from "../../../../api/timelineApi";
+import { DeleteTimelineDialog } from "./DeleteTimelineDialog";
 
 /* ---- Timeline Video Tile ---- */
 
@@ -79,6 +86,13 @@ const Content = styled(Box)(({ theme }) => ({
   gap: theme.spacing(1),
 }));
 
+const TitleRow = styled(Box)(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  gap: theme.spacing(1),
+}));
+
 const Title = styled(Typography)(({ theme }) => ({
   fontWeight: 500,
   color: theme.palette.text.primary,
@@ -139,10 +153,65 @@ const formatDate = (d) =>
 
 /* ---------------- Component ---------------- */
 
-export default function TimelineSection({ timelines = [] }) {
+export default function TimelineSection({ timelines = [], isOwner = false }) {
   const [activeVideo, setActiveVideo] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [timelineList, setTimelineList] = useState(timelines);
 
-  if (!Array.isArray(timelines) || !timelines.length) return null;
+  const [statusDialog, setStatusDialog] = useState({
+    open: false,
+    status: "success",
+    title: "",
+    message: "",
+  });
+
+  const [deleteDialog, setDeleteDialog] = useState({
+    open: false,
+    timelineId: null,
+  });
+
+  if (!Array.isArray(timelineList) || !timelineList.length) return null;
+
+  const handleDeleteClick = (id) => {
+    setDeleteDialog({
+      open: true,
+      timelineId: id,
+    });
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteDialog.timelineId) return;
+
+    setLoading(true);
+
+    try {
+      const res = await deleteTimelineEvent(deleteDialog.timelineId);
+      if (res?.error) {
+        throw new Error("Delete failed");
+      }
+
+      setStatusDialog({
+        open: true,
+        status: "success",
+        title: "Timeline Deleted",
+        message: "The timeline event was deleted successfully.",
+      });
+
+      setTimelineList((prev) =>
+        prev.filter((t) => t.Id !== deleteDialog.timelineId),
+      );
+    } catch (err) {
+      setStatusDialog({
+        open: true,
+        status: "error",
+        title: "Delete failed",
+        message: "Unable to delete timeline event.",
+      });
+    } finally {
+      setLoading(false);
+      setDeleteDialog({ open: false, timelineId: null });
+    }
+  };
 
   return (
     <Section>
@@ -157,7 +226,7 @@ export default function TimelineSection({ timelines = [] }) {
       </Typography>
       <Divider sx={{ mb: 2, mt: 1.5 }} />
 
-      {timelines.map((item, index) => {
+      {timelineList.map((item, index) => {
         /* ---------- Parse media ---------- */
         const photos = item?.Media?.Photos || [];
         const videos = item?.Media?.Video || [];
@@ -169,7 +238,51 @@ export default function TimelineSection({ timelines = [] }) {
               <DateText>{formatDate(item?.Date)}</DateText>
 
               <Content>
-                <Title>{item?.Title}</Title>
+                <TitleRow>
+                  <Title>{item?.Title}</Title>
+
+                  {isOwner && (
+                    <Box sx={{ display: "flex", gap: 2 }}>
+                      {/* Edit */}
+                      <IconButton
+                        size="small"
+                        onClick={() => onEdit?.(item, index)}
+                        sx={(theme) => ({
+                          width: 32,
+                          height: 32,
+                          borderRadius: "50%",
+                          backgroundColor: theme.palette.secondary.main,
+                          color: theme.palette.text.secondary,
+                          "&:hover": {
+                            backgroundColor: theme.palette.primary.main,
+                            color: theme.palette.text.white,
+                          },
+                        })}
+                      >
+                        <EditOutlinedIcon fontSize="small" />
+                      </IconButton>
+
+                      {/* Delete */}
+                      <IconButton
+                        size="small"
+                        onClick={() => handleDeleteClick(item?.Id)}
+                        sx={(theme) => ({
+                          width: 32,
+                          height: 32,
+                          borderRadius: "50%",
+                          backgroundColor: theme.palette.secondary.main,
+                          color: theme.palette.custom.red,
+                          "&:hover": {
+                            backgroundColor: theme.palette.custom.red,
+                            color: theme.palette.text.white,
+                          },
+                        })}
+                      >
+                        <DeleteOutlinedIcon fontSize="small" />
+                      </IconButton>
+                    </Box>
+                  )}
+                </TitleRow>
 
                 {item?.Description && (
                   <Description>{item?.Description}</Description>
@@ -228,10 +341,34 @@ export default function TimelineSection({ timelines = [] }) {
               </Content>
             </Item>
 
-            {index < timelines.length - 1 && <Divider sx={{ opacity: 0.6 }} />}
+            {index < timelineList.length - 1 && (
+              <Divider sx={{ opacity: 0.6 }} />
+            )}
           </Box>
         );
       })}
+
+      <>
+        {loading && <Loader />}
+
+        <StatusDialog
+          open={statusDialog.open}
+          status={statusDialog.status}
+          title={statusDialog.title}
+          message={statusDialog.message}
+          onClose={() => setStatusDialog((prev) => ({ ...prev, open: false }))}
+          onPrimaryAction={() =>
+            setStatusDialog((prev) => ({ ...prev, open: false }))
+          }
+        />
+
+        <DeleteTimelineDialog
+          open={deleteDialog.open}
+          onClose={() => setDeleteDialog({ open: false, timelineId: null })}
+          onConfirm={handleConfirmDelete}
+          loading={loading}
+        />
+      </>
     </Section>
   );
 }

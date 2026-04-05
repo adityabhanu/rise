@@ -12,7 +12,7 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <BrowserRouter basename="/rise/">
+      <BrowserRouter>
         <Provider store={store}>
           <App />
         </Provider>

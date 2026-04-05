@@ -86,21 +86,21 @@ export default function JourneyCards() {
   return (
     <CardsGrid>
       <JourneyCard
-        image="/rise/assets/images/newborn-card-1.jpeg"
+        image="/assets/images/newborn-card-1.jpeg"
         title="Create Life Story"
         subTitle="Capture memories, milestones, and meaningful moments throughout life."
         path="/add/new-born"
       />
 
       <JourneyCard
-        image="/rise/assets/images/living-card-1.jpeg"
+        image="/assets/images/living-card-1.jpeg"
         title="Share Memories"
         subTitle="Preserve stories, photos, and experiences your family will treasure forever."
         path="/add/living-profile"
       />
 
       <JourneyCard
-        image="/rise/assets/images/memory-card-1.jpeg"
+        image="/assets/images/memory-card-1.jpeg"
         title="Honor Loved Ones"
         subTitle="Create lasting memorials and celebrate lives that shaped your story."
         path="/add/memorial"

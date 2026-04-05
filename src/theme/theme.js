@@ -45,6 +45,7 @@ const theme = createTheme({
       homeBlue: "#486b9e",
       gradientPrimary: "linear-gradient(135deg, #7FB3FF, #5A86D6)",
       orange: "#FF8A80",
+      red: "#D32F2F",
     },
     shadow: {
       card: "0px 12px 30px rgba(0,0,0,0.06)",

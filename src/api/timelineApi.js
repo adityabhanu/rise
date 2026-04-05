@@ -130,3 +130,16 @@ export const saveTimelineEvent = async (
 
   return createTimelineEvent(finalPayload);
 };
+
+export const deleteTimelineEvent = async (timelineId) => {
+  try {
+    const res = await apiClient.delete(
+      `/memorials/timeline/${timelineId}`
+    );
+
+    return { success: true };
+  } catch (err) {
+    console.warn("Delete Timeline Failed", err);
+    return { error: true };
+  }
+};
