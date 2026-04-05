@@ -333,6 +333,9 @@ export default function TimelineEventDialog({
 
     if (statusDialog.status === "success") {
       onClose();
+      if (!isEditMode) {
+        window.location.reload();
+      }
     }
   };
 
